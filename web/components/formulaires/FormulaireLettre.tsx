@@ -1,7 +1,8 @@
 'use client'
 
 import {useActionState, useEffect, useRef} from 'react'
-import {inscrireLettre, type EtatFormulaire} from '@/app/actions'
+import {inscrireLettre} from '@/app/actions'
+import type {EtatFormulaire} from '@/lib/formulaires'
 import {Coche} from '../Icones'
 
 /** Inscription à la lettre d'information, en un champ. */
@@ -17,7 +18,7 @@ export function FormulaireLettre({secours}: {secours?: string | null}) {
       <p className="message-ok" role="status">
         <Coche />
         <span>
-          Inscription enregistrée. À bientôt dans votre boîte aux lettres.
+          {etat.courriel ? 'Votre messagerie s’est ouverte : envoyez le message pour confirmer l’inscription.' : 'Inscription enregistrée. À bientôt dans votre boîte aux lettres.'}
           {etat.demo && <span className="t-label" style={{display: 'block', marginTop: 6}}>Mode démonstration : rien n’a été enregistré.</span>}
         </span>
       </p>

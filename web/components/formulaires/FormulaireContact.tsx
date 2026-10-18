@@ -1,7 +1,8 @@
 'use client'
 
 import {useActionState, useEffect, useRef, useState} from 'react'
-import {envoyerMessage, type EtatFormulaire} from '@/app/actions'
+import {envoyerMessage} from '@/app/actions'
+import type {EtatFormulaire} from '@/lib/formulaires'
 import {Coche, Fleche} from '../Icones'
 
 type Props = {sujets: string[]; confirmation: string; secours?: string | null}
@@ -32,7 +33,12 @@ function Formulaire({sujets, confirmation, secours, nouveau}: Props & {nouveau: 
         <span className="envoye__coche" aria-hidden="true">
           <Coche />
         </span>
-        <p>{confirmation}</p>
+        <p>{etat.courriel ? 'Votre messagerie s’est ouverte avec le message prêt : il ne reste qu’à l’envoyer.' : confirmation}</p>
+        {etat.courriel && secours && (
+          <p className="t-label">
+            Rien ne s’est ouvert ? Écrivez à <a href={`mailto:${secours}`}>{secours}</a>
+          </p>
+        )}
         {etat.demo && <p className="t-label">Mode démonstration : le message n’a pas été enregistré.</p>}
         <button type="button" className="btn btn--trait" onClick={nouveau}>
           Écrire un autre message

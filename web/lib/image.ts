@@ -2,6 +2,7 @@ import 'server-only'
 import {createImageUrlBuilder} from '@sanity/image-url'
 import {stegaClean} from 'next-sanity'
 import {dataset, projectId} from '@/sanity/env'
+import {avecBase} from './chemin'
 import type {Img} from '@/sanity/types'
 
 /*
@@ -68,7 +69,7 @@ export function sourceImage(img: Img | null | undefined, {ratio, gris = false, m
   }
 
   const fichier = (gris && stegaClean(img.gris)) || url
-  const racine = fichier.replace(/\.(jpe?g|png)$/i, '')
+  const racine = avecBase(fichier.replace(/\.(jpe?g|png)$/i, ''))
   const largeurs = [...LARGEURS_AMORCE.filter((l) => l < W), W]
   const defaut = largeurs.find((l) => l >= 960) ?? largeurs[largeurs.length - 1]
   return {

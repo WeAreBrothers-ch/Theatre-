@@ -5,6 +5,7 @@ import {usePathname} from 'next/navigation'
 import {useCallback, useEffect, useRef, useState, type CSSProperties, type MouseEvent} from 'react'
 import type {Encre} from '@/lib/encre'
 import type {SourceImage} from '@/lib/image'
+import {avecBase} from '@/lib/chemin'
 import {styleEncre} from '@/lib/encre'
 import {Billet, Fleche} from '../Icones'
 import {ImageImprimee} from '../Visuels'
@@ -124,7 +125,7 @@ export function Entete({liens, bouton, prochain, tel, lienTel, horaires, adresse
       <header className="entete bande">
         <div className="cadre entete__barre">
           <Link className="entete__logo" href="/" aria-label="Théâtre Benno Besson, Yverdon-les-Bains : accueil">
-            <img src="/logo-tbb.png" alt="" width={300} height={259} />
+            <img src={avecBase('/logo-tbb.png')} alt="" width={300} height={259} />
           </Link>
           <nav className="entete__nav" aria-label="Navigation principale">
             <ul>
@@ -161,7 +162,7 @@ export function Entete({liens, bouton, prochain, tel, lienTel, horaires, adresse
         <div className="bande">
           <div className="cadre entete__barre">
             <Link className="entete__logo" href="/" aria-label="Accueil">
-              <img src="/logo-tbb-blanc.png" alt="" width={300} height={259} loading="lazy" />
+              <img src={avecBase('/logo-tbb-blanc.png')} alt="" width={300} height={259} loading="lazy" />
             </Link>
             <div className="entete__actions">
               <Link className="btn btn--clair btn--petit" href={bouton.href}>

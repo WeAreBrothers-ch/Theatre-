@@ -1,8 +1,6 @@
 import type {Metadata, Viewport} from 'next'
 import {Archivo, Newsreader} from 'next/font/google'
-import {draftMode} from 'next/headers'
 import {stegaClean} from 'next-sanity'
-import {VisualEditing} from 'next-sanity/visual-editing'
 import {Entete, type LienMenu, type Prochain} from '@/components/entete/Entete'
 import {PiedDePage} from '@/components/PiedDePage'
 import {URL_SITE} from '@/lib/constantes'
@@ -11,8 +9,8 @@ import {chargerSite, chargerSpectacles} from '@/lib/donnees'
 import {sourceImage} from '@/lib/image'
 import {hrefLien, hrefPropre} from '@/lib/liens'
 import {lienTel, typo} from '@/lib/typo'
-import {contenusSanity} from '@/sanity/charger'
-import {SanityLive} from '@/sanity/live'
+import {Apercu} from '@/sanity/apercu'
+import {avecBase} from '@/lib/chemin'
 import './globals.css'
 
 const archivo = Archivo({subsets: ['latin'], axes: ['wdth'], variable: '--police-archivo', display: 'swap'})
@@ -44,7 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function MiseEnPage({children}: {children: React.ReactNode}) {
-  const [site, spectacles, sanity, brouillons] = await Promise.all([chargerSite(), chargerSpectacles(), contenusSanity(), draftMode()])
+  const [site, spectacles] = await Promise.all([chargerSite(), chargerSpectacles()])
   const r = site.reglages ?? {}
 
   const liens: LienMenu[] = (r.menu ?? [])
@@ -90,7 +88,7 @@ export default async function MiseEnPage({children}: {children: React.ReactNode}
                 {lienAnnonce && (
                   <>
                     {' '}
-                    <a href={lienAnnonce}>En savoir plus</a>
+                    <a href={lienAnnonce.startsWith('/') ? avecBase(lienAnnonce) : lienAnnonce}>En savoir plus</a>
                   </>
                 )}
               </p>
@@ -112,8 +110,7 @@ export default async function MiseEnPage({children}: {children: React.ReactNode}
           {children}
         </main>
         <PiedDePage site={site} />
-        {sanity && <SanityLive />}
-        {brouillons.isEnabled && <VisualEditing />}
+        <Apercu />
       </body>
     </html>
   )

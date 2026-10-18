@@ -3,6 +3,7 @@ import {URL_SITE} from '@/lib/constantes'
 import {charger} from '@/sanity/charger'
 import {REQ_SLUGS_PAGES, REQ_SLUGS_SPECTACLES} from '@/sanity/requetes'
 
+export const dynamic = 'force-static'
 export const revalidate = 3600
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
