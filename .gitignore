@@ -11,3 +11,4 @@ next-env.d.ts
 # Contenus d’amorçage générés (chemins locaux)
 studio/amorce/
 web/public/amorce/
+web/out/

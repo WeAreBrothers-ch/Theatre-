@@ -13,6 +13,7 @@ import {Logo} from './outils/Logo'
 import {API_VERSION, DATASET, PROJECT_ID, URL_SITE} from './lib/constantes'
 
 const NON_CREABLES = [...SINGLETONS, 'message']
+const APERCU = process.env.SANITY_STUDIO_APERCU !== '0'
 
 export default defineConfig({
   name: 'tbb',
@@ -23,14 +24,19 @@ export default defineConfig({
 
   plugins: [
     structureTool({title: 'Contenu', structure}),
-    presentationTool({
-      title: 'Aperçu du site',
-      previewUrl: {
-        origin: URL_SITE,
-        previewMode: {enable: '/api/draft-mode/enable'},
-      },
-      resolve,
-    }),
+    // L'aperçu en direct demande un site avec serveur (Vercel…) ; désactivé pour la version GitHub Pages.
+    ...(APERCU
+      ? [
+          presentationTool({
+            title: 'Aperçu du site',
+            previewUrl: {
+              origin: URL_SITE,
+              previewMode: {enable: '/api/draft-mode/enable'},
+            },
+            resolve,
+          }),
+        ]
+      : []),
     colorInput(),
     frFRLocale(),
     visionTool({title: 'Requêtes', defaultApiVersion: API_VERSION}),

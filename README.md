@@ -75,6 +75,18 @@ Toutes facultatives en local. À déclarer chez l’hébergeur du site (Vercel p
 
 Côté Studio : `SANITY_STUDIO_PREVIEW_URL`, l’adresse du site affichée dans « Aperçu du site » (par défaut `http://localhost:3000`).
 
+## GitHub Pages (en place)
+
+Le site est publié sur **https://wearebrothers-ch.github.io/Theatre-/** par le workflow `.github/workflows/site.yml` :
+
+- à chaque envoi sur la branche : import de la saison dans Sanity si le dataset est vide (jamais d’écrasement des contenus de l’équipe), publication du Studio, construction et publication du site ;
+- toutes les 15 minutes : le site est reconstruit seulement si un contenu a été publié dans le Studio (ou si le jour a changé, pour l’agenda). Une modification publiée est donc en ligne en 15 minutes au plus ;
+- le jeton Sanity est lu dans les secrets du dépôt (`SANITY_AUTH_TOKEN`).
+
+Version statique, sans serveur : les formulaires ouvrent la messagerie de la personne avec le message prêt (au lieu de l’enregistrer dans le Studio), et l’aperçu des brouillons dans le Studio n’est pas disponible. Pour l’enregistrement des messages et la mise à jour en quelques secondes, héberger `web` sur Vercel (voir plus bas).
+
+Réglage unique côté GitHub : Settings → Pages → Build and deployment → Source : **GitHub Actions**.
+
 ## Mise en ligne
 
 Il faut le jeton `SANITY_AUTH_TOKEN` dans l’environnement (réglages de l’environnement Claude Code, ou `npx sanity login` en local).
