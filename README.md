@@ -9,6 +9,10 @@ Maquette navigable de la refonte de [theatrebennobesson.ch](https://www.theatreb
 
 La démarche complète (audit, méthode, choix graphiques, inspirations) est présentée dans `concept.html`.
 
+![Accueil sur ordinateur et trois écrans sur téléphone](docs/apercu-ecrans.jpg)
+
+![Le programme en vue Affiches : une encre par spectacle](docs/apercu-programme.jpg)
+
 ## Voir la maquette
 
 Pages statiques, sans dépendance ni étape de compilation :

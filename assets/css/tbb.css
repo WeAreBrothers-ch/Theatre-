@@ -715,7 +715,9 @@ a.affiche:hover .affiche__image img { filter: grayscale(1) contrast(1.4); }
   :root { --t-corps: 1.0625rem; }
   .mur, .mur--5 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 12px; }
   .une__visuel { width: 100%; max-width: none; }
-  .une__visuel .affiche { aspect-ratio: 4 / 5; }
+  .une__visuel .affiche { aspect-ratio: 4 / 3; }
+  .jour { font-size: var(--t-label); }
+  .jour .cadre > p + p { display: none; }
   .agenda__ligne { grid-template-columns: 88px minmax(0, 1fr); gap: 4px 16px; padding: 16px 0 18px; }
   .agenda__date { grid-row: span 3; }
   .agenda__infos { grid-column: 2; display: flex; gap: 8px; flex-wrap: wrap; font-size: var(--t-petit); }
