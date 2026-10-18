@@ -130,6 +130,29 @@ jobs:
         with:
           path: web/out
 
+  prechauffer:
+    name: Préparer les images sur le CDN
+    needs: [site, publier]
+    if: ${{ !cancelled() && needs.site.outputs.publier == 'oui' }}
+    runs-on: ubuntu-latest
+    steps:
+      # Le CDN de Sanity fabrique chaque taille d'image à la première demande : on les
+      # demande toutes maintenant (AVIF et WebP), pour que les visiteurs les reçoivent tout de suite.
+      - name: Demander chaque image du site
+        run: |
+          curl -fsS "$SITE_URL/sitemap.xml" | grep -oE '<loc>[^<]+</loc>' | sed -E 's#</?loc>##g' > pages.txt
+          echo "$(wc -l < pages.txt) pages"
+          : > images.txt
+          while read -r page; do
+            curl -fsSL "$page" | grep -oE 'https://cdn\.sanity\.io/images/[^" ]+' | grep -v 'u0026' | grep -v '\\' | sed -e 's/&amp;/\&/g' -e 's/,$//' >> images.txt || true
+          done < pages.txt
+          sort -u images.txt -o images.txt
+          echo "$(wc -l < images.txt) images"
+          for format in "image/avif,image/webp,*/*" "image/webp,*/*"; do
+            xargs -P 16 -I{} curl -s -o /dev/null -H "Accept: $format" "{}" < images.txt
+          done
+          echo "Images prêtes."
+
   publier:
     name: Publier sur GitHub Pages
     needs: site

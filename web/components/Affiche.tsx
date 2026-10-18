@@ -5,7 +5,7 @@ import {longueur} from '@/lib/typo'
 import {Bandeau, ImageImprimee} from './Visuels'
 
 /** Une affiche au format mondial (F4), imprimée dans l'encre du spectacle. */
-export function Affiche({carte, sizes = '(min-width: 1180px) 22vw, (min-width: 720px) 30vw, 46vw', priorite}: {carte: Carte; sizes?: string; priorite?: boolean}) {
+export function Affiche({carte, sizes = '(min-width: 1180px) 22vw, (min-width: 1024px) 30vw, 40vw', priorite}: {carte: Carte; sizes?: string; priorite?: boolean}) {
   return (
     <Link className="affiche" href={`/spectacles/${carte.slug}`} style={styleEncre(carte.encre)} aria-label={carte.libelleAccessible}>
       <ImageImprimee source={carte.image} sizes={sizes} priorite={priorite} alt="" impression={carte.impression} />

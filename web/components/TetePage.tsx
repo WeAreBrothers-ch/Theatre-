@@ -33,7 +33,7 @@ export function TetePage({titre, surtitre, intro, image, enPlus}: {titre: string
             <ImageImprimee
               source={mobile}
               variante={{media: '(min-width: 1024px)', source: large, sizes: '100vw'}}
-              sizes="100vw"
+              sizes="72vw"
               priorite
               alt={stegaClean(image?.alt) || ''}
               trame

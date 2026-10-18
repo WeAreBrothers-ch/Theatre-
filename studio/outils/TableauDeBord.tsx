@@ -91,7 +91,7 @@ const GUIDE: {titre: string; etapes: string[]}[] = [
       'Cliquez sur « Nouveau spectacle » ci-dessus.',
       'Onglet Essentiel : titre, artistes, genre, visuel et une accroche de deux phrases.',
       'Onglet Dates et billets : ajoutez une ligne par représentation et choisissez la salle.',
-      'Cliquez sur « Publier » en bas à droite. Le spectacle apparaît aussitôt sur le site.',
+      'Cliquez sur « Publier » en bas à droite. Le spectacle apparaît sur le site dans le quart d’heure.',
     ],
   },
   {
@@ -185,10 +185,10 @@ function TableauDeBord() {
                     {prochaines.map((r) => (
                       <Lien key={r._id + r.dateHeure} id={r._id} type="spectacle">
                         <Flex align="center" gap={3}>
-                          <Box style={{minWidth: 92}}>
+                          <Stack gap={2} style={{minWidth: 96}}>
                             <Text size={1} weight="semibold">{fmtCourt.format(new Date(r.dateHeure))}</Text>
                             <Text size={1} muted>{fmtHeure.format(new Date(r.dateHeure)).replace(':', 'h')}</Text>
-                          </Box>
+                          </Stack>
                           <Stack gap={2} flex={1}>
                             <Text size={2} weight="semibold" textOverflow="ellipsis">{r.titre}</Text>
                             <Text size={1} muted>{r.lieu}</Text>

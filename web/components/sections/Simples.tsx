@@ -33,7 +33,7 @@ export function SectionTexte({section, id, titreId}: ProprietesSection<TTexte>) 
           </div>
           {image && (
             <figure className="texte-bloc__image">
-              <Photo source={image} sizes="(min-width: 1024px) 30vw, 100vw" alt={stegaClean(section.image?.alt) || stegaClean(section.image?.legende) || ''} />
+              <Photo source={image} sizes="(min-width: 1024px) 30vw, 70vw" alt={stegaClean(section.image?.alt) || stegaClean(section.image?.legende) || ''} />
               {section.image?.legende && <figcaption>{section.image.legende}</figcaption>}
             </figure>
           )}
@@ -49,7 +49,7 @@ export function SectionInfos({section, id, titreId}: ProprietesSection<TInfos>) 
     <section className="section bande" id={id} aria-labelledby={section.titre ? titreId : undefined}>
       <div className="cadre">
         <Rubrique surtitre={section.surtitre} titre={section.titre} id={titreId} taille="l" />
-        <div className="blocs" data-nombre={blocs.length}>
+        <div className="blocs rangee rangee--cartes" data-nombre={blocs.length}>
           {blocs.map((b) => {
             const href = hrefLien(b.lien)
             return (
@@ -99,7 +99,7 @@ export function SectionCitation({section, id, titreId}: ProprietesSection<TCitat
           </figure>
           {section.texte && <p className="t-lead" style={{maxWidth: '52ch'}}>{typo(section.texte)}</p>}
           {reperes.length > 0 && (
-            <div className="reperes">
+            <div className="reperes rangee rangee--cartes">
               {reperes.map((r) => (
                 <div className="repere" key={r._key}>
                   <span className="repere__chiffre">{r.chiffre}</span>
@@ -124,7 +124,7 @@ export function SectionFrise({section, id, titreId}: ProprietesSection<TFrise>) 
     <section className="section bande" id={id} aria-labelledby={section.titre ? titreId : undefined}>
       <div className="cadre">
         <Rubrique surtitre={section.surtitre} titre={section.titre} id={titreId} />
-        <ol className="frise">
+        <ol className="frise rangee rangee--cartes">
           {(section.etapes ?? []).map((e) => {
             const image = sourceImage(e.image, {ratio: 3 / 2, max: 1080})
             return (
@@ -134,7 +134,7 @@ export function SectionFrise({section, id, titreId}: ProprietesSection<TFrise>) 
                   {e.titre && <h3 className="t-affiche">{typo(e.titre)}</h3>}
                   {e.texte && <p>{typo(e.texte)}</p>}
                 </div>
-                {image ? <Photo source={image} sizes="(min-width: 900px) 30vw, 100vw" alt={stegaClean(e.image?.alt) || ''} /> : <span aria-hidden="true" />}
+                {image ? <Photo source={image} sizes="(min-width: 1024px) 30vw, 60vw" alt={stegaClean(e.image?.alt) || ''} /> : <span aria-hidden="true" />}
               </li>
             )
           })}
@@ -150,12 +150,12 @@ export function SectionGalerie({section, id, titreId}: ProprietesSection<TGaleri
     <section className="section bande" id={id} aria-labelledby={section.titre ? titreId : undefined}>
       <div className="cadre">
         <Rubrique surtitre={section.surtitre} titre={section.titre} id={titreId} />
-        <div className="galerie">
+        <div className="galerie rangee">
           {images.map((img, i) => {
             const source = sourceImage(img, {max: 1920})
             return (
               <figure key={img._key}>
-                <Photo source={source} sizes={i === 0 ? '(min-width: 1024px) 64vw, 100vw' : '(min-width: 1024px) 32vw, 50vw'} alt={stegaClean(img.alt) || stegaClean(img.legende) || ''} />
+                <Photo source={source} sizes={i === 0 ? '(min-width: 1024px) 64vw, 70vw' : '(min-width: 1024px) 32vw, 70vw'} alt={stegaClean(img.alt) || stegaClean(img.legende) || ''} />
                 {(img.legende || img.credit) && (
                   <figcaption>
                     {typo(img.legende)}
@@ -176,7 +176,7 @@ export function SectionEquipe({section, id, titreId}: ProprietesSection<TEquipe>
     <section className="section bande" id={id} aria-labelledby={section.titre ? titreId : undefined}>
       <div className="cadre">
         <Rubrique surtitre={section.surtitre} titre={section.titre} texte={section.texte} id={titreId} />
-        <ul className="equipe">
+        <ul className="equipe rangee rangee--cartes">
           {(section.personnes ?? []).map((p) => (
             <li key={p._id}>
               {p.fonction && <span className="equipe__fonction">{p.fonction}</span>}
@@ -201,7 +201,7 @@ export function SectionFormules({section, id, titreId}: ProprietesSection<TFormu
     <section className="section bande" id={id} aria-labelledby={section.titre ? titreId : undefined}>
       <div className="cadre">
         <Rubrique surtitre={section.surtitre} titre={section.titre} texte={section.texte} id={titreId} />
-        <div className="formules">
+        <div className="formules rangee rangee--cartes">
           {(section.formules ?? []).map((f) => {
             const prix = stegaClean(f.prix) ?? ''
             const nombre = /^\d+$/.test(prix)

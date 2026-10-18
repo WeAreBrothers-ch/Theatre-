@@ -118,9 +118,9 @@ export default async function PageSpectacle({params}: Props) {
           </div>
           <div className="fiche-tete__visuel">
             <ImageImprimee
-              source={sourceImage(brut.visuel, {ratio: 4 / 5, gris: true, max: 1440})}
+              source={sourceImage(brut.visuel, {ratio: 3 / 2, gris: true, max: 1200})}
               variante={{media: '(min-width: 1024px)', source: sourceImage(brut.visuel, {ratio: 895 / 1280, gris: true, max: 1440}), sizes: '38vw'}}
-              sizes="100vw"
+              sizes="72vw"
               priorite
               alt={stegaClean(brut.visuel?.alt) || `Visuel du spectacle ${stegaClean(s.titre)}`}
               impression={s.impression}
@@ -134,7 +134,7 @@ export default async function PageSpectacle({params}: Props) {
               {infos
                 .filter(([, v]) => v)
                 .map(([cle, valeur]) => (
-                  <div key={cle} style={{display: 'contents'}}>
+                  <div key={cle} className="info">
                     <dt>{cle}</dt>
                     <dd>{typo(valeur)}</dd>
                   </div>
@@ -209,7 +209,7 @@ export default async function PageSpectacle({params}: Props) {
               </div>
             )}
           </div>
-          <aside className="fiche-corps__aside" id="infos" aria-label="Infos pratiques">
+          <aside className="fiche-corps__aside rangee rangee--cartes" id="infos" aria-label="Infos pratiques">
             {(brut.deroule?.length ?? 0) > 0 && (
               <div className="encart">
                 <h3>Déroulé</h3>
@@ -279,10 +279,10 @@ export default async function PageSpectacle({params}: Props) {
         <section className="section bande" id="photos" aria-labelledby="titre-photos">
           <div className="cadre">
             <Rubrique titre="Photos" id="titre-photos" taille="l" />
-            <div className="photos">
+            <div className="photos rangee">
               {photos.map((p, i) => (
                 <figure key={p._key ?? i}>
-                  <Photo source={sourceImage(p, {max: 1920})} sizes={i === 0 ? '(min-width: 1024px) 64vw, 100vw' : '(min-width: 1024px) 32vw, 50vw'} alt={stegaClean(p.alt) || stegaClean(p.legende) || ''} />
+                  <Photo source={sourceImage(p, {max: 1600})} sizes={i === 0 ? '(min-width: 1024px) 64vw, 70vw' : '(min-width: 1024px) 32vw, 70vw'} alt={stegaClean(p.alt) || stegaClean(p.legende) || ''} />
                   {(p.legende || p.credit) && (
                     <figcaption>
                       {typo(p.legende)}
@@ -329,7 +329,7 @@ export default async function PageSpectacle({params}: Props) {
         <section className="section bande" id="distribution" aria-labelledby="titre-distribution">
           <div className="cadre">
             <Rubrique titre="Distribution" id="titre-distribution" taille="l" />
-            <div className="distribution">
+            <div className="distribution rangee rangee--cartes">
               {distribution.map((bloc) => (
                 <div key={bloc._key}>
                   {bloc.titre && <h3 className="t-affiche">{typo(bloc.titre)}</h3>}
@@ -363,7 +363,7 @@ export default async function PageSpectacle({params}: Props) {
                 </Link>
               }
             />
-            <div className="mur">
+            <div className="mur rangee">
               {proches.map((x) => (
                 <Affiche key={x.id} carte={versCarte(x)} />
               ))}

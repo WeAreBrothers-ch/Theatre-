@@ -141,7 +141,7 @@ export const spectacle = defineType({
       type: 'array',
       group: 'dates',
       of: [defineArrayMember({type: 'representation'})],
-      description: 'Une ligne par date. Pour une date complète, choisissez « Complet » : le site l’affiche tout de suite.',
+      description: 'Une ligne par date. Pour une date complète, choisissez « Complet » : le site l’affiche dans le quart d’heure.',
       validation: (r) => r.required().min(1).error('Ajoutez au moins une date.'),
     }),
     defineField({

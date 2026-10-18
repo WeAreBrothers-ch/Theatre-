@@ -1,14 +1,15 @@
 import type {Metadata, Viewport} from 'next'
 import {Archivo, Newsreader} from 'next/font/google'
 import {stegaClean} from 'next-sanity'
-import {Entete, type LienMenu, type Prochain} from '@/components/entete/Entete'
+import {Entete, type LienMenu} from '@/components/entete/Entete'
 import {PiedDePage} from '@/components/PiedDePage'
 import {URL_SITE} from '@/lib/constantes'
-import {dateLongue, heure} from '@/lib/dates'
-import {chargerSite, chargerSpectacles} from '@/lib/donnees'
+import {chargerSite} from '@/lib/donnees'
 import {sourceImage} from '@/lib/image'
 import {hrefLien, hrefPropre} from '@/lib/liens'
 import {lienTel, typo} from '@/lib/typo'
+import {preconnect} from 'react-dom'
+import {Revelations} from '@/components/Revelations'
 import {Apercu} from '@/sanity/apercu'
 import {avecBase} from '@/lib/chemin'
 import './globals.css'
@@ -42,7 +43,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function MiseEnPage({children}: {children: React.ReactNode}) {
-  const [site, spectacles] = await Promise.all([chargerSite(), chargerSpectacles()])
+  // Les images viennent du CDN de Sanity : la connexion s'ouvre dès le début du chargement.
+  preconnect('https://cdn.sanity.io')
+  const site = await chargerSite()
   const r = site.reglages ?? {}
 
   const liens: LienMenu[] = (r.menu ?? [])
@@ -50,21 +53,7 @@ export default async function MiseEnPage({children}: {children: React.ReactNode}
     .filter((l) => l.titre && l.href)
   const bouton: LienMenu = {titre: r.boutonMenu?.titre || 'Réserver', href: hrefPropre(r.boutonMenu?.url) || '/programme'}
 
-  const suivant = spectacles.find((s) => s.etat === 'en-vente' || s.etat === 'liste-attente')
-  const prochain: Prochain | null =
-    suivant && suivant.reference
-      ? {
-          titre: typo(suivant.titre),
-          href: `/spectacles/${suivant.slug}`,
-          quand: `${dateLongue(suivant.reference.iso)} à ${heure(suivant.reference.iso)}`,
-          encre: suivant.encre,
-          impression: suivant.impression,
-          image: sourceImage(suivant.brut.visuel, {ratio: 895 / 1280, gris: true, max: 480}),
-        }
-      : null
-
   const tel = stegaClean(r.telBilletterie)
-  const horaires = (r.horaires ?? []).map((h) => `${h.jours} ${h.heures}`).join(' · ')
   const reseaux: LienMenu[] = [
     {titre: 'Instagram', href: stegaClean(r.instagram) ?? ''},
     {titre: 'Facebook', href: stegaClean(r.facebook) ?? ''},
@@ -98,18 +87,15 @@ export default async function MiseEnPage({children}: {children: React.ReactNode}
         <Entete
           liens={liens}
           bouton={bouton}
-          prochain={prochain}
           tel={r.telBilletterie}
           lienTel={tel ? lienTel(tel) : null}
-          horaires={horaires ? typo(horaires) : null}
-          adresse={[r.rue, r.localite].filter(Boolean).join(', ')}
-          lienPlan={hrefPropre(r.lienPlan)}
           reseaux={reseaux}
         />
         <main id="contenu" tabIndex={-1}>
           {children}
         </main>
         <PiedDePage site={site} />
+        <Revelations />
         <Apercu />
       </body>
     </html>

@@ -8,7 +8,7 @@ import {Croix, Loupe, VueAffiches, VueListe} from '../Icones'
 import {Ligne} from '../Ligne'
 
 type Genre = {valeur: string; titre: string}
-type Vue = 'liste' | 'affiches'
+type Vue = 'liste' | 'affiches' | 'auto'
 
 const normaliser = (t: string) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim()
 const pluriel = (n: number) => `${n} spectacle${n > 1 ? 's' : ''}`
@@ -32,7 +32,9 @@ export function Programme({cartes, genres}: {cartes: Carte[]; genres: Genre[]}) 
   const [dispo, setDispo] = useState(false)
   const [mois, setMois] = useState('tous')
   const [q, setQ] = useState('')
-  const [vue, setVue] = useState<Vue>('liste')
+  // « auto » : affiches sur téléphone, liste sur ordinateur, sans attendre le script.
+  const [vue, setVue] = useState<Vue>('auto')
+  const [telephone, setTelephone] = useState(false)
   const [passes, setPasses] = useState(false)
 
   /** Applique le filtre d'une ancre (#danse, #midi-theatre…). Renvoie vrai si elle en était un. */
@@ -61,7 +63,13 @@ export function Programme({cartes, genres}: {cartes: Carte[]; genres: Genre[]}) 
     lireAdresse()
     const v = lireVue()
     if (v) setVue(v)
+    const mq = window.matchMedia('(max-width: 1023px)')
+    setTelephone(mq.matches)
+    const surChangement = (e: MediaQueryListEvent) => setTelephone(e.matches)
+    mq.addEventListener('change', surChangement)
+    return () => mq.removeEventListener('change', surChangement)
   }, [lireAdresse])
+  const vueVisible: Exclude<Vue, 'auto'> = vue === 'auto' ? (telephone ? 'affiches' : 'liste') : vue
 
   // Liens vers le programme depuis le programme (menu, pied de page) et boutons précédent/suivant.
   useEffect(() => {
@@ -106,7 +114,7 @@ export function Programme({cartes, genres}: {cartes: Carte[]; genres: Genre[]}) 
     ecrireAdresse(v ? 'midi-theatre' : '')
   }
   const basculerDispo = () => setDispo((v) => !v)
-  const changerVue = (v: Vue) => {
+  const changerVue = (v: Exclude<Vue, 'auto'>) => {
     setVue(v)
     try {
       localStorage.setItem('tbb:vue', v)
@@ -163,12 +171,12 @@ export function Programme({cartes, genres}: {cartes: Carte[]; genres: Genre[]}) 
             )}
           </label>
           <div className="vue" role="group" aria-label="Affichage du programme">
-            <button type="button" aria-pressed={vue === 'liste'} onClick={() => changerVue('liste')}>
+            <button type="button" aria-pressed={vueVisible === 'liste'} onClick={() => changerVue('liste')}>
               <VueListe />
               <span className="vue__libelle">Liste</span>
               <span className="visuellement-cache">en liste</span>
             </button>
-            <button type="button" aria-pressed={vue === 'affiches'} onClick={() => changerVue('affiches')}>
+            <button type="button" aria-pressed={vueVisible === 'affiches'} onClick={() => changerVue('affiches')}>
               <VueAffiches />
               <span className="vue__libelle">Affiches</span>
               <span className="visuellement-cache">en affiches</span>
@@ -212,7 +220,7 @@ export function Programme({cartes, genres}: {cartes: Carte[]; genres: Genre[]}) 
         </div>
       </div>
 
-      <div className="bande">
+      <div className="bande programme" data-vue={vue}>
         <div className="cadre" style={{paddingBottom: 'var(--section)'}}>
           <p className="resultats" aria-live="polite" style={{paddingTop: 18}}>
             {pluriel(liste.length)}
@@ -237,19 +245,16 @@ export function Programme({cartes, genres}: {cartes: Carte[]; genres: Genre[]}) 
                   </h2>
                   <span className="mois__nombre">{pluriel(cartesDuMois.length)}</span>
                 </div>
-                {vue === 'liste' ? (
-                  <div className="agenda">
-                    {cartesDuMois.map((c) => (
-                      <Ligne key={c.slug} carte={c} />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="mur">
-                    {cartesDuMois.map((c) => (
-                      <Affiche key={c.slug} carte={c} />
-                    ))}
-                  </div>
-                )}
+                <div className="agenda vue-liste">
+                  {cartesDuMois.map((c) => (
+                    <Ligne key={c.slug} carte={c} />
+                  ))}
+                </div>
+                <div className="mur rangee vue-affiches">
+                  {cartesDuMois.map((c) => (
+                    <Affiche key={c.slug} carte={c} />
+                  ))}
+                </div>
               </section>
             ))
           )}

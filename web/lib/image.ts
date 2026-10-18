@@ -13,7 +13,7 @@ import type {Img} from '@/sanity/types'
  */
 
 const builder = createImageUrlBuilder({projectId, dataset})
-const LARGEURS_CDN = [320, 480, 640, 800, 1080, 1440, 1920]
+const LARGEURS_CDN = [360, 540, 720, 900, 1200, 1600]
 const LARGEURS_AMORCE = [480, 960, 1440]
 
 export type SourceImage = {
@@ -26,6 +26,8 @@ export type SourceImage = {
   lqip?: string
   /** L'image est déjà en niveaux de gris ; sinon la feuille de style s'en charge. */
   grisFait: boolean
+  /** Désaturée par le CDN, sans renfort de contraste : la feuille de style l'ajoute. */
+  contraste?: boolean
   alt: string
 }
 
@@ -45,7 +47,8 @@ export function sourceImage(img: Img | null | undefined, {ratio, gris = false, m
     const base = builder
       .image(ref ? {asset: {_ref: ref}, crop: img.crop ?? undefined, hotspot: img.hotspot ? {width: 1, height: 1, ...img.hotspot} : undefined} : url)
       .auto('format')
-      .quality(78)
+      // Une image imprimée en niveaux de gris et tramée supporte une compression plus forte.
+      .quality(gris ? 60 : 74)
     const plafond = Math.min(W, max)
     const largeurs = LARGEURS_CDN.filter((l) => l <= plafond)
     if (!largeurs.length || largeurs[largeurs.length - 1] < plafond) largeurs.push(plafond)
@@ -55,7 +58,7 @@ export function sourceImage(img: Img | null | undefined, {ratio, gris = false, m
       if (gris) b = b.saturation(-100)
       return b.url()
     }
-    const defaut = largeurs.find((l) => l >= 800) ?? largeurs[largeurs.length - 1]
+    const defaut = largeurs.find((l) => l >= 720) ?? largeurs[largeurs.length - 1]
     return {
       src: fabriquer(defaut),
       srcSet: largeurs.map((l) => `${fabriquer(l)} ${l}w`).join(', '),
@@ -64,6 +67,7 @@ export function sourceImage(img: Img | null | undefined, {ratio, gris = false, m
       position: ratio ? undefined : position,
       lqip: img.lqip ?? undefined,
       grisFait: gris,
+      contraste: gris,
       alt,
     }
   }

@@ -13,6 +13,15 @@ export function PiedDePage({site}: {site: Site}) {
     {titre: 'LinkedIn', href: stegaClean(r.linkedin)},
   ].filter((x): x is {titre: string; href: string} => !!x.href)
 
+  // Sur téléphone, les colonnes deviennent une seule ligne de liens, sans doublon.
+  const liensMobiles: {titre: string; href: string}[] = []
+  for (const col of r.colonnesPied ?? []) {
+    for (const l of col.liens ?? []) {
+      const href = hrefLien(l)
+      if (href && l.titre && !liensMobiles.some((x) => x.href === href)) liensMobiles.push({titre: l.titre, href})
+    }
+  }
+
   return (
     <footer className="facade" id="pied-de-page">
       <svg className="facade__arches" viewBox="0 0 1300 276" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">
@@ -25,7 +34,7 @@ export function PiedDePage({site}: {site: Site}) {
               {r.rue && <p className="t-affiche">{r.rue}</p>}
               {r.localite && <p className="facade__ville">{r.localite}</p>}
               {(r.accesTrain || r.accesBus) && (
-                <p>
+                <p className="facade__transports">
                   {typo(r.accesTrain)}
                   {r.accesTrain && r.accesBus && <br />}
                   {typo(r.accesBus)}
@@ -46,7 +55,7 @@ export function PiedDePage({site}: {site: Site}) {
               </p>
             </div>
             {(r.colonnesPied ?? []).map((col) => (
-              <div key={col._key}>
+              <div key={col._key} className="facade__colonne">
                 {col.titre && <h2>{col.titre}</h2>}
                 <ul>
                   {(col.liens ?? []).map((l) => {
@@ -61,6 +70,15 @@ export function PiedDePage({site}: {site: Site}) {
               </div>
             ))}
           </div>
+          {liensMobiles.length > 0 && (
+            <nav className="facade__liens" aria-label="Liens utiles">
+              {liensMobiles.map((l) => (
+                <LienSite key={l.href} href={l.href}>
+                  {l.titre}
+                </LienSite>
+              ))}
+            </nav>
+          )}
           <div className="facade__bas">
             {site.partenaires.length > 0 && (
               <div className="facade__soutiens">

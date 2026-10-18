@@ -3,25 +3,16 @@
 import Link from 'next/link'
 import {usePathname} from 'next/navigation'
 import {useCallback, useEffect, useRef, useState, type CSSProperties, type MouseEvent} from 'react'
-import type {Encre} from '@/lib/encre'
-import type {SourceImage} from '@/lib/image'
 import {avecBase} from '@/lib/chemin'
-import {styleEncre} from '@/lib/encre'
-import {Billet, Fleche} from '../Icones'
-import {ImageImprimee} from '../Visuels'
+import {Billet} from '../Icones'
 
 export type LienMenu = {titre: string; href: string}
-export type Prochain = {titre: string; href: string; quand: string; encre: Encre; impression: 'noir' | 'blanc'; image: SourceImage | null}
 
 type Props = {
   liens: LienMenu[]
   bouton: LienMenu
-  prochain: Prochain | null
   tel?: string | null
   lienTel?: string | null
-  horaires?: string | null
-  adresse?: string | null
-  lienPlan?: string | null
   reseaux: LienMenu[]
 }
 
@@ -46,7 +37,7 @@ function etatLien(pathname: string, href: string): 'page' | 'true' | undefined {
  * - En descendant, l'en-tête s'efface pour laisser la place au contenu ; il revient
  *   au moindre mouvement vers le haut. Seul un attribut change, sans recalcul de mise en page.
  */
-export function Entete({liens, bouton, prochain, tel, lienTel, horaires, adresse, lienPlan, reseaux}: Props) {
+export function Entete({liens, bouton, tel, lienTel, reseaux}: Props) {
   const pathname = usePathname()
   const menu = useRef<HTMLDialogElement>(null)
   const fermerBouton = useRef<HTMLButtonElement>(null)
@@ -162,10 +153,10 @@ export function Entete({liens, bouton, prochain, tel, lienTel, horaires, adresse
         <div className="bande">
           <div className="cadre entete__barre">
             <Link className="entete__logo" href="/" aria-label="Accueil">
-              <img src={avecBase('/logo-tbb-blanc.png')} alt="" width={300} height={259} loading="lazy" />
+              <img src={avecBase('/logo-tbb.png')} alt="" width={300} height={259} />
             </Link>
             <div className="entete__actions">
-              <Link className="btn btn--clair btn--petit" href={bouton.href}>
+              <Link className="btn btn--plein btn--petit" href={bouton.href}>
                 <Billet />
                 {bouton.titre}
               </Link>
@@ -179,61 +170,30 @@ export function Entete({liens, bouton, prochain, tel, lienTel, horaires, adresse
         <div className="menu__corps bande">
           <div className="cadre" style={{display: 'flex', flexDirection: 'column', flex: 1}}>
             <nav aria-label="Menu principal">
-              <ol className="menu__liens">
-                <li style={{'--i': 0} as CSSProperties}>
-                  <Link href="/" aria-current={pathname === '/' ? 'page' : undefined}>
-                    <span className="menu__num" aria-hidden="true">00</span>
-                    Accueil
-                    <Fleche />
-                  </Link>
-                </li>
+              <ul className="menu__liens">
                 {liens.map((l, i) => (
-                  <li key={l.href} style={{'--i': i + 1} as CSSProperties}>
+                  <li key={l.href} style={{'--i': i} as CSSProperties}>
                     <Link href={l.href} aria-current={etatLien(pathname, l.href)}>
-                      <span className="menu__num" aria-hidden="true">
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
                       {l.titre}
-                      <Fleche />
                     </Link>
                   </li>
                 ))}
-              </ol>
+              </ul>
             </nav>
-            <div className="menu__bas" style={{'--i': liens.length + 1} as CSSProperties}>
-              {prochain && (
-                <Link className="menu__prochain" href={prochain.href} style={styleEncre(prochain.encre)}>
-                  <ImageImprimee source={prochain.image} sizes="64px" alt="" impression={prochain.impression} />
-                  <span>
-                    <span className="t-label">Prochain spectacle</span>
-                    <strong>{prochain.titre}</strong>
-                    <span>{prochain.quand}</span>
-                  </span>
-                  <Fleche />
-                </Link>
+            <div className="menu__bas">
+              {tel && lienTel && (
+                <a className="menu__tel chiffres" href={lienTel}>
+                  Billetterie {tel}
+                </a>
               )}
-              <div className="menu__infos">
-                {tel && lienTel && (
-                  <>
-                    <span className="t-label">Billetterie</span>
-                    <a className="menu__tel chiffres" href={lienTel}>
-                      {tel}
-                    </a>
-                  </>
-                )}
-                {horaires && <p>{horaires}</p>}
-                {adresse && (lienPlan ? <a href={lienPlan} target="_blank" rel="noopener noreferrer">{adresse}</a> : <p>{adresse}</p>)}
-              </div>
               {reseaux.length > 0 && (
-                <ul className="menu__reseaux">
+                <span className="menu__reseaux">
                   {reseaux.map((r) => (
-                    <li key={r.href}>
-                      <a href={r.href} target="_blank" rel="noopener noreferrer">
-                        {r.titre}
-                      </a>
-                    </li>
+                    <a key={r.href} href={r.href} target="_blank" rel="noopener noreferrer">
+                      {r.titre}
+                    </a>
                   ))}
-                </ul>
+                </span>
               )}
             </div>
           </div>

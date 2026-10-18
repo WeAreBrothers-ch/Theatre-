@@ -109,7 +109,7 @@ function Formulaire({sujets, confirmation, secours, nouveau}: Props & {nouveau: 
 
       <div className="champ">
         <label htmlFor="contact-message">Message</label>
-        <textarea id="contact-message" name="contenu" rows={6} defaultValue={v.contenu} required {...champ('contenu')} />
+        <textarea id="contact-message" name="contenu" rows={4} defaultValue={v.contenu} required {...champ('contenu')} />
         {e.contenu && (
           <p className="champ__erreur" id="erreur-contenu">
             {e.contenu}

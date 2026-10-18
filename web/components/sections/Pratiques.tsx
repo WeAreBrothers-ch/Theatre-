@@ -32,7 +32,7 @@ export function SectionTarifs({section, id, titreId}: ProprietesSection<TTarifs>
         )}
         {section.grille?.note && <p className="tarifs__note">{typo(section.grille.note)}</p>}
         {notes.length > 0 && (
-          <div className="tarifs__pied">
+          <div className="tarifs__pied rangee rangee--cartes">
             {notes.map((n) => {
               const href = hrefLien(n.lien)
               return (
@@ -126,7 +126,7 @@ export function SectionAcces({section, id, titreId, contexte}: ProprietesSection
         <div className="acces">
           <PlanAcces />
           <div className="acces__infos">
-            <ul className="liste-acces">
+            <ul className="liste-acces rangee rangee--cartes">
               {lignes.map((l) => (
                 <li key={l.titre}>
                   <span className="pictogramme" aria-hidden="true">
@@ -177,7 +177,10 @@ export function SectionContact({section, id, titreId, contexte}: ProprietesSecti
                 <span className="carte-contact__icone" aria-hidden="true">
                   <Telephone />
                 </span>
-                <span className="carte-contact__quoi t-label">Appeler la billetterie</span>
+                <span className="carte-contact__quoi t-label">
+                  <span className="carte-contact__court">Appeler</span>
+                  <span className="carte-contact__long">Appeler la billetterie</span>
+                </span>
                 <span className="carte-contact__valeur chiffres">{r.telBilletterie}</span>
                 {horaires && <span className="carte-contact__detail">{typo(horaires)}</span>}
                 <Fleche />
@@ -188,7 +191,10 @@ export function SectionContact({section, id, titreId, contexte}: ProprietesSecti
                 <span className="carte-contact__icone" aria-hidden="true">
                   <Enveloppe />
                 </span>
-                <span className="carte-contact__quoi t-label">Écrire un e-mail</span>
+                <span className="carte-contact__quoi t-label">
+                  <span className="carte-contact__court">Écrire</span>
+                  <span className="carte-contact__long">Écrire un e-mail</span>
+                </span>
                 <span className="carte-contact__valeur carte-contact__valeur--long">{r.emailGeneral}</span>
                 <span className="carte-contact__detail">Réponse sous deux jours ouvrables.</span>
                 <Fleche />
@@ -199,7 +205,10 @@ export function SectionContact({section, id, titreId, contexte}: ProprietesSecti
                 <span className="carte-contact__icone" aria-hidden="true">
                   <Repere />
                 </span>
-                <span className="carte-contact__quoi t-label">Passer au guichet</span>
+                <span className="carte-contact__quoi t-label">
+                  <span className="carte-contact__court">Venir</span>
+                  <span className="carte-contact__long">Passer au guichet</span>
+                </span>
                 <span className="carte-contact__valeur">{r.rue}</span>
                 <span className="carte-contact__detail">
                   {r.localite}
@@ -216,7 +225,7 @@ export function SectionContact({section, id, titreId, contexte}: ProprietesSecti
         <section className="section bande" id={id} aria-labelledby={titreId}>
           <div className="cadre">
             <Rubrique surtitre={section.surtitre} titre={section.titre || 'Qui contacter'} id={titreId} />
-            <ul className="annuaire">
+            <ul className="annuaire rangee rangee--cartes">
               {annuaire.map((c) => (
                 <li key={c._key}>
                   <div>

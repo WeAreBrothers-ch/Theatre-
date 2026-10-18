@@ -29,8 +29,8 @@ export function Une({spectacles}: {spectacles: Spectacle[]}) {
               <div className="cadre une__grille">
                 <Link className="une__visuel" href={href} tabIndex={-1} aria-hidden="true">
                   <ImageImprimee
-                    source={sourceImage(s.brut.visuel, {ratio: 4 / 3, gris: true, max: 1440})}
-                    sizes="100vw"
+                    source={sourceImage(s.brut.visuel, {ratio: 3 / 2, gris: true, max: 1200})}
+                    sizes="72vw"
                     variante={{media: '(min-width: 1024px)', source: sourceImage(s.brut.visuel, {ratio: 895 / 1280, gris: true, max: 1080}), sizes: '32vw'}}
                     priorite={i === 0}
                     alt=""

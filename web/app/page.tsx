@@ -1,6 +1,5 @@
 import type {Metadata} from 'next'
 import {stegaClean} from 'next-sanity'
-import {Jour} from '@/components/accueil/Jour'
 import {Une} from '@/components/accueil/Une'
 import {Sections} from '@/components/sections/Sections'
 import {chargerSite, chargerSpectacles} from '@/lib/donnees'
@@ -34,7 +33,6 @@ export default async function Accueil() {
       <h1 className="visuellement-cache">
         {stegaClean(site.reglages?.nom) || 'Théâtre Benno Besson'}, Yverdon-les-Bains{site.saison?.titre ? `, ${stegaClean(site.saison.titre)}` : ''}
       </h1>
-      <Jour spectacles={aVenir} instant={instant} tel={stegaClean(site.reglages?.telBilletterie)} />
       <Une spectacles={une} />
       <Sections sections={accueil?.sections} contexte={{site, spectacles, instant}} />
     </>
