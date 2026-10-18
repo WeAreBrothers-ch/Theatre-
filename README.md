@@ -25,15 +25,17 @@ npm run dev            # le site sur http://localhost:3000
 npm run dev:studio     # le Studio sur http://localhost:3333
 ```
 
-Tant que Sanity est vide, le site affiche le jeu d’amorçage local (`web/sanity/amorce.json` : la saison 26–27 de la maquette, 35 spectacles, 4 pages). Il bascule tout seul sur Sanity dès le premier spectacle publié.
+Tant que Sanity est vide, le site affiche le jeu d’amorçage local (`web/sanity/amorce.json` : tout le site actuel, 386 spectacles de 2020–21 à 2026–27, 17 pages). Il bascule tout seul sur Sanity dès le premier spectacle publié.
 
 ## Le Studio, pour l’équipe du théâtre
 
-Adresse une fois publié : **https://theatrebennobesson.sanity.studio**
+Adresse : **https://theatrebennobesson.sanity.studio** · mode d’emploi complet : **[STUDIO.md](STUDIO.md)**.
 
 | Rubrique | Ce qu’on y fait |
 | --- | --- |
-| **Tableau de bord** | Les prochaines dates, les fiches à compléter, les brouillons, les nouveaux messages. Boutons « Nouveau spectacle », « Modifier l’accueil », « Horaires et réglages ». Un mode d’emploi en cinq gestes. |
+| **Tableau de bord** | Les prochaines dates avec leurs boutons de statut (Complet en un clic), les tâches classées par urgence (conflits de salle, heures à confirmer, fiches incomplètes, liens de réservation manquants…), les brouillons, les messages, « Nouveau » avec des modèles (Midi théâtre, Jeune public, Saison musicale). |
+| **Agenda** | Toutes les représentations en liste ou en mois : statuts, ajout, modification, glisser-déposer d’une date, conflits de salle signalés, « Annuler » pour défaire. |
+| **Communication** | Lettre d’information prête à coller dans Brevo, feuille de salle et agenda imprimables, textes et visuels pour les réseaux, exports pour la brochure. |
 | **Programme** | Les spectacles rangés tout prêts : à venir, complets, jeune public, Midi théâtre, passés. Un spectacle = titre, artistes, genre, visuel, accroche, dates. Le reste est facultatif. |
 | **Accueil** | Les spectacles mis à l’affiche (vide = les trois prochains automatiquement) et les sections de la page. |
 | **Pages** | Billetterie, Le théâtre, Contact, Jeune public… Chaque page est une pile de sections à ajouter, déplacer ou supprimer : texte, blocs d’infos, tarifs, citation, frise, galerie, équipe, formules, accès, appel à l’action, mur d’affiches, agenda, questions fréquentes, contact, lettre d’information. |
@@ -79,7 +81,7 @@ Côté Studio : `SANITY_STUDIO_PREVIEW_URL`, l’adresse du site affichée dans 
 
 Le site est publié sur **https://wearebrothers-ch.github.io/Theatre-/** par le workflow `.github/workflows/site.yml` :
 
-- à chaque envoi sur la branche : import de la saison dans Sanity si le dataset est vide (jamais d’écrasement des contenus de l’équipe), publication du Studio, construction et publication du site ;
+- à chaque envoi sur la branche : migration des contenus dans Sanity (`studio/scripts/migrer.mjs` : crée ce qui manque, met à jour ce que l’équipe n’a jamais retouché, n’écrase jamais un document modifié dans le Studio), publication du Studio, construction et publication du site ;
 - toutes les 15 minutes : le site est reconstruit seulement si un contenu a été publié dans le Studio (ou si le jour a changé, pour l’agenda). Une modification publiée est donc en ligne en 15 minutes au plus ;
 - le jeton Sanity est lu dans les secrets du dépôt (`SANITY_AUTH_TOKEN`).
 
@@ -91,9 +93,10 @@ Réglage unique côté GitHub : Settings → Pages → Build and deployment → 
 
 Il faut le jeton `SANITY_AUTH_TOKEN` dans l’environnement (réglages de l’environnement Claude Code, ou `npx sanity login` en local).
 
-1. **Importer les contenus** dans le dataset `production`, images comprises :
+1. **Migrer les contenus** dans le dataset `production`, images et PDF compris, sans rien écraser (le workflow GitHub le fait à chaque envoi) :
    ```bash
-   npm run import
+   npm run migrer                                # ou, sans rien écrire :
+   npm run migrer:essai --workspace studio
    ```
 2. **Publier le Studio** sur https://theatrebennobesson.sanity.studio :
    ```bash
@@ -117,6 +120,10 @@ npm run build --workspace web
 cd studio && npx tsc --noEmit && npx sanity schema validate
 ```
 
+## Reprise de l’ancien site
+
+Le site Wix a été relevé le 18 octobre 2026 (collections CMS de chaque saison, pages, PDF, images). `studio/scripts/reprise-wix.mjs` transforme ces exports en `studio/donnees/reprise.json` (dates et heures lues dans les textes, prix, salles, générique, citations, revues de presse…), puis `studio/scripts/generer-amorce.mjs` en fait les documents Sanity, en gardant la mise en forme de la maquette pour la saison en cours. Les images et PDF encore chez Wix sont copiés dans Sanity par la migration.
+
 ## Contenus à valider avec le TBB
 
-Repris du site actuel (relevé du 18 octobre 2026). À confirmer avant la mise en ligne : les heures de certains spectacles, les horaires du guichet, les catégories du tarif réduit, les conditions du bon cadeau et de l’échange, les tarifs des concerts, du Midi théâtre et du jeune public, et le lien de la billetterie en ligne (Réglages du site, onglet « Billetterie »).
+Repris du site actuel. À confirmer : les heures notées « à confirmer » (quelques festivals des saisons passées), le nombre de places de la Grande Salle (460 sur la page Histoire, 450 sur la fiche technique), les catégories du tarif réduit, le montant de la formule « Ami·e pour la vie », et l’adresse publique du site (Réglages du site) le jour où le domaine theatrebennobesson.ch sera branché.

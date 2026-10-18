@@ -18,7 +18,6 @@ export const LIEUX = [
     description: 'Salle à l’italienne en gradins, derrière les trois arches de la façade.',
     accessibilite: 'Places pour fauteuil roulant à réserver au 024 423 65 84 ; le billet de la personne qui accompagne est offert. Boucle magnétique et appareils auditifs en prêt.',
     caracteristiques: [
-      ['Capacité', '450 places (fiche technique)'],
       ['Salle', 'À l’italienne, en gradins'],
       ['Construction', '1898, dernière rénovation en 2015'],
       ['Fiche technique', 'Sur demande à tbbtechnique@yverdon-les-bains.ch'],
@@ -62,7 +61,7 @@ export function ajouterLieux({ajouter, fichier}) {
       _type: 'lieu',
       ...champs,
       ...(caracteristiques ? {caracteristiques: caracteristiques.map(([libelle, valeur], i) => ({_type: 'caracteristique', _key: cle(id, 'c', i), libelle, valeur}))} : {}),
-      ...(documents ? {documents: documents.map(([titre, url], i) => ({_type: 'fichier', _key: cle(id, 'doc', i), titre, fichier: img(fichier(url)), description: 'PDF'}))} : {}),
+      ...(documents ? {documents: documents.map(([titre, url], i) => ({_type: 'fichier', _key: cle(id, 'doc', i), titre, fichier: img(fichier(url))}))} : {}),
     }))
   }
 }
