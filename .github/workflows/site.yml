@@ -1,7 +1,7 @@
 # Contenus Sanity, Studio et site sur GitHub Pages.
 #
-# - À chaque envoi sur la branche : importe la saison dans Sanity si le dataset est
-#   encore vide (jamais d'écrasement), publie le Studio, construit et publie le site.
+# - À chaque envoi sur la branche : migre les contenus dans Sanity sans rien écraser de ce
+#   que l'équipe a modifié, publie le Studio, construit et publie le site.
 # - Toutes les 15 minutes : reconstruit le site seulement si un contenu a été publié
 #   dans le Studio depuis la dernière fois (ou si le jour a changé, pour l'agenda).
 #
@@ -56,19 +56,14 @@ jobs:
           fi
           echo "Jeton Sanity trouvé."
 
-      - name: Importer la saison si Sanity est vide
+      # Contenus du site actuel (repris de Wix) : ce qui manque est créé, ce que l'équipe n'a
+      # jamais retouché est mis à jour, ce qu'elle a modifié dans le Studio n'est jamais écrasé
+      # (seuls les champs encore vides y sont ajoutés). Voir studio/scripts/migrer.mjs.
+      - name: Migrer les contenus (sans rien écraser)
         working-directory: studio
         run: |
-          NOMBRE=$(curl -fsS -H "Authorization: Bearer $SANITY_AUTH_TOKEN" \
-            "https://$SANITY_PROJET.api.sanity.io/v2025-02-19/data/query/$SANITY_DATASET?query=count(*%5B_type%3D%3D%22spectacle%22%5D)" \
-            | node -pe 'JSON.parse(require("fs").readFileSync(0, "utf8")).result')
-          echo "Spectacles déjà dans Sanity : $NOMBRE"
-          if [ "$NOMBRE" = "0" ]; then
-            node scripts/generer-amorce.mjs
-            npx sanity dataset import amorce/import.ndjson "$SANITY_DATASET" --missing --allow-failing-assets
-          else
-            echo "Import ignoré : les contenus de l'équipe ne sont jamais écrasés."
-          fi
+          node scripts/generer-amorce.mjs
+          node scripts/migrer.mjs
 
       - name: Publier le Studio
         if: ${{ !cancelled() }}

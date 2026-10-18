@@ -75,9 +75,14 @@ const SECTIONS = /* groq */ `
   }
 `
 
-/** Les spectacles de la saison en cours (toutes les saisons si aucune n'est cochée « en cours »). */
+/**
+ * Les spectacles de la saison en cours (toutes les saisons si aucune n'est cochée « en cours »).
+ * La saison est cherchée une seule fois, pas pour chaque spectacle : les archives comptent des centaines de fiches.
+ */
 export const REQ_SPECTACLES = defineQuery(`
-  *[_type == "spectacle" && defined(slug.current) && masque != true && (saison->courante == true || count(*[_type == "saison" && courante == true]) == 0)]{${CARTE}}
+  {"courantes": *[_type == "saison" && courante == true]._id}{
+    "liste": *[_type == "spectacle" && defined(slug.current) && masque != true && (count(^.courantes) == 0 || saison._ref in ^.courantes)]{${CARTE}}
+  }.liste
 `)
 
 /** Menu : une entrée et ses sous-rubriques. */

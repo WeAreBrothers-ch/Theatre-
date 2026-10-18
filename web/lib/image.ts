@@ -72,6 +72,14 @@ export function sourceImage(img: Img | null | undefined, {ratio, gris = false, m
     }
   }
 
+  // Jeu d'amorçage : images encore hébergées sur l'ancien site Wix (redimensionnées par son CDN).
+  if (url.startsWith('https://static.wixstatic.com/')) {
+    const largeurs = [...LARGEURS_AMORCE.filter((l) => l < W), W]
+    const fabriquer = (l: number) => `${url}/v1/fit/w_${l},h_${Math.round(l / (W / H))},q_${gris ? 60 : 78}/image.webp`
+    const defaut = largeurs.find((l) => l >= 960) ?? largeurs[largeurs.length - 1]
+    return {src: fabriquer(defaut), srcSet: largeurs.map((l) => `${fabriquer(l)} ${l}w`).join(', '), width: defaut, height: Math.round(defaut / r), position, grisFait: false, contraste: gris, alt}
+  }
+
   const fichier = (gris && stegaClean(img.gris)) || url
   const racine = avecBase(fichier.replace(/\.(jpe?g|png)$/i, ''))
   const largeurs = [...LARGEURS_AMORCE.filter((l) => l < W), W]
