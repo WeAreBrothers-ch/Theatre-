@@ -1,6 +1,9 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
 import {LinkIcon} from '@sanity/icons/Link'
+import {DocumentPdfIcon} from '@sanity/icons/DocumentPdf'
+import {BlockquoteIcon} from '@sanity/icons/Blockquote'
 import {STATUTS, dateLisible, libelle} from '../lib/constantes'
+import {LigneRepresentation} from '../composants/ChampRepresentations'
 
 /* Petits types réutilisés dans plusieurs documents. */
 
@@ -78,7 +81,19 @@ export const representation = defineType({
       name: 'mention',
       title: 'Mention',
       type: 'string',
-      description: 'Facultatif. Exemples : Afterwork, Bord de scène, Représentation scolaire.',
+      description: 'Facultatif. Exemples : Afterwork, Bord de scène, Supplémentaire.',
+    }),
+    defineField({
+      name: 'heureAConfirmer',
+      title: 'Heure à confirmer',
+      type: 'boolean',
+      description: 'Le site écrit « heure à confirmer » au lieu de l’heure. Le tableau de bord rappelle de la confirmer.',
+    }),
+    defineField({
+      name: 'scolaire',
+      title: 'Représentation scolaire',
+      type: 'boolean',
+      description: 'Réservée aux classes : la date est affichée sans bouton Réserver et n’entre pas dans la lettre d’information.',
     }),
     defineField({
       name: 'lien',
@@ -87,11 +102,12 @@ export const representation = defineType({
       description: 'Facultatif. Sinon, le lien du spectacle ou le lien général de la billetterie est utilisé.',
     }),
   ],
+  components: {item: LigneRepresentation},
   preview: {
-    select: {date: 'dateHeure', statut: 'statut', mention: 'mention', lieu: 'lieu.nom'},
-    prepare: ({date, statut, mention, lieu}) => ({
-      title: dateLisible(date),
-      subtitle: [libelle(STATUTS, statut), lieu, mention].filter(Boolean).join(' · '),
+    select: {date: 'dateHeure', statut: 'statut', mention: 'mention', lieu: 'lieu.nom', aConfirmer: 'heureAConfirmer', scolaire: 'scolaire'},
+    prepare: ({date, statut, mention, lieu, aConfirmer, scolaire}) => ({
+      title: aConfirmer ? dateLisible(date).replace(/ · .*$/, ' · heure à confirmer') : dateLisible(date),
+      subtitle: [libelle(STATUTS, statut), lieu, scolaire ? 'Scolaire' : '', mention].filter(Boolean).join(' · '),
     }),
   },
 })
@@ -162,15 +178,75 @@ export const lien = defineType({
       type: 'string',
       description: 'Exemples : /programme, /programme#jeune-public, https://www.instagram.com/tbb_yverdon/',
     }),
+    defineField({
+      name: 'sousLiens',
+      title: 'Sous-rubriques',
+      type: 'array',
+      of: [defineArrayMember({type: 'lien'})],
+      description: 'Facultatif. Les pages de cette rubrique : elles s’affichent sous l’entrée dans le menu, et en haut de chacune de ces pages.',
+      // Seulement dans le menu principal : ailleurs, un lien reste un lien.
+      hidden: ({path}) => !(path[0] === 'menu' && path.length === 3),
+    }),
   ],
   validation: (r) =>
     r.custom((v: {page?: unknown; url?: string} | undefined) =>
       v && !v.page && !v.url ? 'Choisissez une page ou indiquez une adresse.' : true,
     ),
   preview: {
-    select: {title: 'titre', page: 'page.titre', url: 'url'},
-    prepare: ({title, page, url}) => ({title, subtitle: page ? `→ ${page}` : url}),
+    select: {title: 'titre', page: 'page.titre', url: 'url', sous: 'sousLiens'},
+    prepare: ({title, page, url, sous}) => ({
+      title,
+      subtitle: [page ? `→ ${page}` : url, sous?.length ? `${sous.length} sous-rubrique${sous.length > 1 ? 's' : ''}` : ''].filter(Boolean).join(' · '),
+    }),
   },
+})
+
+/** Un fichier à télécharger (PDF, plan, dossier) ou un lien vers un dossier en ligne. */
+export const fichier = defineType({
+  name: 'fichier',
+  title: 'Document',
+  type: 'object',
+  icon: DocumentPdfIcon,
+  fields: [
+    defineField({name: 'titre', title: 'Titre', type: 'string', description: 'Exemple : Plan de la salle (PDF)', validation: (r) => r.required().error('Donnez un titre au document.')}),
+    defineField({name: 'fichier', title: 'Fichier', type: 'file', description: 'Un PDF de préférence.'}),
+    defineField({name: 'url', title: '…ou une adresse', type: 'url', description: 'Pour un dossier en ligne (Dropbox, SwissTransfer…).', validation: (r) => r.uri({allowRelative: true, scheme: ['http', 'https', 'mailto']})}),
+    defineField({name: 'description', title: 'Précision', type: 'string', description: 'Facultatif. Exemple : Coupe au 50e, mise à jour 2025'}),
+  ],
+  validation: (r) => r.custom((v: {fichier?: {asset?: unknown}; url?: string} | undefined) => (v && !v.fichier?.asset && !v.url ? 'Ajoutez un fichier ou une adresse.' : true)),
+  preview: {
+    select: {title: 'titre', description: 'description', nom: 'fichier.asset.originalFilename', url: 'url'},
+    prepare: ({title, description, nom, url}) => ({title, subtitle: [description, nom || url].filter(Boolean).join(' · ')}),
+  },
+})
+
+/** Une citation de presse ou d'artiste, affichée en exergue. */
+export const citationPresse = defineType({
+  name: 'citationPresse',
+  title: 'Citation',
+  type: 'object',
+  icon: BlockquoteIcon,
+  fields: [
+    defineField({name: 'citation', title: 'Citation', type: 'text', rows: 3, description: 'Sans les guillemets : le site les pose.', validation: (r) => r.required()}),
+    defineField({name: 'auteur', title: 'Auteur ou autrice', type: 'string', description: 'Exemple : Marie-Pierre Genecand'}),
+    defineField({name: 'media', title: 'Média', type: 'string', description: 'Exemple : Le Temps. Vide pour une citation de l’artiste.'}),
+  ],
+  preview: {
+    select: {title: 'citation', auteur: 'auteur', media: 'media'},
+    prepare: ({title, auteur, media}) => ({title: `« ${title ?? ''} »`, subtitle: [auteur, media].filter(Boolean).join(', ')}),
+  },
+})
+
+/** Une ligne « libellé : valeur » (caractéristiques d'une salle, chiffres). */
+export const caracteristique = defineType({
+  name: 'caracteristique',
+  title: 'Caractéristique',
+  type: 'object',
+  fields: [
+    defineField({name: 'libelle', title: 'Libellé', type: 'string', description: 'Exemple : Ouverture du cadre de scène'}),
+    defineField({name: 'valeur', title: 'Valeur', type: 'string', description: 'Exemple : 10,40 m'}),
+  ],
+  preview: {select: {title: 'libelle', subtitle: 'valeur'}},
 })
 
 export const seo = defineType({
@@ -195,4 +271,4 @@ export const bouton = defineType({
   ],
 })
 
-export const objets = [texteRiche, representation, imageLegendee, blocDistribution, lien, seo, bouton]
+export const objets = [texteRiche, representation, imageLegendee, blocDistribution, lien, fichier, citationPresse, caracteristique, seo, bouton]

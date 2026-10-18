@@ -1,4 +1,5 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
+import {ChampAdresse} from '../composants/ChampAdresse'
 import {DocumentsIcon} from '@sanity/icons/Documents'
 import {HomeIcon} from '@sanity/icons/Home'
 import {CogIcon} from '@sanity/icons/Cog'
@@ -46,6 +47,7 @@ export const page = defineType({
       type: 'slug',
       group: 'seo',
       options: {source: 'titre', slugify: slugifier},
+      components: {input: ChampAdresse},
       description: 'Exemple : billetterie donne theatrebennobesson.ch/billetterie',
       validation: (r) =>
         r.required().custom((v) => (v?.current && SLUGS_RESERVES.includes(v.current) ? 'Cette adresse est réservée par le site, choisissez-en une autre.' : true)),
@@ -96,12 +98,33 @@ export const reglages = defineType({
     defineField({name: 'nom', title: 'Nom du théâtre', type: 'string', group: 'coordonnees', initialValue: 'Théâtre Benno Besson'}),
     defineField({name: 'rue', title: 'Rue', type: 'string', group: 'coordonnees'}),
     defineField({name: 'localite', title: 'NPA et localité', type: 'string', group: 'coordonnees'}),
+    defineField({name: 'casePostale', title: 'Case postale', type: 'string', group: 'coordonnees', description: 'Facultatif. Exemple : Case postale 476, 1401 Yverdon-les-Bains'}),
     defineField({name: 'telBilletterie', title: 'Téléphone de la billetterie', type: 'string', group: 'coordonnees'}),
     defineField({name: 'emailBilletterie', title: 'E-mail de la billetterie', type: 'string', group: 'coordonnees'}),
     defineField({name: 'telAdmin', title: 'Téléphone de l’administration', type: 'string', group: 'coordonnees'}),
     defineField({name: 'emailGeneral', title: 'E-mail général', type: 'string', group: 'coordonnees'}),
+    defineField({
+      name: 'adresseSite',
+      title: 'Adresse du site',
+      type: 'url',
+      group: 'coordonnees',
+      description: 'L’adresse publique du site (https://www.theatrebennobesson.ch). Sert aux liens de la lettre d’information et des textes pour les réseaux.',
+    }),
 
-    defineField({name: 'lienBilletterie', title: 'Billetterie en ligne', type: 'url', group: 'billetterie', description: 'Lien général vers la billetterie en ligne.'}),
+    defineField({
+      name: 'lienBilletterie',
+      title: 'Billetterie en ligne',
+      type: 'url',
+      group: 'billetterie',
+      description: 'Lien général vers la billetterie en ligne, utilisé quand un spectacle n’a pas son propre lien. La boutique de la saison en cours (fiche Saison) passe avant.',
+    }),
+    defineField({
+      name: 'lienListeAttente',
+      title: 'Liste d’attente',
+      type: 'url',
+      group: 'billetterie',
+      description: 'Facultatif. Le formulaire d’inscription à la liste d’attente (Brevo), proposé sur les dates complètes. Vide : le site propose d’appeler la billetterie.',
+    }),
     defineField({
       name: 'horaires',
       title: 'Horaires du guichet',
@@ -134,7 +157,7 @@ export const reglages = defineType({
       group: 'navigation',
       of: [defineArrayMember({type: 'lien'})],
       validation: (r) => r.max(7).warning('Au-delà de 6 entrées, le menu devient difficile à lire.'),
-      description: 'Les entrées du menu, dans l’ordre. 6 au plus.',
+      description: 'Les entrées du menu, dans l’ordre. 6 au plus. Une entrée peut avoir des sous-rubriques (Le théâtre → Histoire, Équipe, Technique…).',
     }),
     defineField({name: 'boutonMenu', title: 'Bouton du menu', type: 'bouton', group: 'navigation', description: 'Le bouton noir en haut à droite. Exemple : Réserver → /programme'}),
 
@@ -155,9 +178,26 @@ export const reglages = defineType({
         }),
       ],
     }),
+    defineField({
+      name: 'lettre',
+      title: 'Lettre d’information',
+      type: 'object',
+      group: 'pied',
+      options: {collapsible: true, collapsed: false},
+      fields: [
+        defineField({
+          name: 'lienInscription',
+          title: 'Lien du formulaire d’inscription',
+          type: 'url',
+          description: 'Facultatif. Le formulaire Brevo. Vide : les inscriptions arrivent dans « Messages reçus ».',
+        }),
+        defineField({name: 'lienPreferences', title: 'Lien « Gérer mes préférences »', type: 'url'}),
+      ],
+    }),
     defineField({name: 'instagram', title: 'Instagram', type: 'url', group: 'pied'}),
     defineField({name: 'facebook', title: 'Facebook', type: 'url', group: 'pied'}),
     defineField({name: 'linkedin', title: 'LinkedIn', type: 'url', group: 'pied'}),
+    defineField({name: 'credit', title: 'Mention en bas de page', type: 'string', group: 'pied', description: 'Facultatif. Exemple : Graphisme : Atelier Poisson'}),
 
     defineField({
       name: 'annonce',
@@ -169,6 +209,39 @@ export const reglages = defineType({
         defineField({name: 'active', title: 'Afficher le bandeau', type: 'boolean', initialValue: false}),
         defineField({name: 'texte', title: 'Texte', type: 'string'}),
         defineField({name: 'lien', title: 'Lien', type: 'string'}),
+        defineField({
+          name: 'jusquau',
+          title: 'Retirer le bandeau le',
+          type: 'datetime',
+          options: {dateFormat: 'DD.MM.YYYY', timeFormat: 'HH:mm'},
+          description: 'Facultatif. Passé ce moment, le bandeau disparaît tout seul, même si la case reste cochée.',
+        }),
+      ],
+    }),
+    defineField({
+      name: 'avis',
+      title: 'Avis datés',
+      type: 'array',
+      group: 'annonce',
+      description: 'Fermetures de la billetterie, permanences, horaires spéciaux. Chacun s’affiche du premier au dernier jour, dans la section « Avis datés » d’une page (la Billetterie par exemple), puis disparaît seul.',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          name: 'avis',
+          fields: [
+            defineField({name: 'titre', title: 'Titre', type: 'string', description: 'Exemple : Vacances d’automne'}),
+            defineField({name: 'texte', title: 'Texte', type: 'text', rows: 2, validation: (r) => r.required(), description: 'Exemple : Billetterie fermée du 12 au 23 octobre. Réouverture le mardi 27 octobre à 10h.'}),
+            defineField({name: 'du', title: 'Afficher à partir du', type: 'date', options: {dateFormat: 'DD.MM.YYYY'}}),
+            defineField({name: 'au', title: 'Jusqu’au (inclus)', type: 'date', options: {dateFormat: 'DD.MM.YYYY'}, validation: (r) => r.required().error('Indiquez le dernier jour : l’avis disparaîtra seul.')}),
+          ],
+          preview: {
+            select: {titre: 'titre', texte: 'texte', du: 'du', au: 'au'},
+            prepare: ({titre, texte, du, au}) => {
+              const d = (x?: string) => (x ? x.split('-').reverse().join('.') : '')
+              return {title: titre || texte, subtitle: [du ? `du ${d(du)}` : '', au ? `au ${d(au)}` : ''].filter(Boolean).join(' ')}
+            },
+          },
+        }),
       ],
     }),
 

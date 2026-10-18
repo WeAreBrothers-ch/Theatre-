@@ -14,7 +14,13 @@ import {HelpCircleIcon} from '@sanity/icons/HelpCircle'
 import {EnvelopeIcon} from '@sanity/icons/Envelope'
 import {CalendarIcon} from '@sanity/icons/Calendar'
 import {TagsIcon} from '@sanity/icons/Tags'
-import {ETIQUETTES, GENRES, libelle} from '../lib/constantes'
+import {DownloadIcon} from '@sanity/icons/Download'
+import {DocumentTextIcon} from '@sanity/icons/DocumentText'
+import {SparklesIcon} from '@sanity/icons/Sparkles'
+import {ArchiveIcon} from '@sanity/icons/Archive'
+import {PlayIcon} from '@sanity/icons/Play'
+import {BellIcon} from '@sanity/icons/Bell'
+import {CATEGORIES_RENDEZ_VOUS, ETIQUETTES, GENRES, GROUPES_EQUIPE, TYPES_PARTENAIRES, libelle} from '../lib/constantes'
 
 /*
  * Sections de page. Chaque page (et l'accueil) est une pile de sections que l'équipe
@@ -185,9 +191,25 @@ export const sectionEquipe = defineType({
   title: 'Équipe',
   type: 'object',
   icon: UsersIcon,
-  description: 'Affiche automatiquement les personnes de la rubrique « Équipe ».',
-  fields: [surtitre, titre, defineField({name: 'texte', title: 'Texte', type: 'text', rows: 3})],
-  preview: {select: {title: 'titre'}, prepare: ({title}) => ({title: title || 'Équipe', subtitle: 'Liste automatique'})},
+  description: 'Affiche automatiquement les personnes de la rubrique « Équipe », regroupées par fonction.',
+  fields: [
+    surtitre,
+    titre,
+    defineField({name: 'texte', title: 'Texte', type: 'text', rows: 3}),
+    defineField({
+      name: 'groupes',
+      title: 'Seulement ces équipes',
+      type: 'array',
+      of: [defineArrayMember({type: 'string'})],
+      options: {list: GROUPES_EQUIPE, layout: 'grid'},
+      description: 'Vide : toute l’équipe (sans le comité des Ami·es). Pour la page des Ami·es, cochez « Comité des Ami·es du TBB ».',
+    }),
+    defineField({name: 'biographies', title: 'Afficher les biographies', type: 'boolean', initialValue: false}),
+  ],
+  preview: {
+    select: {title: 'titre', groupes: 'groupes'},
+    prepare: ({title, groupes}) => ({title: title || 'Équipe', subtitle: groupes?.length ? groupes.map((g: string) => libelle(GROUPES_EQUIPE, g)).join(', ') : 'Toute l’équipe, liste automatique'}),
+  },
 })
 
 export const sectionFormules = defineType({
@@ -212,12 +234,13 @@ export const sectionFormules = defineType({
             defineField({name: 'prix', title: 'Prix', type: 'string', description: 'Exemples : 50 · libre'}),
             defineField({name: 'periode', title: 'Période', type: 'string', description: 'Exemple : par saison'}),
             defineField({name: 'texte', title: 'Texte', type: 'text', rows: 2}),
+            defineField({name: 'bouton', title: 'Bouton de la formule', type: 'bouton', description: 'Facultatif. Exemple : Acheter → le lien Infomaniak du pass.'}),
           ],
           preview: {select: {title: 'nom', subtitle: 'prix'}},
         }),
       ],
     }),
-    defineField({name: 'bouton', title: 'Bouton', type: 'bouton'}),
+    defineField({name: 'bouton', title: 'Bouton sous les formules', type: 'bouton'}),
   ],
   preview: {select: {title: 'titre'}, prepare: ({title}) => ({title: title || 'Formules'})},
 })
@@ -267,7 +290,22 @@ export const sectionAffiches = defineType({
       initialValue: 8,
       validation: (r) => r.min(2).max(40),
     }),
-    defineField({name: 'inclurePasses', title: 'Inclure les spectacles passés', type: 'boolean', initialValue: false}),
+    defineField({
+      name: 'quand',
+      title: 'Quels spectacles',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'À venir', value: 'avenir'},
+          {title: 'Passés (de la saison en cours)', value: 'passes'},
+          {title: 'Toute la saison', value: 'tous'},
+        ],
+        layout: 'radio',
+        direction: 'horizontal',
+      },
+      initialValue: 'avenir',
+    }),
+    defineField({name: 'inclurePasses', title: 'Inclure les spectacles passés', type: 'boolean', hidden: true}),
   ],
   preview: {
     select: {title: 'titre', genre: 'genre', etiquette: 'etiquette', nombre: 'nombre'},
@@ -375,6 +413,161 @@ export const sectionLettre = defineType({
   preview: {select: {title: 'titre'}, prepare: ({title}) => ({title: title || 'Lettre d’information'})},
 })
 
+
+export const sectionDocuments = defineType({
+  name: 'sectionDocuments',
+  title: 'Documents à télécharger',
+  type: 'object',
+  icon: DownloadIcon,
+  description: 'Plans, guides, dossiers, affiches : une liste de fichiers ou de liens.',
+  fields: [
+    surtitre,
+    titre,
+    defineField({name: 'texte', title: 'Texte', type: 'text', rows: 2}),
+    defineField({name: 'documents', title: 'Documents', type: 'array', of: [defineArrayMember({type: 'fichier'})]}),
+  ],
+  preview: {select: {title: 'titre', d: 'documents'}, prepare: ({title, d}) => ({title: title || 'Documents', subtitle: `${d?.length ?? 0} document(s)`})},
+})
+
+export const sectionPartenaires = defineType({
+  name: 'sectionPartenaires',
+  title: 'Partenaires',
+  type: 'object',
+  icon: HeartIcon,
+  description: 'Affiche automatiquement les partenaires de la rubrique « Partenaires », par type, avec leur logo.',
+  fields: [
+    surtitre,
+    titre,
+    defineField({name: 'texte', title: 'Texte', type: 'text', rows: 3}),
+    defineField({name: 'types', title: 'Seulement ces types', type: 'array', of: [defineArrayMember({type: 'string'})], options: {list: TYPES_PARTENAIRES, layout: 'grid'}, description: 'Vide : tous les partenaires.'}),
+  ],
+  preview: {select: {title: 'titre'}, prepare: ({title}) => ({title: title || 'Partenaires', subtitle: 'Liste automatique'})},
+})
+
+export const sectionPresse = defineType({
+  name: 'sectionPresse',
+  title: 'La presse en parle',
+  type: 'object',
+  icon: DocumentTextIcon,
+  description: 'Affiche automatiquement les articles de la rubrique « La presse en parle », du plus récent au plus ancien.',
+  fields: [
+    surtitre,
+    titre,
+    defineField({name: 'texte', title: 'Texte', type: 'text', rows: 2}),
+    defineField({name: 'nombre', title: 'Nombre d’articles', type: 'number', initialValue: 30, validation: (r) => r.min(1).max(300), description: 'Les suivants restent accessibles par « Tous les articles ».'}),
+  ],
+  preview: {select: {title: 'titre', nombre: 'nombre'}, prepare: ({title, nombre}) => ({title: title || 'La presse en parle', subtitle: `${nombre ?? 30} articles, liste automatique`})},
+})
+
+export const sectionRendezVous = defineType({
+  name: 'sectionRendezVous',
+  title: 'Rendez-vous',
+  type: 'object',
+  icon: SparklesIcon,
+  description: 'Affiche automatiquement les rendez-vous de la rubrique « Rendez-vous ».',
+  fields: [
+    surtitre,
+    titre,
+    defineField({name: 'texte', title: 'Texte', type: 'text', rows: 2}),
+    defineField({name: 'categories', title: 'Seulement ces catégories', type: 'array', of: [defineArrayMember({type: 'string'})], options: {list: CATEGORIES_RENDEZ_VOUS, layout: 'grid'}, description: 'Vide : toutes.'}),
+    defineField({name: 'inclurePasses', title: 'Garder les rendez-vous passés de la saison', type: 'boolean', initialValue: false}),
+  ],
+  preview: {
+    select: {title: 'titre', c: 'categories'},
+    prepare: ({title, c}) => ({title: title || 'Rendez-vous', subtitle: c?.length ? c.map((x: string) => libelle(CATEGORIES_RENDEZ_VOUS, x)).join(', ') : 'Tous, liste automatique'}),
+  },
+})
+
+export const sectionLieux = defineType({
+  name: 'sectionLieux',
+  title: 'Salles et lieux',
+  type: 'object',
+  icon: PinIcon,
+  description: 'Affiche automatiquement les lieux : places, caractéristiques, plans, visite virtuelle. Pour la page Technique.',
+  fields: [
+    surtitre,
+    titre,
+    defineField({name: 'texte', title: 'Texte', type: 'text', rows: 2}),
+    defineField({
+      name: 'quels',
+      title: 'Quels lieux',
+      type: 'string',
+      options: {list: [{title: 'Les salles du théâtre', value: 'theatre'}, {title: 'Tous les lieux', value: 'tous'}], layout: 'radio', direction: 'horizontal'},
+      initialValue: 'theatre',
+    }),
+  ],
+  preview: {select: {title: 'titre'}, prepare: ({title}) => ({title: title || 'Salles et lieux', subtitle: 'Liste automatique'})},
+})
+
+export const sectionArchives = defineType({
+  name: 'sectionArchives',
+  title: 'Archives des saisons',
+  type: 'object',
+  icon: ArchiveIcon,
+  description: 'Affiche automatiquement chaque saison passée, avec son affiche et ses spectacles. Rien à faire au changement de saison.',
+  fields: [surtitre, titre, defineField({name: 'texte', title: 'Texte', type: 'text', rows: 2})],
+  preview: {select: {title: 'titre'}, prepare: ({title}) => ({title: title || 'Archives', subtitle: 'Saisons passées, liste automatique'})},
+})
+
+export const sectionVideo = defineType({
+  name: 'sectionVideo',
+  title: 'Vidéo',
+  type: 'object',
+  icon: PlayIcon,
+  fields: [
+    surtitre,
+    titre,
+    defineField({name: 'url', title: 'Lien YouTube ou Vimeo', type: 'url', validation: (r) => r.required()}),
+    defineField({name: 'legende', title: 'Légende', type: 'string', description: 'Exemple : Benno Besson, metteur en scène, Plans-Fixes, 2002'}),
+  ],
+  preview: {select: {title: 'titre', subtitle: 'legende'}, prepare: ({title, subtitle}) => ({title: title || 'Vidéo', subtitle})},
+})
+
+export const sectionListe = defineType({
+  name: 'sectionListe',
+  title: 'Liste',
+  type: 'object',
+  icon: ThListIcon,
+  description: 'Une liste libre : spectacles d’un théâtre partenaire, directions successives, activités, consignes…',
+  fields: [
+    surtitre,
+    titre,
+    defineField({name: 'texte', title: 'Texte', type: 'text', rows: 2}),
+    defineField({
+      name: 'elements',
+      title: 'Éléments',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          name: 'elementListe',
+          fields: [
+            defineField({name: 'surtitre', title: 'Surtitre', type: 'string', description: 'Exemples : Théâtre d’objets · Di 27 septembre 2026'}),
+            defineField({name: 'titre', title: 'Titre', type: 'string', validation: (r) => r.required()}),
+            defineField({name: 'sousTitre', title: 'Sous-titre', type: 'string', description: 'Exemple : Compagnie Chamar bell clochette · dès 3 ans'}),
+            defineField({name: 'texte', title: 'Texte', type: 'text', rows: 2}),
+            defineField({name: 'image', title: 'Image', type: 'imageLegendee'}),
+            defineField({name: 'lien', title: 'Lien', type: 'lien'}),
+          ],
+          preview: {select: {title: 'titre', subtitle: 'surtitre', media: 'image'}},
+        }),
+      ],
+    }),
+    defineField({name: 'bouton', title: 'Bouton sous la liste', type: 'bouton'}),
+  ],
+  preview: {select: {title: 'titre', e: 'elements'}, prepare: ({title, e}) => ({title: title || 'Liste', subtitle: `${e?.length ?? 0} élément(s)`})},
+})
+
+export const sectionAvis = defineType({
+  name: 'sectionAvis',
+  title: 'Avis datés',
+  type: 'object',
+  icon: BellIcon,
+  description: 'Affiche les avis en cours des Réglages du site (onglet Annonce) : fermetures, permanences… Chacun disparaît seul à sa date de fin.',
+  fields: [surtitre, titre],
+  preview: {select: {title: 'titre'}, prepare: ({title}) => ({title: title || 'Avis', subtitle: 'Avis en cours, depuis les Réglages'})},
+})
+
 /*
  * Lien direct : chaque section peut recevoir une ancre (« tarifs » → /billetterie#tarifs).
  * Rangée dans un encart replié pour ne pas encombrer le formulaire.
@@ -408,10 +601,21 @@ export const sections = [
   sectionFaq,
   sectionContact,
   sectionLettre,
+  sectionDocuments,
+  sectionPartenaires,
+  sectionPresse,
+  sectionRendezVous,
+  sectionLieux,
+  sectionArchives,
+  sectionVideo,
+  sectionListe,
+  sectionAvis,
 ].map(avecAncre)
 
 /** Sections proposées sur les pages et sur l'accueil. */
 export const SECTIONS_PAGE = [
-  'sectionTexte', 'sectionInfos', 'sectionTarifs', 'sectionCitation', 'sectionFrise', 'sectionGalerie', 'sectionEquipe',
-  'sectionFormules', 'sectionAcces', 'sectionAppel', 'sectionAffiches', 'sectionAgenda', 'sectionFaq', 'sectionContact', 'sectionLettre',
+  'sectionTexte', 'sectionInfos', 'sectionListe', 'sectionDocuments', 'sectionTarifs', 'sectionFormules', 'sectionAvis', 'sectionFaq',
+  'sectionCitation', 'sectionFrise', 'sectionGalerie', 'sectionVideo', 'sectionAppel',
+  'sectionAgenda', 'sectionAffiches', 'sectionRendezVous', 'sectionArchives',
+  'sectionEquipe', 'sectionPartenaires', 'sectionPresse', 'sectionLieux', 'sectionAcces', 'sectionContact', 'sectionLettre',
 ]

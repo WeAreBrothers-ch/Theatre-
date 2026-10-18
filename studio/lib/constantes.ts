@@ -16,17 +16,66 @@ export const GENRES = [
   {title: 'Cirque', value: 'cirque'},
 ]
 
+/*
+ * Étiquettes d'un spectacle. Les valeurs servent de clés (site, filtres, liens #midi-theatre) :
+ * on peut changer un titre, jamais une valeur. Même liste dans web/lib/constantes.ts.
+ */
 export const ETIQUETTES = [
   {title: 'Création', value: 'creation'},
   {title: 'Coproduction', value: 'coproduction'},
+  {title: 'Compagnie en résidence', value: 'residence'},
   {title: 'Midi théâtre', value: 'midi-theatre'},
   {title: 'Afterwork', value: 'afterwork'},
-  {title: 'Compagnie en résidence', value: 'residence'},
+  {title: 'Saison musicale classique', value: 'saison-musicale'},
   {title: 'Hors saison', value: 'hors-saison'},
+  {title: 'Nova Jazz', value: 'nova-jazz'},
   {title: 'Bord de scène', value: 'bord-de-scene'},
+  {title: 'Avant-spectacle', value: 'avant-spectacle'},
   {title: 'Librairie Payot', value: 'librairie'},
+  {title: 'Médiation le soir du spectacle', value: 'mediation'},
   {title: 'Version FALC', value: 'falc'},
   {title: 'Adapté aux personnes malentendantes', value: 'malentendants'},
+  {title: 'Langue des signes (LSF)', value: 'lsf'},
+  {title: 'Surtitré', value: 'surtitrage'},
+  {title: 'Audiodescription', value: 'audiodescription'},
+  {title: 'Avec Ecoute Voir', value: 'ecoute-voir'},
+]
+
+/** Les équipes, dans l'ordre de la page Équipe. */
+export const GROUPES_EQUIPE = [
+  {title: 'Direction et administration', value: 'direction'},
+  {title: 'Communication et médiation', value: 'communication'},
+  {title: 'Billetterie', value: 'billetterie'},
+  {title: 'Accueil et salle', value: 'accueil'},
+  {title: 'Technique', value: 'technique'},
+  {title: 'Graphisme et impression', value: 'prestataires'},
+  {title: 'Comité des Ami·es du TBB', value: 'comite-amis'},
+  {title: 'Autres', value: 'autres'},
+]
+
+export const TYPES_PARTENAIRES = [
+  {title: 'Pouvoirs publics', value: 'institution'},
+  {title: 'Partenaires et soutiens', value: 'partenaire'},
+  {title: 'Partenaires culturels', value: 'culturel'},
+  {title: 'Médias', value: 'media'},
+  {title: 'Prestataires et commerces', value: 'prestataire'},
+]
+
+export const CATEGORIES_RENDEZ_VOUS = [
+  {title: 'Grand rendez-vous de la saison', value: 'festival'},
+  {title: 'Événement au TBB', value: 'evenement'},
+  {title: 'Rencontre ou bord de scène', value: 'rencontre'},
+  {title: 'Atelier', value: 'atelier'},
+  {title: 'Exposition', value: 'exposition'},
+  {title: 'Visite', value: 'visite'},
+  {title: 'Activité des Ami·es', value: 'amis'},
+]
+
+export const TYPES_PRESSE = [
+  {title: 'Article', value: 'article'},
+  {title: 'Radio', value: 'radio'},
+  {title: 'Télévision', value: 'tv'},
+  {title: 'En ligne', value: 'web'},
 ]
 
 export const STATUTS = [
@@ -37,7 +86,7 @@ export const STATUTS = [
 ]
 
 /** Adresses réservées par le site, interdites pour les pages. */
-export const SLUGS_RESERVES = ['programme', 'spectacles', 'api', 'studio', 'recherche']
+export const SLUGS_RESERVES = ['programme', 'spectacles', 'rendez-vous', 'api', 'studio', 'recherche']
 
 const formatDate = new Intl.DateTimeFormat('fr-CH', {
   timeZone: 'Europe/Zurich',

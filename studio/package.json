@@ -9,7 +9,10 @@
     "deploy": "sanity deploy",
     "seed": "node scripts/generer-amorce.mjs",
     "import": "node scripts/generer-amorce.mjs && sanity dataset import amorce/import.ndjson production --replace --allow-failing-assets",
-    "typegen": "sanity schema extract --path=../web/sanity/schema.json && sanity typegen generate"
+    "typegen": "sanity schema extract --path=../web/sanity/schema.json && sanity typegen generate",
+    "test": "node --test verifications/temps.test.ts verifications/representations.test.ts verifications/communication.test.ts",
+    "typecheck": "tsc --noEmit",
+    "banc": "node banc/telecharger.mjs && vite --config banc/vite.config.ts"
   },
   "dependencies": {
     "@sanity/color-input": "latest",

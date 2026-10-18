@@ -12,3 +12,6 @@ next-env.d.ts
 studio/amorce/
 web/public/amorce/
 web/out/
+
+# Banc d’essai du Studio : copie locale des contenus
+studio/banc/donnees.json
