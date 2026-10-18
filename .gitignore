@@ -1,3 +1,13 @@
-.DS_Store
 node_modules/
+.next/
+dist/
+.sanity/
+.env*.local
+.DS_Store
 __pycache__/
+*.tsbuildinfo
+next-env.d.ts
+
+# Contenus d’amorçage générés (chemins locaux)
+studio/amorce/
+web/public/amorce/

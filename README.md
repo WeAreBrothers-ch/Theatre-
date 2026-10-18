@@ -1,77 +1,110 @@
-# Théâtre Benno Besson — maquette de refonte
+# Théâtre Benno Besson — site et Studio
 
-Maquette navigable de la refonte de [theatrebennobesson.ch](https://www.theatrebennobesson.ch/), octobre 2026.
+Refonte de [theatrebennobesson.ch](https://www.theatrebennobesson.ch/) : un site rapide pensé d’abord pour le téléphone, et un Studio Sanity en français où l’équipe gère seule tout le programme et toutes les pages.
 
-> **Le fil rouge : « Le plaisir à l’affiche, pour toutes et tous. »**
-> *À l’affiche* : chaque spectacle reçoit sa propre affiche, au format suisse, dans sa propre encre.
-> *Le plaisir* : le mot de Benno Besson, « le théâtre n’a pas de sens si ce n’est un plaisir, un plaisir à la vie ».
-> *Pour toutes et tous* : la mission d’un théâtre municipal, « ne laisser personne au bord de la route ».
+> **Le fil rouge : « Le plaisir à l’affiche, pour toutes et tous. »** Chaque spectacle a son affiche, au format suisse, dans sa propre encre.
 
-La démarche complète (audit, méthode, choix graphiques, inspirations) est présentée dans `concept.html`.
+![Le site sur téléphone : accueil, menu, programme, réservation, contact](docs/site-telephone.jpg)
 
-![Accueil sur ordinateur et trois écrans sur téléphone](docs/apercu-ecrans.jpg)
+![L’accueil sur ordinateur](docs/site-ordinateur.jpg)
 
-![Le programme en vue Affiches : une encre par spectacle](docs/apercu-programme.jpg)
+## Le dépôt
 
-## Voir la maquette
-
-Pages statiques, sans dépendance ni étape de compilation :
-
-```bash
-python3 -m http.server 8000
-# puis http://localhost:8000
+```
+web/        le site (Next.js 16, React 19), lit les contenus dans Sanity
+studio/     le Studio Sanity v6 : schémas, tableau de bord, aperçu en direct
+maquette/   la maquette statique d’origine et sa planche concept (voir maquette/README.md)
+docs/       aperçus pour ce README
 ```
 
-| Page | Fichier | Ce qu’on y montre |
-| --- | --- | --- |
-| Accueil | `index.html` | Bandeau du jour, la une dans l’encre du prochain spectacle, l’agenda, le mur d’affiches, les tarifs, le jeune public, Benno Besson, l’accès |
-| Programme | `programme.html` | Les 35 spectacles en liste ou en affiches, filtres par genre, mois, Midi théâtre, places disponibles, recherche |
-| Fiche spectacle | `spectacle.html#choices` | Dates et billets, infos pratiques, photos, distribution, tiroir de réservation. Toute la saison est accessible par `#slug` (`#cosimo`, `#reto`…) |
-| Billetterie et accès | `infos.html` | Horaires, tarifs, bon cadeau, échange, schéma d’accès, salles et accessibilité |
-| Le théâtre | `theatre.html` | Histoire de 1898 à aujourd’hui, Benno Besson, la salle, l’équipe, les Ami·es du TBB |
-| Concept | `concept.html` | La planche de présentation, construite comme la méthode : pourquoi, fil rouge, comment le trouver, pratique, résultat |
+Les deux applications partagent les dépendances installées à la racine (espaces de travail npm).
 
-## Système graphique
+```bash
+npm install
+npm run dev            # le site sur http://localhost:3000
+npm run dev:studio     # le Studio sur http://localhost:3333
+```
 
-| | |
+Tant que Sanity est vide, le site affiche le jeu d’amorçage local (`web/sanity/amorce.json` : la saison 26–27 de la maquette, 35 spectacles, 4 pages). Il bascule tout seul sur Sanity dès le premier spectacle publié.
+
+## Le Studio, pour l’équipe du théâtre
+
+Adresse une fois publié : **https://theatrebennobesson.sanity.studio**
+
+| Rubrique | Ce qu’on y fait |
 | --- | --- |
-| **Titres** | Archivo extra-condensé 800 (`font-stretch: 62%`), en capitales. L’héritier des caractères en bois des affiches de 1898 et des théâtres zurichois. |
-| **Information** | Archivo 400–650, chiffres tabulaires pour les dates, heures et prix. |
-| **Voix** | Newsreader (romain et italique) pour le texte des spectacles et les citations. |
-| **Couleurs** | Papier `#FFFFFF`, noir d’imprimerie `#0D0D0C`, vert TBB `#019E35` (repris du logo), rouge bandeau `#E3241B` (« Complet » seulement), gris `#EEF0ED`. |
-| **Encres** | Une couleur par spectacle, prélevée dans son visuel existant (`encre` dans `assets/js/data.js`). Le texte passe en noir ou en blanc selon la luminance, pour garder un contraste AA. |
-| **Images** | Visuels repris en niveaux de gris puis « imprimés » dans l’encre : `multiply` pour une image claire, `screen` pour une image sombre (`TBB.fondsSombres`). Les photos de scène restent en couleur dans les fiches. |
-| **Formes** | Affiche au format mondial F4 (895 × 1280), bandeau collé en biais, filets noirs de 2 px, aucun arrondi ni ombre. Les trois arches du logo forment le pied de page. |
+| **Tableau de bord** | Les prochaines dates, les fiches à compléter, les brouillons, les nouveaux messages. Boutons « Nouveau spectacle », « Modifier l’accueil », « Horaires et réglages ». Un mode d’emploi en cinq gestes. |
+| **Programme** | Les spectacles rangés tout prêts : à venir, complets, jeune public, Midi théâtre, passés. Un spectacle = titre, artistes, genre, visuel, accroche, dates. Le reste est facultatif. |
+| **Accueil** | Les spectacles mis à l’affiche (vide = les trois prochains automatiquement) et les sections de la page. |
+| **Pages** | Billetterie, Le théâtre, Contact, Jeune public… Chaque page est une pile de sections à ajouter, déplacer ou supprimer : texte, blocs d’infos, tarifs, citation, frise, galerie, équipe, formules, accès, appel à l’action, mur d’affiches, agenda, questions fréquentes, contact, lettre d’information. |
+| **Lieux, Tarifs, Équipe, Partenaires** | Saisis une fois, réutilisés partout. Une grille de prix modifiée change tous les spectacles qui l’utilisent. |
+| **Messages reçus** | Les messages du formulaire de contact et les inscriptions à la lettre, à marquer « traité ». |
+| **Réglages du site** | Coordonnées, horaires du guichet, accès, menu, pied de page, réseaux sociaux, bandeau d’annonce urgent. |
+| **Aperçu du site** | Le site à côté du formulaire : chaque modification s’y voit avant publication, un clic sur un texte ouvre le bon champ. |
 
-Tous les jetons sont en tête de `assets/css/tbb.css`.
+Les gestes courants :
 
-## Structure
+- **Une date est complète** : dans le spectacle, onglet « Dates et billets », passer la date sur « Complet ». Le bandeau rouge apparaît sur l’affiche, le bouton Réserver disparaît.
+- **Ajouter un spectacle** : « Nouveau spectacle ». Saison, salle et prix sont préremplis. L’encre de l’affiche est prise dans le visuel si on la laisse vide.
+- **Prévenir d’une fermeture** : Réglages du site, onglet « Annonce », cocher « Afficher le bandeau ».
+- **Lien direct vers une section** : chaque section a un encart « Lien direct ». L’ancre « tarifs » donne `/billetterie#tarifs`. Le programme accepte `/programme#danse`, `#jeune-public`, `#midi-theatre`, `#places`.
 
-```
-index.html, programme.html, …   pages générées (à ouvrir)
-src/pages/                      sources des pages
-src/partials/                   en-tête, pied de page « façade », balises <head>
-tools/build.py                  assemble les pages et applique la typographie française
-assets/css/tbb.css              système graphique et composants
-assets/js/data.js               la saison 26–27 (35 spectacles) et la fiche complète de Choices
-assets/js/app.js                rendu des listes, filtres, une, fiche, tiroir de réservation
-assets/img/                     visuels de la saison, photos du théâtre, captures de l’audit
-```
+Une modification publiée est en ligne en quelques secondes, sans redéploiement.
 
-Après une modification dans `src/`, régénérer les pages :
+## Le site
+
+- **Téléphone d’abord.** Chaque composant est écrit pour 390 px puis élargi (640, 1024, 1280). Cibles tactiles de 44 px, pas de survol collant, zones sûres de l’iPhone respectées.
+- **La navigation.** Sur téléphone, un menu plein écran : le rideau noir tombe, le spectacle suivant y est mis en avant, la billetterie s’appelle d’un geste. C’est un `<dialog>` natif : le focus y reste, Échap le ferme, la page derrière ne défile plus. Il se ferme au clic sur un lien (même vers la page en cours), au changement de page et au passage en format ordinateur. En descendant, l’en-tête s’efface pour laisser la place au contenu ; il revient au moindre geste vers le haut. La barre de filtres du programme le suit. Sur ordinateur, les liens sont soulignés au survol, la rubrique en cours est marquée.
+- **Réserver.** Un tiroir (feuille du bas sur téléphone) : choix de la date, prix, puis la billetterie en ligne ou le téléphone. Sur la fiche d’un spectacle, une barre « Réserver » reste à portée de pouce.
+- **Contact.** Appeler, écrire ou venir en un geste, l’annuaire des services, un formulaire qui garde les saisies en cas d’erreur et envoie les messages dans le Studio.
+- **Rapide.** Toutes les pages sont générées à l’avance. Les images sont servies en AVIF/WebP à la bonne taille par le CDN de Sanity. Les polices sont hébergées avec le site et allégées (Newsreader en une seule graisse). Mesure sur téléphone simulé (processeur ralenti ×4, 4G) : LCP entre 0,9 et 1,4 s, décalage de mise en page quasi nul, 135 ko de polices et environ 150 ko de JavaScript compressé.
+
+### Variables d’environnement
+
+Toutes facultatives en local. À déclarer chez l’hébergeur du site (Vercel par exemple), jamais dans le code.
+
+| Variable | Rôle |
+| --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Adresse publique du site, pour le plan du site et les liens de partage. |
+| `SANITY_API_READ_TOKEN` | Jeton « Viewer » : aperçu des brouillons dans le Studio. |
+| `SANITY_API_WRITE_TOKEN` | Jeton « Editor » : enregistre les messages du formulaire dans le Studio. Sans lui, en production, le formulaire renvoie vers l’e-mail du théâtre. |
+| `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET` | Par défaut `pgmabzq0` et `production`. |
+| `NEXT_PUBLIC_SANITY_STUDIO_URL` | Par défaut `https://theatrebennobesson.sanity.studio`. |
+| `TBB_SOURCE` | `auto` (défaut), `sanity` ou `amorce`. |
+| `TBB_AUJOURDHUI` | Fige la date du jour pour une démonstration, par exemple `2026-10-18T12:00:00+02:00`. |
+
+Côté Studio : `SANITY_STUDIO_PREVIEW_URL`, l’adresse du site affichée dans « Aperçu du site » (par défaut `http://localhost:3000`).
+
+## Mise en ligne
+
+Il faut le jeton `SANITY_AUTH_TOKEN` dans l’environnement (réglages de l’environnement Claude Code, ou `npx sanity login` en local).
+
+1. **Importer les contenus** dans le dataset `production`, images comprises :
+   ```bash
+   npm run import
+   ```
+2. **Publier le Studio** sur https://theatrebennobesson.sanity.studio :
+   ```bash
+   npm run deploy:studio
+   ```
+3. **Autoriser le site** à lire Sanity depuis le navigateur (mise à jour en direct) :
+   ```bash
+   cd studio
+   npx sanity cors add http://localhost:3000 --credentials
+   npx sanity cors add https://www.theatrebennobesson.ch --credentials
+   ```
+4. **Créer les jetons du site** dans sanity.io/manage, projet « Théâtre Benno Besson », API, Tokens : un « Viewer » (`SANITY_API_READ_TOKEN`) et un « Editor » (`SANITY_API_WRITE_TOKEN`).
+5. **Déployer le site** : sur Vercel, nouveau projet depuis ce dépôt, dossier racine `web`, puis les variables ci-dessus.
+6. **Inviter l’équipe** : sanity.io/manage, Members, rôle « Editor » pour chaque personne.
+
+## Contrôles
 
 ```bash
-python3 tools/build.py
+npm run typecheck --workspace web
+npm run build --workspace web
+cd studio && npx tsc --noEmit && npx sanity schema validate
 ```
-
-Le script insère les gabarits et pose les espaces fines insécables avant `: ; ! ? »` et après `«`, sans toucher au code.
 
 ## Contenus à valider avec le TBB
 
-Les textes, dates, distributions et visuels viennent du site actuel (relevé du 18 octobre 2026). Restent à confirmer :
-
-- les heures non publiées sur le site actuel, indicatives dans la maquette : 20h en semaine, 17h le dimanche, 12h15 pour le Midi théâtre (`heureIndicative: true` dans les données) ;
-- les horaires de la billetterie, les catégories du tarif réduit, les conditions du bon cadeau et de l’échange de billets ;
-- les tarifs propres aux concerts, au Midi théâtre et au jeune public.
-
-La maquette fixe la date du jour au 18 octobre 2026 (`TBB.aujourdhui`) pour que l’agenda reste cohérent quel que soit le jour de la présentation.
+Repris du site actuel (relevé du 18 octobre 2026). À confirmer avant la mise en ligne : les heures de certains spectacles, les horaires du guichet, les catégories du tarif réduit, les conditions du bon cadeau et de l’échange, les tarifs des concerts, du Midi théâtre et du jeune public, et le lien de la billetterie en ligne (Réglages du site, onglet « Billetterie »).
