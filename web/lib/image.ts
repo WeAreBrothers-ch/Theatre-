@@ -28,7 +28,31 @@ export type SourceImage = {
   grisFait: boolean
   /** Désaturée par le CDN, sans renfort de contraste : la feuille de style l'ajoute. */
   contraste?: boolean
+  /**
+   * Visuel bichrome (une encre sur fond clair, comme les trames de la saison) : on imprime
+   * le canal où l'encre est la plus sombre (le bleu pour une encre jaune), pas la luminance,
+   * qui rendrait l'image presque blanche. Filtre SVG déclaré dans le gabarit du site.
+   */
+  canal?: 'r' | 'g' | 'b'
   alt: string
+}
+
+const rvb = (hex: string): number[] | null => {
+  const h = hex.replace('#', '')
+  if (!/^[0-9a-f]{6}$/i.test(h)) return null
+  return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16))
+}
+
+/** Le canal à imprimer d'après la couleur la plus franche du visuel, ou rien pour une photo peu colorée. */
+export function canalDe(...couleurs: (string | null | undefined)[]): 'r' | 'g' | 'b' | undefined {
+  const franche = couleurs
+    .map((c) => (c ? rvb(stegaClean(c) ?? '') : null))
+    .filter((c): c is number[] => !!c)
+    .map((c) => ({c, chroma: Math.max(...c) - Math.min(...c)}))
+    .sort((a, b) => b.chroma - a.chroma)[0]
+  if (!franche || franche.chroma < 96) return undefined
+  const i = franche.c.indexOf(Math.min(...franche.c))
+  return (['r', 'g', 'b'] as const)[i]
 }
 
 type Options = {ratio?: number; gris?: boolean; max?: number}
@@ -44,6 +68,7 @@ export function sourceImage(img: Img | null | undefined, {ratio, gris = false, m
 
   if (url.startsWith('https://cdn.sanity.io/')) {
     const ref = stegaClean(img.ref)
+    const canal = gris ? canalDe(img.vibrante, img.dominante) : undefined
     const base = builder
       .image(ref ? {asset: {_ref: ref}, crop: img.crop ?? undefined, hotspot: img.hotspot ? {width: 1, height: 1, ...img.hotspot} : undefined} : url)
       .auto('format')
@@ -55,7 +80,8 @@ export function sourceImage(img: Img | null | undefined, {ratio, gris = false, m
     const fabriquer = (l: number) => {
       let b = base.width(l)
       b = ratio ? b.height(Math.round(l / ratio)).fit('crop') : b.fit('max')
-      if (gris) b = b.saturation(-100)
+      // Bichrome : la couleur est gardée, le filtre du canal fait le gris. Sinon le CDN désature.
+      if (gris && !canal) b = b.saturation(-100)
       return b.url()
     }
     const defaut = largeurs.find((l) => l >= 720) ?? largeurs[largeurs.length - 1]
@@ -67,7 +93,8 @@ export function sourceImage(img: Img | null | undefined, {ratio, gris = false, m
       position: ratio ? undefined : position,
       lqip: img.lqip ?? undefined,
       grisFait: gris,
-      contraste: gris,
+      contraste: gris && !canal,
+      canal,
       alt,
     }
   }

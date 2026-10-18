@@ -73,6 +73,21 @@ export default async function MiseEnPage({children}: {children: React.ReactNode}
   return (
     <html lang="fr-CH" className={`${archivo.variable} ${newsreader.variable}`} data-scroll-behavior="smooth">
       <body>
+        {/* Filtres d'impression : un canal de couleur recopié en gris, légèrement contrasté. */}
+        <svg className="filtres-impression" width="0" height="0" aria-hidden="true" focusable="false">
+          <defs>
+            {(['r', 'g', 'b'] as const).map((c, i) => (
+              <filter key={c} id={`tbb-canal-${c}`} colorInterpolationFilters="sRGB">
+                <feColorMatrix type="matrix" values={[0, 1, 2].map(() => [0, 1, 2].map((j) => (j === i ? 1 : 0)).join(' ') + ' 0 0').join(' ') + ' 0 0 0 1 0'} />
+                <feComponentTransfer>
+                  <feFuncR type="linear" slope="1.12" intercept="-0.04" />
+                  <feFuncG type="linear" slope="1.12" intercept="-0.04" />
+                  <feFuncB type="linear" slope="1.12" intercept="-0.04" />
+                </feComponentTransfer>
+              </filter>
+            ))}
+          </defs>
+        </svg>
         <a className="lien-evitement" href="#contenu">
           Aller au contenu
         </a>
