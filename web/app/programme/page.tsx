@@ -3,6 +3,7 @@ import {stegaClean} from 'next-sanity'
 import {Programme} from '@/components/programme/Programme'
 import {Scene} from '@/components/Scene'
 import {TetePage} from '@/components/TetePage'
+import {SousNavigation} from '@/components/SousNavigation'
 import {GENRES} from '@/lib/constantes'
 import {chargerSite, chargerSpectacles} from '@/lib/donnees'
 import {estAVenir, versCarte} from '@/lib/spectacles'
@@ -20,6 +21,7 @@ export default async function PageProgramme() {
   const pdf = stegaClean(site.saison?.programmePdf)
   return (
     <Scene>
+      <SousNavigation site={site} chemin="/programme" />
       <TetePage
         titre="Programme"
         surtitre={saison || 'Programme'}

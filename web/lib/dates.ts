@@ -133,3 +133,20 @@ export function heuresResume(isos: string[]): string {
 export function majuscule(texte: string): string {
   return texte ? texte.charAt(0).toUpperCase() + texte.slice(1) : texte
 }
+
+/** Un jour « AAAA-MM-JJ » (sans heure) lu comme un instant à midi : même jour à Zurich. */
+export const midi = (jour: string) => `${jour}T12:00:00Z`
+
+/**
+ * La période d'un rendez-vous : « samedi 30 janvier 2027 », « du 5 juin au 15 août 2026 »,
+ * « du mercredi 6 au dimanche 9 août 2026 ».
+ */
+export function periode(debut?: string | null, fin?: string | null): string {
+  if (!debut) return ''
+  const a = moment(midi(debut))
+  if (!fin || fin === debut) return `${dateLongue(midi(debut))} ${a.annee}`
+  const b = moment(midi(fin))
+  if (a.annee === b.annee && a.mois === b.mois) return `du ${a.jour === 1 ? '1er' : a.jour} au ${dateLongue(midi(fin)).replace(/^\S+ /, '')} ${b.annee}`
+  const anneeA = a.annee === b.annee ? '' : ` ${a.annee}`
+  return `du ${dateLongue(midi(debut)).replace(/^\S+ /, '')}${anneeA} au ${dateLongue(midi(fin)).replace(/^\S+ /, '')} ${b.annee}`
+}

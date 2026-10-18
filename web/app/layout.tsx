@@ -13,6 +13,7 @@ import {preconnect} from 'react-dom'
 import {Revelations} from '@/components/Revelations'
 import {Apercu} from '@/sanity/apercu'
 import {avecBase} from '@/lib/chemin'
+import {maintenant} from '@/lib/temps'
 import './globals.css'
 
 const archivo = Archivo({subsets: ['latin'], axes: ['wdth'], variable: '--police-archivo', display: 'swap'})
@@ -51,7 +52,11 @@ export default async function MiseEnPage({children}: {children: React.ReactNode}
   const affiche = spectacles.filter(estAVenir).slice(0, 8).map((s) => stegaClean(s.titre))
 
   const liens: LienMenu[] = (r.menu ?? [])
-    .map((l) => ({titre: l.titre ?? '', href: hrefLien(l) ?? ''}))
+    .map((l) => ({
+      titre: l.titre ?? '',
+      href: hrefLien(l) ?? '',
+      sousLiens: (l.sousLiens ?? []).map((x) => ({titre: x.titre ?? '', href: hrefLien(x) ?? ''})).filter((x) => x.titre && x.href),
+    }))
     .filter((l) => l.titre && l.href)
   const bouton: LienMenu = {titre: r.boutonMenu?.titre || 'Réserver', href: hrefPropre(r.boutonMenu?.url) || '/programme'}
 
@@ -61,7 +66,8 @@ export default async function MiseEnPage({children}: {children: React.ReactNode}
     {titre: 'Facebook', href: stegaClean(r.facebook) ?? ''},
     {titre: 'LinkedIn', href: stegaClean(r.linkedin) ?? ''},
   ].filter((x) => x.href)
-  const annonce = r.annonce?.active && r.annonce.texte ? r.annonce : null
+  // Le bandeau se retire seul à sa date de fin (le site est reconstruit au moins une fois par heure).
+  const annonce = r.annonce?.active && r.annonce.texte && (!r.annonce.jusquau || new Date(stegaClean(r.annonce.jusquau)!) > maintenant()) ? r.annonce : null
   const lienAnnonce = hrefPropre(annonce?.lien)
 
   return (

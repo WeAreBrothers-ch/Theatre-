@@ -7,7 +7,7 @@ import {avecBase} from '@/lib/chemin'
 import {Defilant} from '../Defilant'
 import {Billet} from '../Icones'
 
-export type LienMenu = {titre: string; href: string}
+export type LienMenu = {titre: string; href: string; sousLiens?: {titre: string; href: string}[]}
 
 type Props = {
   liens: LienMenu[]
@@ -38,7 +38,11 @@ function Bascule({texte}: {texte: string}) {
   )
 }
 
-/** Lien de menu actif : la page elle-même, ou une page de sa rubrique. */
+/** Lien de menu actif : la page elle-même, une page de sa rubrique, ou l'une de ses sous-rubriques. */
+function etatEntree(pathname: string, l: LienMenu): 'page' | 'true' | undefined {
+  return etatLien(pathname, l.href) ?? (l.sousLiens?.some((x) => etatLien(pathname, x.href)) ? 'true' : undefined)
+}
+
 function etatLien(pathname: string, href: string): 'page' | 'true' | undefined {
   const chemin = href.split('#')[0].split('?')[0]
   if (!chemin.startsWith('/')) return undefined
@@ -168,10 +172,21 @@ export function Entete({liens, bouton, tel, lienTel, reseaux, affiche = []}: Pro
           <nav className="entete__nav" aria-label="Navigation principale">
             <ul>
               {liens.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} aria-current={etatLien(pathname, l.href)}>
+                <li key={l.href} className={l.sousLiens?.length ? 'a-sous-menu' : undefined}>
+                  <Link href={l.href} aria-current={etatEntree(pathname, l)}>
                     <Bascule texte={l.titre} />
                   </Link>
+                  {l.sousLiens?.length ? (
+                    <ul className="sous-menu">
+                      {l.sousLiens.map((x) => (
+                        <li key={x.href}>
+                          <Link href={x.href} aria-current={etatLien(pathname, x.href)}>
+                            {x.titre}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
                 </li>
               ))}
             </ul>
@@ -222,12 +237,23 @@ export function Entete({liens, bouton, tel, lienTel, reseaux, affiche = []}: Pro
               <ol className="menu__liens">
                 {liens.map((l, i) => (
                   <li key={l.href} style={{'--i': i} as CSSProperties}>
-                    <Link href={l.href} aria-current={etatLien(pathname, l.href)} transitionTypes={['menu']} data-lien={l.href} data-choisi={choisi === l.href ? '' : undefined}>
+                    <Link href={l.href} aria-current={etatEntree(pathname, l)} transitionTypes={['menu']} data-lien={l.href} data-choisi={choisi === l.href ? '' : undefined}>
                       <span className="menu__num chiffres" aria-hidden="true">
                         {String(i + 1).padStart(2, '0')}
                       </span>
                       <span className="menu__mot">{l.titre}</span>
                     </Link>
+                    {l.sousLiens?.length ? (
+                      <ul className="menu__sous">
+                        {l.sousLiens.map((x) => (
+                          <li key={x.href}>
+                            <Link href={x.href} aria-current={etatLien(pathname, x.href)} transitionTypes={['menu']} data-lien={x.href} data-choisi={choisi === x.href ? '' : undefined}>
+                              {x.titre}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
                   </li>
                 ))}
               </ol>

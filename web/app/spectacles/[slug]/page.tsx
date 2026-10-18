@@ -11,12 +11,15 @@ import {BarreReserver} from '@/components/spectacle/BarreReserver'
 import {Reservation} from '@/components/spectacle/Reservation'
 import {TexteRiche} from '@/components/TexteRiche'
 import {Bandeau, ImageImprimee, Photo} from '@/components/Visuels'
-import {dateComplete, dateCourte, heure, heuresResume, jourCourt, majuscule, resumeDates} from '@/lib/dates'
+import {dateComplete, dateCourte, heure, jourCourt, majuscule, resumeDates} from '@/lib/dates'
 import {chargerSite, chargerSpectacles} from '@/lib/donnees'
 import {styleEncre} from '@/lib/encre'
 import {sourceImage} from '@/lib/image'
 import {hrefPropre} from '@/lib/liens'
-import {estAVenir, versCarte, versSpectacle} from '@/lib/spectacles'
+import {estAVenir, heuresDe, versCarte, versSpectacle} from '@/lib/spectacles'
+import {ETIQUETTES, ETIQUETTES_ACCESSIBILITE, libelle} from '@/lib/constantes'
+import {Documents} from '@/components/sections/Documents'
+import {integration} from '@/lib/video'
 import {maintenant} from '@/lib/temps'
 import {lienTel, longueur, typo} from '@/lib/typo'
 import {charger} from '@/sanity/charger'
@@ -45,17 +48,6 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
   }
 }
 
-/** Lien YouTube ou Vimeo vers son adresse d'intégration. */
-function integration(url?: string | null): string | null {
-  const u = stegaClean(url)
-  if (!u) return null
-  const yt = u.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/)
-  if (yt) return `https://www.youtube-nocookie.com/embed/${yt[1]}`
-  const vimeo = u.match(/vimeo\.com\/(?:video\/)?(\d+)/)
-  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}?dnt=1`
-  return null
-}
-
 export default async function PageSpectacle({params}: Props) {
   const {slug} = await params
   const [brut, site, spectacles] = await Promise.all([chargerSpectacle(slug), chargerSite(), chargerSpectacles()])
@@ -65,8 +57,19 @@ export default async function PageSpectacle({params}: Props) {
   const s = versSpectacle(brut, instant)
   const r = site.reglages ?? {}
   const tel = stegaClean(r.telBilletterie)
-  const isos = (s.aVenir.length ? s.aVenir : s.representations).map((x) => x.iso)
-  const lienGeneral = s.lienBilletterie || hrefPropre(r.lienBilletterie)
+  const datesAffichees = s.aVenir.length ? s.aVenir : s.representations.filter((x) => !x.scolaire)
+  const isos = datesAffichees.map((x) => x.iso)
+  const lienGeneral = s.lienBilletterie || hrefPropre(site.saison?.boutique) || hrefPropre(r.lienBilletterie)
+  const lienAttente = s.lienListeAttente || hrefPropre(r.lienListeAttente)
+  const citations = brut.citations ?? []
+  const articles = brut.articles ?? []
+  const accessibles = s.etiquettes.filter((e) => ETIQUETTES_ACCESSIBILITE.includes(e)).map((e) => libelle(ETIQUETTES, e))
+  const documents = [
+    ...(brut.dossierPresse ? [{_key: 'presse', titre: 'Dossier de presse', url: brut.dossierPresse, extension: 'pdf'}] : []),
+    ...(brut.photosHD ? [{_key: 'photos', titre: 'Photos en haute définition', url: brut.photosHD, description: 'Libres de droits pour la presse, avec la mention du crédit'}] : []),
+    ...(brut.dossierPedagogique ? [{_key: 'pedagogique', titre: 'Dossier pédagogique', url: brut.dossierPedagogique, extension: 'pdf', description: 'Pour préparer la venue d’une classe'}] : []),
+    ...(brut.documents ?? []),
+  ]
   const prix = (brut.tarifs?.tarifs ?? []).map((t) => ({cle: t._key, categorie: t.categorie, prix: t.prix, precision: t.precision}))
   const texteTarifs = s.etat === 'complet' ? 'Complet' : stegaClean(brut.noteTarifs) || (prix.length ? prix.map((p) => `${p.prix}.–`).join(' / ') : null)
   const accessibilite = brut.accessibilite || brut.lieu?.accessibilite
@@ -76,7 +79,7 @@ export default async function PageSpectacle({params}: Props) {
 
   const infos: [string, string | null | undefined][] = [
     ['Dates', majuscule(resumeDates(isos, true))],
-    ['Heure', heuresResume(isos)],
+    ['Heure', heuresDe(datesAffichees)],
     ['Lieu', s.lieuComplet],
     ['Genre', s.precision || s.genreLibelle],
     ['Public', s.age],
@@ -116,15 +119,38 @@ export default async function PageSpectacle({params}: Props) {
       ),
     })
   if (brut.distinction) encarts.push({titre: 'Distinction', contenu: <p>{typo(brut.distinction)}</p>})
-  if (accessibilite) encarts.push({titre: 'Accessibilité', contenu: <p>{typo(accessibilite)}</p>})
+  if (brut.rendezVous?.length)
+    encarts.push({
+      titre: 'Rendez-vous',
+      contenu: (
+        <ul>
+          {brut.rendezVous.map((x) => (
+            <li key={x._id}>
+              {x.slug && x.aTexte ? <Link href={`/rendez-vous/${stegaClean(x.slug)}`}>{typo(x.titre)}</Link> : typo(x.titre)}
+              {x.periode || x.debut ? ` · ${stegaClean(x.periode) || dateComplete(`${stegaClean(x.debut)}T12:00:00Z`)}` : ''}
+            </li>
+          ))}
+        </ul>
+      ),
+    })
+  if (accessibilite || accessibles.length)
+    encarts.push({
+      titre: 'Accessibilité',
+      contenu: (
+        <>
+          {accessibles.length > 0 && <p>{accessibles.join(' · ')}</p>}
+          {accessibilite && <p>{typo(accessibilite)}</p>}
+        </>
+      ),
+    })
   encarts.push({
     titre: 'Venir',
     contenu: (
       <>
         <p>{typo(brut.lieu?.adresse || [r.rue, r.localite].filter(Boolean).join(', '))}</p>
         {r.accesTrain && <p>{typo(r.accesTrain)}</p>}
-        {hrefPropre(r.lienPlan) && (
-          <a className="lien-fleche" href={hrefPropre(r.lienPlan)!} target="_blank" rel="noopener noreferrer">
+        {(hrefPropre(brut.lieu?.lienPlan) || hrefPropre(r.lienPlan)) && (
+          <a className="lien-fleche" href={(hrefPropre(brut.lieu?.lienPlan) || hrefPropre(r.lienPlan))!} target="_blank" rel="noopener noreferrer">
             Itinéraire <Fleche />
           </a>
         )}
@@ -150,7 +176,7 @@ export default async function PageSpectacle({params}: Props) {
     })
 
   const reservable = s.etat === 'en-vente' || s.etat === 'liste-attente'
-  const actionLibelle = s.etat === 'liste-attente' ? 'Liste d’attente' : 'Réserver'
+  const actionLibelle = s.etat === 'liste-attente' ? 'Liste d’attente' : s.libelleBillet || 'Réserver'
 
   return (
     // L'ancre « reserver » (lien « Réserver » de l'accueil) garde la page en haut ; le tiroir s'ouvre par-dessus.
@@ -211,7 +237,19 @@ export default async function PageSpectacle({params}: Props) {
                   <Alerte /> {typo(brut.avertissement)}
                 </p>
               )}
-              {s.etat === 'complet' && <p className="alerte">Complet. Des places se libèrent parfois : appelez la billetterie{tel ? ` au ${tel}` : ''}.</p>}
+              {s.etat === 'complet' && (
+                <p className="alerte">
+                  Complet. Des places se libèrent parfois :{' '}
+                  {lienAttente ? (
+                    <a href={lienAttente} target="_blank" rel="noopener noreferrer">
+                      inscrivez-vous sur la liste d’attente
+                    </a>
+                  ) : (
+                    <>appelez la billetterie{tel ? ` au ${tel}` : ''}</>
+                  )}
+                  .
+                </p>
+              )}
               {s.etat === 'annule' && <p className="alerte">Ce spectacle est annulé. Les billets sont remboursés à la billetterie.</p>}
               {s.etat === 'passe' && <p className="alerte">Ce spectacle a eu lieu. Retrouvez les prochains rendez-vous dans le programme.</p>}
               <div className="fiche-tete__actions" id="action-reserver">
@@ -238,6 +276,19 @@ export default async function PageSpectacle({params}: Props) {
           <div className="cadre fiche-corps">
             <div className="fiche-corps__texte">
               {brut.texte?.length ? <TexteRiche valeur={brut.texte} /> : <p>{typo(s.accroche)}</p>}
+              {citations.map((c) => (
+                <figure key={c._key} className="exergue">
+                  <blockquote>
+                    <p>« {typo(c.citation)} »</p>
+                  </blockquote>
+                  {(c.auteur || c.media) && <figcaption>{typo([c.auteur, c.media].filter(Boolean).join(', '))}</figcaption>}
+                </figure>
+              ))}
+              {brut.scolaire && (
+                <p className="encadre">
+                  <strong>Avec l’école.</strong> {typo(brut.scolaire)}
+                </p>
+              )}
               {video && (
                 <div className="video">
                   <iframe src={video} title={`Bande-annonce de ${stegaClean(s.titre)}`} loading="lazy" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" />
@@ -292,19 +343,31 @@ export default async function PageSpectacle({params}: Props) {
               {s.representations.map((rep) => (
                 <div key={rep.cle} className={`representation${rep.passee ? ' representation--passee' : ''}`}>
                   <span className="representation__date chiffres">
-                    {jourCourt(rep.iso)} {dateCourte(rep.iso)} · {heure(rep.iso)}
+                    {jourCourt(rep.iso)} {dateCourte(rep.iso)} · {rep.heureAConfirmer ? 'heure à confirmer' : heure(rep.iso)}
                   </span>
-                  <span className="representation__lieu">{[rep.lieu || s.lieu, rep.mention].filter(Boolean).join(' · ')}</span>
+                  <span className="representation__lieu">{[rep.lieu || s.lieu, rep.scolaire ? 'Représentation scolaire' : null, rep.mention].filter(Boolean).join(' · ')}</span>
                   <span className="representation__action">
                     {rep.passee ? (
                       <span className="statut statut--passe">Passé</span>
+                    ) : rep.scolaire ? (
+                      <span className="statut statut--passe">Classes</span>
                     ) : rep.statut === 'complet' ? (
-                      <span className="statut">Complet</span>
+                      lienAttente ? (
+                        <a className="statut statut--lien" href={lienAttente} target="_blank" rel="noopener noreferrer" title="Complet : s’inscrire sur la liste d’attente">
+                          Complet · liste d’attente
+                        </a>
+                      ) : (
+                        <span className="statut">Complet</span>
+                      )
                     ) : rep.statut === 'annule' ? (
                       <span className="statut statut--annule">Annulé</span>
+                    ) : rep.statut === 'liste-attente' && lienAttente ? (
+                      <a className="btn btn--trait btn--petit" href={rep.lien || lienAttente} target="_blank" rel="noopener noreferrer">
+                        Liste d’attente <Fleche />
+                      </a>
                     ) : (
                       <a className="btn btn--trait btn--petit" href={rep.lien || lienGeneral || '#dates'} data-reserver="" data-date={rep.cle}>
-                        {rep.statut === 'liste-attente' ? 'Liste d’attente' : 'Réserver'} <Fleche />
+                        {rep.statut === 'liste-attente' ? 'Liste d’attente' : s.libelleBillet || 'Réserver'} <Fleche />
                       </a>
                     )}
                   </span>
@@ -335,7 +398,34 @@ export default async function PageSpectacle({params}: Props) {
                   </details>
                 ))}
                 {brut.production && <p className="distribution__production">{typo(brut.production)}</p>}
+                {(brut.creation || brut.creditsPhotos) && <p className="distribution__production">{typo([brut.creation, brut.creditsPhotos].filter(Boolean).join(' · '))}</p>}
               </div>
+            </div>
+          </section>
+        )}
+
+        {(articles.length > 0 || documents.length > 0) && (
+          <section className="section bande" id="presse" aria-labelledby="titre-presse">
+            <div className="cadre">
+              <Rubrique titre={articles.length ? 'La presse en parle' : 'À télécharger'} id="titre-presse" taille="l" />
+              {articles.length > 0 && (
+                <ul className="presse">
+                  {articles.map((a) => (
+                    <li key={a._id}>
+                      {a.url ? (
+                        <a href={stegaClean(a.url)} target="_blank" rel="noopener noreferrer">
+                          {typo(a.titre)}
+                        </a>
+                      ) : (
+                        <span>{typo(a.titre)}</span>
+                      )}
+                      <span className="presse__source">{typo([a.media, a.auteur, a.date ? dateComplete(`${stegaClean(a.date)}T12:00:00Z`) : null].filter(Boolean).join(' · '))}</span>
+                      {a.extrait && <span className="presse__extrait">« {typo(a.extrait)} »</span>}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {documents.length > 0 && <Documents documents={documents} />}
             </div>
           </section>
         )}
@@ -380,6 +470,7 @@ export default async function PageSpectacle({params}: Props) {
               prix={prix}
               notePrix={stegaClean(brut.noteTarifs) || stegaClean(brut.tarifs?.note)}
               lien={lienGeneral}
+              listeAttente={lienAttente}
               tel={r.telBilletterie}
               lienTel={tel ? lienTel(tel) : null}
               email={stegaClean(r.emailBilletterie)}

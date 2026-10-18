@@ -2,9 +2,8 @@ import type {CSSProperties} from 'react'
 import {stegaClean} from 'next-sanity'
 import {hrefLien, hrefPropre} from '@/lib/liens'
 import {sourceImage} from '@/lib/image'
-import {lienTel, typo} from '@/lib/typo'
-import {Depliant} from '../Depliant'
-import {Enveloppe, Fleche, Telephone} from '../Icones'
+import {typo} from '@/lib/typo'
+import {Fleche} from '../Icones'
 import {LienSite} from '../LienSite'
 import {Mots} from '../Mots'
 import {Rubrique} from '../Rubrique'
@@ -14,7 +13,6 @@ import type {
   ProprietesSection,
   SectionAppel as TAppel,
   SectionCitation as TCitation,
-  SectionEquipe as TEquipe,
   SectionFaq as TFaq,
   SectionFormules as TFormules,
   SectionFrise as TFrise,
@@ -183,38 +181,6 @@ export function SectionGalerie({section, id, titreId}: ProprietesSection<TGaleri
   )
 }
 
-export function SectionEquipe({section, id, titreId}: ProprietesSection<TEquipe>) {
-  return (
-    <section className="section bande" id={id} aria-labelledby={section.titre ? titreId : undefined}>
-      <div className="cadre">
-        <Rubrique surtitre={section.surtitre} titre={section.titre} texte={section.texte} id={titreId} />
-        <Depliant className="equipe" balise="ul" visibles={6} libelle="Toute l’équipe">
-          {(section.personnes ?? []).map((p) => (
-            <li key={p._id}>
-              {p.fonction && <span className="equipe__fonction">{p.fonction}</span>}
-              <span className="equipe__nom">{p.nom}</span>
-              {(p.email || p.telephone) && (
-                <span className="equipe__liens">
-                  {p.email && (
-                    <a href={`mailto:${stegaClean(p.email)}`}>
-                      <Enveloppe /> <span className="equipe__texte">{p.email}</span>
-                    </a>
-                  )}
-                  {p.telephone && (
-                    <a className="chiffres" href={lienTel(stegaClean(p.telephone))}>
-                      <Telephone /> <span className="equipe__texte">{p.telephone}</span>
-                    </a>
-                  )}
-                </span>
-              )}
-            </li>
-          ))}
-        </Depliant>
-      </div>
-    </section>
-  )
-}
-
 export function SectionFormules({section, id, titreId}: ProprietesSection<TFormules>) {
   const href = hrefPropre(section.bouton?.url)
   return (
@@ -236,6 +202,11 @@ export function SectionFormules({section, id, titreId}: ProprietesSection<TFormu
                 )}
                 {f.periode && <p className="formule__periode">{f.periode}</p>}
                 {f.texte && <p>{typo(f.texte)}</p>}
+                {hrefPropre(f.bouton?.url) && f.bouton?.titre && (
+                  <LienSite className="btn btn--trait btn--petit formule__bouton" href={hrefPropre(f.bouton.url)!} nouvelOnglet>
+                    {f.bouton.titre} <Fleche />
+                  </LienSite>
+                )}
               </div>
             )
           })}

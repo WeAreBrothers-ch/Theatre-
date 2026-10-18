@@ -44,22 +44,26 @@ export function SectionAffiches({section, id, titreId, contexte}: ProprietesSect
   const genre = stegaClean(section.genre)
   const etiquette = stegaClean(section.etiquette)
   const nombre = Math.max(2, Math.min(40, Number(stegaClean(section.nombre)) || 8))
-  const avecPasses = !!section.inclurePasses
+  const quand = stegaClean(section.quand) || (section.inclurePasses ? 'tous' : 'avenir')
+  const garder = (s: Spectacle) => (quand === 'tous' ? true : quand === 'passes' ? !estAVenir(s) : estAVenir(s))
 
-  let base: Spectacle[] = contexte.spectacles.filter((s) => (avecPasses || estAVenir(s)) && (!genre || s.genre === genre) && (!etiquette || s.etiquettes.includes(etiquette)))
+  let base: Spectacle[] = contexte.spectacles.filter((s) => garder(s) && (!genre || s.genre === genre) && (!etiquette || s.etiquettes.includes(etiquette)))
+  // Les spectacles passés : du plus récent au plus ancien.
+  if (quand === 'passes') base = [...base].reverse()
   // Sans filtre de genre, on saute les spectacles déjà listés dans l'agenda au-dessus.
-  if (!genre && !etiquette) {
+  if (!genre && !etiquette && quand === 'avenir') {
     const sansDoublon = base.filter((s) => !contexte.dejaMontres.has(s.slug))
     if (sansDoublon.length >= Math.min(4, nombre)) base = sansDoublon
   }
   if (!base.length) return null
 
   const filtres = section.filtres && !genre
-  const lien = (
-    <Link className="lien-fleche" href={genre ? `/programme#${genre}` : '/programme'}>
-      Tout le programme <Fleche />
-    </Link>
-  )
+  const lien =
+    quand === 'passes' ? null : (
+      <Link className="lien-fleche" href={genre ? `/programme#${genre}` : '/programme'}>
+        Tout le programme <Fleche />
+      </Link>
+    )
 
   if (!filtres) {
     const liste = base.slice(0, nombre)

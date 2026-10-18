@@ -14,14 +14,54 @@ export const GENRES: Option[] = [
 export const ETIQUETTES: Option[] = [
   {title: 'Création', value: 'creation'},
   {title: 'Coproduction', value: 'coproduction'},
+  {title: 'Compagnie en résidence', value: 'residence'},
   {title: 'Midi théâtre', value: 'midi-theatre'},
   {title: 'Afterwork', value: 'afterwork'},
-  {title: 'Compagnie en résidence', value: 'residence'},
+  {title: 'Saison musicale classique', value: 'saison-musicale'},
   {title: 'Hors saison', value: 'hors-saison'},
+  {title: 'Nova Jazz', value: 'nova-jazz'},
   {title: 'Bord de scène', value: 'bord-de-scene'},
+  {title: 'Avant-spectacle', value: 'avant-spectacle'},
   {title: 'Librairie Payot', value: 'librairie'},
+  {title: 'Médiation le soir du spectacle', value: 'mediation'},
   {title: 'Version FALC', value: 'falc'},
   {title: 'Adapté aux personnes malentendantes', value: 'malentendants'},
+  {title: 'Langue des signes (LSF)', value: 'lsf'},
+  {title: 'Surtitré', value: 'surtitrage'},
+  {title: 'Audiodescription', value: 'audiodescription'},
+  {title: 'Avec Ecoute Voir', value: 'ecoute-voir'},
+]
+
+/** Étiquettes d'accessibilité : rappelées sur la page du spectacle. */
+export const ETIQUETTES_ACCESSIBILITE = ['falc', 'malentendants', 'lsf', 'surtitrage', 'audiodescription', 'ecoute-voir']
+
+export const GROUPES_EQUIPE: Option[] = [
+  {title: 'Direction et administration', value: 'direction'},
+  {title: 'Communication et médiation', value: 'communication'},
+  {title: 'Billetterie', value: 'billetterie'},
+  {title: 'Accueil et salle', value: 'accueil'},
+  {title: 'Technique', value: 'technique'},
+  {title: 'Graphisme et impression', value: 'prestataires'},
+  {title: 'Comité des Ami·es du TBB', value: 'comite-amis'},
+  {title: 'Autres', value: 'autres'},
+]
+
+export const TYPES_PARTENAIRES: Option[] = [
+  {title: 'Pouvoirs publics', value: 'institution'},
+  {title: 'Partenaires et soutiens', value: 'partenaire'},
+  {title: 'Partenaires culturels', value: 'culturel'},
+  {title: 'Médias', value: 'media'},
+  {title: 'Prestataires et commerces', value: 'prestataire'},
+]
+
+export const CATEGORIES_RENDEZ_VOUS: Option[] = [
+  {title: 'Grand rendez-vous de la saison', value: 'festival'},
+  {title: 'Événement au TBB', value: 'evenement'},
+  {title: 'Rencontre ou bord de scène', value: 'rencontre'},
+  {title: 'Atelier', value: 'atelier'},
+  {title: 'Exposition', value: 'exposition'},
+  {title: 'Visite', value: 'visite'},
+  {title: 'Activité des Ami·es', value: 'amis'},
 ]
 
 export const STATUTS: Option[] = [

@@ -4,6 +4,7 @@ import {stegaClean} from 'next-sanity'
 import {Scene} from '@/components/Scene'
 import {Sections} from '@/components/sections/Sections'
 import {TetePage} from '@/components/TetePage'
+import {SousNavigation} from '@/components/SousNavigation'
 import {chargerSite, chargerSpectacles} from '@/lib/donnees'
 import {sourceImage} from '@/lib/image'
 import {maintenant} from '@/lib/temps'
@@ -39,6 +40,7 @@ export default async function PageLibre({params}: Props) {
   if (!page) notFound()
   return (
     <Scene>
+      <SousNavigation site={site} chemin={`/${slug}`} />
       <TetePage titre={page.titre} intro={page.intro} image={page.image} />
       <Sections sections={page.sections} contexte={{site, spectacles, instant: maintenant()}} />
     </Scene>
