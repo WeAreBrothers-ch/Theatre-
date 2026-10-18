@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="fr-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Concept · Le plaisir à l'affiche</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Planche de présentation de la refonte du site du Théâtre Benno Besson : audit, fil rouge, méthode, choix graphiques et résultat.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="assets/img/brand/logo-tbb.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&amp;family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&amp;display=swap">
+<link rel="stylesheet" href="assets/css/tbb.css">
+</head>
+<body class="page-concept">
+<a class="lien-evitement" href="#contenu">Aller au contenu</a>
+<header class="entete bande">
+  <div class="cadre">
+    <a class="logo" href="index.html"><img src="assets/img/brand/logo-tbb.png" alt="Théâtre Benno Besson, Yverdon-les-Bains : accueil" width="650" height="561"></a>
+    <nav class="nav-principale" aria-label="Navigation principale">
+      <ul>
+        <li><a href="programme.html" >Programme</a></li>
+        <li><a href="infos.html" >Billetterie</a></li>
+        <li><a href="infos.html#venir">Venir au TBB</a></li>
+        <li><a href="programme.html#jeune-public">Jeune public</a></li>
+        <li><a href="theatre.html" >Le théâtre</a></li>
+      </ul>
+    </nav>
+    <div class="entete__actions">
+      <a class="btn btn--plein btn--petit" href="programme.html" aria-label="Réserver des billets">
+        <svg class="icone-billet" viewBox="0 0 26 16" aria-hidden="true"><path d="M1 1h24v4.1a2.9 2.9 0 0 0 0 5.8V15H1v-4.1a2.9 2.9 0 0 0 0-5.8z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M17.5 2v12" stroke="currentColor" stroke-width="1.6" stroke-dasharray="2 2"/></svg>
+        <span class="long">Réserver</span>
+      </a>
+      <button class="btn btn--trait btn--petit btn-menu" type="button" aria-expanded="false" aria-controls="menu-mobile">Menu</button>
+    </div>
+  </div>
+</header>
+<div class="menu-mobile bande" id="menu-mobile" hidden tabindex="-1" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="menu-mobile__haut">
+    <a class="logo" href="index.html"><img src="assets/img/brand/logo-tbb.png" alt="Théâtre Benno Besson : accueil" width="650" height="561"></a>
+    <button class="btn btn--trait btn--petit menu-mobile__fermer" type="button">Fermer</button>
+  </div>
+  <nav aria-label="Menu principal">
+    <a href="programme.html">Programme</a>
+    <a href="infos.html">Billetterie</a>
+    <a href="infos.html#venir">Venir au TBB</a>
+    <a href="programme.html#jeune-public">Jeune public</a>
+    <a href="theatre.html">Le théâtre</a>
+  </nav>
+  <div class="menu-mobile__infos">
+    <p><strong>Billetterie</strong> 024 423 65 84</p>
+    <p>Rue du Casino 9, 1400 Yverdon-les-Bains</p>
+  </div>
+</div>
+<main id="contenu">
+  <div class="tete-page bande" style="border-bottom:0">
+    <div class="cadre">
+      <p class="fil-ariane"><a href="index.html">Maquette</a> / Concept</p>
+      <div class="tete-page__ligne">
+        <h1 class="t-affiche t-xxl">Le plaisir<br>à l’affiche</h1>
+        <p class="t-lead" style="max-width:36ch">Refonte du site du Théâtre Benno Besson, Yverdon-les-Bains. Planche de concept et maquette, octobre 2026.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. Pourquoi -->
+  <section class="planche bande" aria-labelledby="p1">
+    <div class="cadre">
+      <div class="planche__tete">
+        <span class="planche__num">1/7</span>
+        <h2 class="t-affiche t-l" id="p1">Pourquoi un concept</h2>
+        <p>Une bonne direction artistique, ce n’est pas faire joli. Le concept est le fil rouge du projet : il évite les choix faits au hasard, parce que c’est joli ou parce que c’est la tendance. Chaque choix graphique doit servir la même idée.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Audit -->
+  <section class="planche bande" aria-labelledby="p2">
+    <div class="cadre">
+      <div class="planche__tete">
+        <span class="planche__num">2/7</span>
+        <h2 class="t-affiche t-l" id="p2">Le site actuel</h2>
+        <p>Relevé du 18 octobre 2026 sur theatrebennobesson.ch, en navigateur sur ordinateur et sur téléphone. Un contenu riche et une vraie identité, mais une information difficile à trouver.</p>
+      </div>
+      <div class="captures" style="margin-bottom:clamp(32px,4vw,56px)">
+        <figure style="grid-column:span 5"><img src="assets/img/audit/site-actuel-accueil.jpg" alt="Accueil du site actuel : un nuage de logos verts" loading="lazy"><figcaption>Accueil : un nuage de logos, aucune date au premier écran.</figcaption></figure>
+        <figure style="grid-column:span 4"><img src="assets/img/audit/site-actuel-programme.jpg" alt="Programme du site actuel en deux colonnes" loading="lazy"><figcaption>Programme : deux colonnes lues l’une après l’autre, un seul filtre déroulant.</figcaption></figure>
+        <figure style="grid-column:span 3"><img src="assets/img/audit/site-actuel-mobile.jpg" alt="Site actuel sur téléphone" loading="lazy"><figcaption>Téléphone : le premier spectacle arrive après un écran de logos.</figcaption></figure>
+      </div>
+      <div class="audit">
+        <div>
+          <h3 class="t-affiche">Ce qu’on garde</h3>
+          <ul>
+            <li data-signe="+">Le logo aux trois arches, dessiné d’après les trois baies de la façade de 1898.</li>
+            <li data-signe="+">Le vert TBB, que le public connaît déjà.</li>
+            <li data-signe="+">Une couleur par spectacle : les duotones de la saison deviennent des encres.</li>
+            <li data-signe="+">Des fiches complètes : prix, durée, âge, salle, distribution, avertissements.</li>
+            <li data-signe="+">Les rendez-vous de proximité : Midi théâtre, afterwork, librairie Payot, bords de scène.</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="t-affiche">Ce qu’on change</h3>
+          <ul>
+            <li data-signe="−">Le menu est caché derrière un burger, même sur grand écran.</li>
+            <li data-signe="−">Une seule serif fine pour tout : la date, le titre et le prix se ressemblent.</li>
+            <li data-signe="−">Les quatre liens Billetterie du pied de page (horaires, tarifs, bon cadeau, échange) mènent à la même page, qui ne donne aucune de ces informations.</li>
+            <li data-signe="−">Les prix jeunes (25.– avant 26 ans, 15.– avant 16 ans) n’apparaissent que dans les fiches.</li>
+            <li data-signe="−">Site Wix lourd : 1,4 Mo de HTML pour la page d’accueil, avant même les images.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Fil rouge -->
+  <section class="planche fil-rouge bande" aria-labelledby="p3">
+    <div class="cadre">
+      <div class="planche__tete" style="margin-bottom:24px">
+        <span class="planche__num">3/7</span>
+        <h2 class="t-label" id="p3" style="grid-column:2/-1;align-self:center">Le fil rouge</h2>
+      </div>
+      <blockquote><p>Le plaisir à l’affiche, pour toutes et tous.</p></blockquote>
+      <div class="regle" style="margin-top:clamp(32px,4vw,56px)">
+        <div><h3 class="t-affiche">À l’affiche</h3><p>C’est ce qu’on dit d’un spectacle qui se joue. Chaque spectacle reçoit sa propre affiche, au format suisse, dans sa propre encre.</p></div>
+        <div><h3 class="t-affiche">Le plaisir</h3><p>C’est le mot de Benno Besson : « Le théâtre n’a pas de sens si ce n’est un plaisir, un plaisir à la vie. »</p></div>
+        <div><h3 class="t-affiche">Pour toutes et tous</h3><p>C’est la mission d’un théâtre municipal : « ne laisser personne au bord de la route ». Une affiche se lit de loin, par tout le monde, au bord de la route justement.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Comment le trouver -->
+  <section class="planche bande" aria-labelledby="p4">
+    <div class="cadre">
+      <div class="planche__tete">
+        <span class="planche__num">4/7</span>
+        <h2 class="t-affiche t-l" id="p4">Comment le trouver</h2>
+        <p>On commence par le projet : ses valeurs, son histoire, ses ambitions, son public et ce qui le rend singulier. Puis on cherche l’idée qui relie tout ça, et qu’on peut résumer en quelques mots.</p>
+      </div>
+      <div class="regle regle--5" style="margin-bottom:clamp(32px,4vw,56px)">
+        <div><p class="t-label">Valeurs</p><p>Proximité, éclectisme, accessibilité. Un théâtre municipal qui ne laisse personne au bord de la route.</p></div>
+        <div><p class="t-label">Histoire</p><p>Le Casino de 1898, ses bals et ses soirées. Benno Besson, né à Yverdon, élève de Brecht.</p></div>
+        <div><p class="t-label">Ambitions</p><p>Théâtre de proximité, antenne de la création romande, relais des grandes tournées.</p></div>
+        <div><p class="t-label">Public</p><p>Les fidèles et les Ami·es, les familles et les écoles, les moins de 26 ans, les actifs du Midi théâtre.</p></div>
+        <div><p class="t-label">Singularité</p><p>Trois arches, 460 places à l’italienne à 150 m de la gare, et une cinquantaine de spectacles par saison.</p></div>
+      </div>
+      <div class="carte-mentale">
+        <svg viewBox="0 0 1400 560" role="img" aria-labelledby="cm-titre cm-desc">
+          <title id="cm-titre">Carte mentale du concept</title>
+          <desc id="cm-desc">Les mots associés au théâtre mènent à l’idée centrale, le plaisir à l’affiche. Casino 1898, bals et soirées. Benno Besson, Brecht à Zurich. Un plaisir à la vie. Cinquante spectacles, une encre chacun. Théâtre municipal, pour toutes et tous. Trois arches, façade et logo. Duotones, sérigraphie. Bord de la route, l’affiche. Affichage suisse, format F4.</desc>
+          <defs><marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0d0d0c"/></marker></defs>
+          <rect width="1400" height="560" fill="#ffffff"/>
+          <g fill="none" stroke="#0d0d0c" stroke-width="2" marker-end="url(#fl)">
+            <path d="M250 92H318"/><path d="M540 92C575 92 575 240 608 240"/><path d="M250 186H318"/><path d="M540 186C575 186 575 256 608 256"/><path d="M250 280H318"/><path d="M540 280C575 280 575 278 608 278"/><path d="M250 374H318"/><path d="M540 374C575 374 575 300 608 300"/><path d="M250 468H318"/><path d="M540 468C575 468 575 316 608 316"/><path d="M1150 92H1082"/><path d="M900 92C860 92 860 244 792 244"/><path d="M1150 186H1082"/><path d="M900 186C860 186 860 262 792 262"/><path d="M1150 374H1082"/><path d="M900 374C860 374 860 296 792 296"/><path d="M1150 468H1082"/><path d="M900 468C860 468 860 314 792 314"/>
+          </g>
+          <g font-family="Archivo, Arial Narrow, sans-serif" font-weight="800" font-size="24" fill="#0d0d0c" style="font-stretch:62%">
+            <text x="30" y="100">CASINO 1898</text><text x="330" y="100">BALS · SOIRÉES</text><text x="30" y="194">BENNO BESSON</text><text x="330" y="194">BRECHT · ZURICH</text><text x="30" y="288">« PLAISIR À LA VIE »</text><text x="330" y="288">LE PLAISIR</text><text x="30" y="382">50 SPECTACLES</text><text x="330" y="382">UNE ENCRE CHACUN</text><text x="30" y="476">THÉÂTRE MUNICIPAL</text><text x="330" y="476">POUR TOUTES ET TOUS</text><text x="1160" y="100">TROIS ARCHES</text><text x="1070" y="100" text-anchor="end">FAÇADE · LOGO</text><text x="1160" y="194">DUOTONES</text><text x="1070" y="194" text-anchor="end">SÉRIGRAPHIE</text><text x="1160" y="382">BORD DE LA ROUTE</text><text x="1070" y="382" text-anchor="end">L’AFFICHE</text><text x="1160" y="476">AFFICHAGE SUISSE</text><text x="1070" y="476" text-anchor="end">FORMAT F4</text>
+          </g>
+          <g font-family="Archivo, Arial, sans-serif" font-size="14" fill="#4e554f">
+            <text x="30" y="122">bals, concerts, sociétés locales</text><text x="30" y="216">Schauspielhaus 1947, Berliner Ensemble</text><text x="30" y="310">la citation de Besson</text><text x="30" y="404">chœur, stand-up, danse, marionnettes</text><text x="30" y="498">« ne laisser personne au bord de la route »</text><text x="1160" y="122">les trois baies de 1898</text><text x="1160" y="216">les visuels de la saison</text><text x="1160" y="404">l’affiche se lit de loin</text><text x="1160" y="498">895 × 1280 mm</text>
+          </g>
+          <rect x="610" y="226" width="180" height="104" fill="#019e35" stroke="#0d0d0c" stroke-width="2"/>
+          <text x="700" y="270" text-anchor="middle" font-family="Archivo, Arial Narrow, sans-serif" font-weight="800" font-size="32" fill="#0d0d0c" style="font-stretch:62%">LE PLAISIR</text>
+          <text x="700" y="306" text-anchor="middle" font-family="Archivo, Arial Narrow, sans-serif" font-weight="800" font-size="32" fill="#0d0d0c" style="font-stretch:62%">À L’AFFICHE</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. La pratique -->
+  <section class="planche bande" aria-labelledby="p5">
+    <div class="cadre">
+      <div class="planche__tete">
+        <span class="planche__num">5/7</span>
+        <h2 class="t-affiche t-l" id="p5">La pratique</h2>
+        <p>La phrase devient un outil de décision. Typographie, couleurs, images, formes, mise en page : est-ce que chaque choix soutient l’idée ? Si oui, on garde. Sinon, on cherche autre chose.</p>
+      </div>
+
+      <h3 class="t-label" style="margin-bottom:12px">Typographie</h3>
+      <div class="specimen">
+        <div class="specimen__nom"><strong>Archivo extra-condensé, 800</strong><span>Les titres. L’héritier des caractères en bois des affiches de 1898 et des théâtres zurichois : un titre se lit de loin, comme sur un mur d’affiches.</span></div>
+        <p class="t-affiche" style="font-size:clamp(3rem,8vw,8rem)">Un air de famille</p>
+      </div>
+      <div class="specimen">
+        <div class="specimen__nom"><strong>Archivo, 400 à 650</strong><span>L’information : dates, heures, salles, prix. Rien à déchiffrer, chiffres alignés.</span></div>
+        <p style="font-size:clamp(1.3rem,2vw,1.9rem);font-weight:500;line-height:1.3" class="chiffres">Je 31.12 · 21h · Grande Salle · 40.– / 35.– / 25.– / 15.–</p>
+      </div>
+      <div class="specimen">
+        <div class="specimen__nom"><strong>Newsreader</strong><span>La voix : le texte des spectacles et les citations, comme dans un programme de salle.</span></div>
+        <p class="t-voix" style="font-size:clamp(1.6rem,3vw,2.8rem);font-style:italic;line-height:1.15">Chaque vendredi soir, la famille Mesnard se réunit au Père tranquille.</p>
+      </div>
+
+      <h3 class="t-label" style="margin:clamp(40px,5vw,72px) 0 12px">Couleurs</h3>
+      <div class="nuancier">
+        <div class="nuance" style="background:#ffffff;color:#0d0d0c"><strong>Papier</strong><span>#FFFFFF<br>Le fond d’affiche, pour la clarté.</span></div>
+        <div class="nuance" style="background:#0d0d0c;color:#ffffff"><strong>Noir d’imprimerie</strong><span>#0D0D0C<br>Le texte, les filets, les boutons.</span></div>
+        <div class="nuance" style="background:#019e35;color:#0d0d0c"><strong>Vert TBB</strong><span>#019E35<br>Repris du logo. La signature, la façade.</span></div>
+        <div class="nuance" style="background:#e3241b;color:#ffffff"><strong>Rouge bandeau</strong><span>#E3241B<br>Seulement pour « Complet ».</span></div>
+        <div class="nuance" style="background:#eef0ed;color:#0d0d0c"><strong>Gris</strong><span>#EEF0ED<br>Fond secondaire, tiré vers le vert.</span></div>
+      </div>
+      <div class="annotation" style="margin:20px 0 12px"><strong>Une encre par spectacle</strong>Prélevée automatiquement dans le visuel existant de chaque spectacle. La saison devient un mur d’affiches : l’éclectisme se voit.</div>
+      <div class="encres" id="encres"></div>
+
+      <h3 class="t-label" style="margin:clamp(40px,5vw,72px) 0 12px">Images</h3>
+      <div class="colonnes" style="align-items:start">
+        <div class="col-6">
+          <div class="captures" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+            <figure style="grid-column:auto"><img src="assets/img/shows/tavolo.jpg" alt="Visuel original de Tavolo Pour Drü, duotone orange" loading="lazy"><figcaption>Le visuel actuel, en duotone.</figcaption></figure>
+            <figure style="grid-column:auto"><div class="imprime trame" style="--ink-img:#ed5701;border:var(--filet) solid var(--encre);aspect-ratio:800/514"><img src="assets/img/shows/n/tavolo.jpg" alt="Le même visuel imprimé en noir sur l’encre orange" loading="lazy" style="border:0"></div><figcaption>Imprimé en noir sur son encre.</figcaption></figure>
+            <figure style="grid-column:auto"><img src="assets/img/shows/jacqueline.jpg" alt="Visuel original de Jacqueline, duotone rouge" loading="lazy"><figcaption>Un visuel sombre.</figcaption></figure>
+            <figure style="grid-column:auto"><div class="imprime trame" data-fond="sombre" style="--ink-img:#d60638;border:var(--filet) solid var(--encre);aspect-ratio:800/514"><img src="assets/img/shows/n/jacqueline.jpg" alt="Le même visuel imprimé en blanc sur l’encre rouge" loading="lazy" style="border:0"></div><figcaption>Imprimé en blanc sur son encre.</figcaption></figure>
+          </div>
+        </div>
+        <div class="col-5 decale-8 annotation" style="font-size:var(--t-corps)">
+          <strong>Sérigraphie, deux couleurs</strong>
+          <p>Les visuels de la saison sont repris en niveaux de gris, puis imprimés dans l’encre du spectacle : en noir quand l’image est claire, en blanc quand elle est sombre. Une trame fine rappelle l’impression. Les photos de scène restent en couleur dans la fiche, pour montrer le spectacle tel qu’il est.</p>
+        </div>
+      </div>
+
+      <h3 class="t-label" style="margin:clamp(40px,5vw,72px) 0 12px">Formes et mise en page</h3>
+      <div class="regle">
+        <div><h3 class="t-affiche">Le format F4</h3><p>Chaque spectacle a son affiche au format mondial, 895 × 1280 mm : le format des affiches suisses depuis plus d’un siècle.</p></div>
+        <div><h3 class="t-affiche">Le bandeau</h3><p>Comme sur un vrai mur d’affiches, on colle en biais : Complet, Création, Afterwork 18h, Liste d’attente.</p></div>
+        <div><h3 class="t-affiche">La façade</h3><p>Les trois arches du logo ferment chaque page en pied de page, comme on sort du théâtre par sa façade.</p></div>
+      </div>
+      <div class="regle regle--sans-haut">
+        <div><h3 class="t-affiche">Le tableau</h3><p>L’agenda se lit comme une colonne d’affichage : date, heure et salle, titre, genre, billet. La date vient toujours en premier.</p></div>
+        <div><h3 class="t-affiche">Les filets</h3><p>Filets noirs de 2 px, grille de 12 colonnes. Aucun coin arrondi, aucune ombre : du papier et de l’encre.</p></div>
+        <div><h3 class="t-affiche">Un seul mouvement</h3><p>L’affiche de la une se colle à l’ouverture de la page. Le reste ne bouge que sous la main.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Inspirations -->
+  <section class="planche bande" aria-labelledby="p6">
+    <div class="cadre">
+      <div class="planche__tete">
+        <span class="planche__num">6/7</span>
+        <h2 class="t-affiche t-l" id="p6">Zurich</h2>
+        <p>Les deux références ne sont pas un hasard : c’est au Schauspielhaus de Zurich que Benno Besson découvre Brecht, en 1947. On reprend leur rigueur, pas leurs costumes.</p>
+      </div>
+      <div class="captures">
+        <figure style="grid-column:span 6"><img src="assets/img/audit/schauspielhaus.jpg" alt="Accueil du site du Schauspielhaus Zürich" loading="lazy"><figcaption><strong>Schauspielhaus Zürich.</strong> On reprend les capitales condensées géantes, le noir et blanc, l’agenda en lignes, les boutons encadrés.</figcaption></figure>
+        <figure style="grid-column:span 6"><img src="assets/img/audit/neumarkt-programme.jpg" alt="Programme du Theater Neumarkt" loading="lazy"><figcaption><strong>Theater Neumarkt.</strong> On reprend une couleur par production, le tableau à filets épais, les titres immenses. On laisse la gothique, propre à la culture germanophone : notre équivalent est la linéale en bois des affiches romandes.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Résultat -->
+  <section class="planche bande" aria-labelledby="p7">
+    <div class="cadre">
+      <div class="planche__tete">
+        <span class="planche__num">7/7</span>
+        <h2 class="t-affiche t-l" id="p7">Résultat</h2>
+        <p>Une direction artistique forte, cohérente, incarnée, durable. Et surtout une identité qui ne se contente pas d’être jolie : elle raconte une histoire.</p>
+      </div>
+      <div class="mur mur--5" id="mur-concept" style="margin-bottom:clamp(40px,5vw,64px)"></div>
+      <div class="regle regle--2">
+        <div>
+          <h3 class="t-affiche">Pour les habitué·es</h3>
+          <p>La date en premier et en grand, le téléphone de la billetterie sur chaque page, un menu visible sur ordinateur, des contrastes conformes WCAG AA, des textes de 17 à 22 px.</p>
+        </div>
+        <div>
+          <h3 class="t-affiche">Pour les plus jeunes</h3>
+          <p>Le mur d’affiches, une couleur par spectacle, le tarif à 25.– affiché en grand, le Midi théâtre et l’afterwork, des fiches qui se partagent avec une image forte.</p>
+        </div>
+      </div>
+      <div class="pratique" style="margin-top:clamp(32px,4vw,56px)">
+        <div class="pratique__bloc"><h3 class="t-affiche"><a href="index.html">Accueil</a></h3><p>La une dans l’encre du prochain spectacle, l’agenda, le mur d’affiches, les tarifs.</p></div>
+        <div class="pratique__bloc"><h3 class="t-affiche"><a href="programme.html">Programme</a></h3><p>35 spectacles en liste ou en affiches, filtres par genre, par mois, Midi théâtre.</p></div>
+        <div class="pratique__bloc"><h3 class="t-affiche"><a href="spectacle.html#choices">Fiche spectacle</a></h3><p>Choices : dates, tarifs, réservation, photos, distribution.</p></div>
+        <div class="pratique__bloc"><h3 class="t-affiche"><a href="infos.html">Billetterie</a> · <a href="theatre.html">Théâtre</a></h3><p>Horaires, tarifs, accès, accessibilité ; histoire, salle, équipe, Ami·es.</p></div>
+      </div>
+      <div class="encart" style="margin-top:clamp(40px,5vw,64px)">
+        <h3>Contenus à valider avec le TBB</h3>
+        <ul>
+          <li>Heures non publiées sur le site actuel : indicatives (20h en semaine, 17h le dimanche, 12h15 pour le Midi théâtre).</li>
+          <li>Horaires de la billetterie, catégories du tarif réduit, conditions du bon cadeau et de l’échange de billets.</li>
+          <li>Tarifs propres aux concerts, au Midi théâtre et au jeune public.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="facade">
+  <svg class="facade__arches" viewBox="0 0 1300 276" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false"><path d="M0 276A215 215 0 0 1 410.01 185.47A248 248 0 0 1 889.99 185.47A215 215 0 0 1 1300 276Z"/></svg>
+  <div class="facade__corps bande">
+    <div class="cadre">
+      <div class="facade__grille">
+        <div class="facade__adresse">
+          <p class="t-affiche">Rue du Casino 9</p>
+          <p class="facade__ville">1400 Yverdon-les-Bains</p>
+          <p>À 3 minutes à pied de la gare CFF.<br>Bus 604 et 605, arrêt Théâtre Benno Besson.</p>
+          <p><strong>Billetterie</strong> 024 423 65 84<br><strong>Administration</strong> 024 423 65 80<br>tbb@yverdon-les-bains.ch</p>
+        </div>
+        <div>
+          <h2>Programme 26–27</h2>
+          <ul>
+            <li><a href="programme.html">Spectacles à venir</a></li>
+            <li><a href="programme.html#jeune-public">Jeune public</a></li>
+            <li><a href="programme.html#midi-theatre">Midi théâtre</a></li>
+            <li><a href="programme.html">Programme en PDF</a></li>
+            <li><a href="programme.html">Archives</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Billetterie</h2>
+          <ul>
+            <li><a href="infos.html#billetterie">Horaires et réservations</a></li>
+            <li><a href="infos.html#tarifs">Tarifs</a></li>
+            <li><a href="infos.html#cadeau">Bon cadeau</a></li>
+            <li><a href="infos.html#echange">Échange de billets</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Le théâtre</h2>
+          <ul>
+            <li><a href="theatre.html">Histoire</a></li>
+            <li><a href="theatre.html#salle">La salle</a></li>
+            <li><a href="theatre.html#equipe">Équipe et contacts</a></li>
+            <li><a href="infos.html#venir">Plan et accès</a></li>
+            <li><a href="theatre.html#equipe">Technique</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Vous</h2>
+          <ul>
+            <li><a href="theatre.html#amis">Ami·es du TBB</a></li>
+            <li><a href="infos.html#accessibilite">Accessibilité</a></li>
+            <li><a href="programme.html#jeune-public">Écoles et médiation</a></li>
+            <li><a href="theatre.html#equipe">Presse</a></li>
+            <li><a href="theatre.html#equipe">Professionnel·les</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="facade__bas">
+        <div class="facade__soutiens"><span>Ville d’Yverdon-les-Bains</span><span>Canton de Vaud</span><span>Banque Cantonale Vaudoise</span><span>Loterie Romande</span></div>
+        <div><a href="https://www.instagram.com/tbb_yverdon/">Instagram</a> · <a href="https://www.facebook.com/tbbyverdon/">Facebook</a> · <a href="https://www.linkedin.com/company/th%C3%A9%C3%A2tre-benno-besson/">LinkedIn</a></div>
+        <div>© Théâtre Benno Besson 2026 · <a href="concept.html">Maquette de refonte, octobre 2026</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

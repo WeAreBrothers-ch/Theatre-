@@ -1,0 +1,54 @@
+<!--
+titre: Programme 26–27 · Théâtre Benno Besson
+page: programme
+description: Les 35 spectacles de la saison 26–27 du Théâtre Benno Besson : théâtre, danse, humour, musique et jeune public.
+corps: page-programme
+-->
+<!doctype html>
+<html lang="fr-CH">
+<head>
+{{tete}}
+</head>
+<body class="{{corps}}">
+{{entete}}
+<main id="contenu">
+  <div class="tete-page bande">
+    <div class="cadre">
+      <p class="fil-ariane"><a href="index.html">Accueil</a> / Programme</p>
+      <div class="tete-page__ligne">
+        <h1 class="t-affiche t-xxl">Saison 26–27</h1>
+        <p class="t-lead" style="max-width:36ch">35 spectacles de septembre à mai, au théâtre, au Temple, à l’Aula Magna et à La Marive.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="outils bande">
+    <div class="cadre">
+      <div class="outils__ligne">
+        <div class="filtres" id="filtres-genre" role="group" aria-label="Filtrer par genre"></div>
+        <div class="vue" role="group" aria-label="Affichage">
+          <button type="button" data-vue="liste" aria-pressed="true">Liste</button>
+          <button type="button" data-vue="affiches" aria-pressed="false">Affiches</button>
+        </div>
+      </div>
+      <div class="outils__ligne">
+        <div class="mois-nav" id="filtres-mois" role="group" aria-label="Filtrer par mois"></div>
+        <label class="recherche" for="recherche">
+          <span class="visuellement-cache">Chercher un spectacle ou une compagnie</span>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l5 5" stroke="currentColor" stroke-width="2"/></svg>
+          <input id="recherche" type="search" placeholder="Spectacle, compagnie, artiste" autocomplete="off">
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <section class="bande" aria-label="Spectacles">
+    <div class="cadre" style="padding-bottom:var(--section)">
+      <p class="resultats" id="resultats" aria-live="polite" style="padding-top:24px">35 spectacles</p>
+      <div id="programme"></div>
+    </div>
+  </section>
+</main>
+{{pied}}
+</body>
+</html>

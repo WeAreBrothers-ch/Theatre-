@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="fr-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Programme 26–27 · Théâtre Benno Besson</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Les 35 spectacles de la saison 26–27 du Théâtre Benno Besson : théâtre, danse, humour, musique et jeune public.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="assets/img/brand/logo-tbb.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&amp;family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&amp;display=swap">
+<link rel="stylesheet" href="assets/css/tbb.css">
+</head>
+<body class="page-programme">
+<a class="lien-evitement" href="#contenu">Aller au contenu</a>
+<header class="entete bande">
+  <div class="cadre">
+    <a class="logo" href="index.html"><img src="assets/img/brand/logo-tbb.png" alt="Théâtre Benno Besson, Yverdon-les-Bains : accueil" width="650" height="561"></a>
+    <nav class="nav-principale" aria-label="Navigation principale">
+      <ul>
+        <li><a href="programme.html" aria-current="page">Programme</a></li>
+        <li><a href="infos.html" >Billetterie</a></li>
+        <li><a href="infos.html#venir">Venir au TBB</a></li>
+        <li><a href="programme.html#jeune-public">Jeune public</a></li>
+        <li><a href="theatre.html" >Le théâtre</a></li>
+      </ul>
+    </nav>
+    <div class="entete__actions">
+      <a class="btn btn--plein btn--petit" href="programme.html" aria-label="Réserver des billets">
+        <svg class="icone-billet" viewBox="0 0 26 16" aria-hidden="true"><path d="M1 1h24v4.1a2.9 2.9 0 0 0 0 5.8V15H1v-4.1a2.9 2.9 0 0 0 0-5.8z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M17.5 2v12" stroke="currentColor" stroke-width="1.6" stroke-dasharray="2 2"/></svg>
+        <span class="long">Réserver</span>
+      </a>
+      <button class="btn btn--trait btn--petit btn-menu" type="button" aria-expanded="false" aria-controls="menu-mobile">Menu</button>
+    </div>
+  </div>
+</header>
+<div class="menu-mobile bande" id="menu-mobile" hidden tabindex="-1" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="menu-mobile__haut">
+    <a class="logo" href="index.html"><img src="assets/img/brand/logo-tbb.png" alt="Théâtre Benno Besson : accueil" width="650" height="561"></a>
+    <button class="btn btn--trait btn--petit menu-mobile__fermer" type="button">Fermer</button>
+  </div>
+  <nav aria-label="Menu principal">
+    <a href="programme.html">Programme</a>
+    <a href="infos.html">Billetterie</a>
+    <a href="infos.html#venir">Venir au TBB</a>
+    <a href="programme.html#jeune-public">Jeune public</a>
+    <a href="theatre.html">Le théâtre</a>
+  </nav>
+  <div class="menu-mobile__infos">
+    <p><strong>Billetterie</strong> 024 423 65 84</p>
+    <p>Rue du Casino 9, 1400 Yverdon-les-Bains</p>
+  </div>
+</div>
+<main id="contenu">
+  <div class="tete-page bande">
+    <div class="cadre">
+      <p class="fil-ariane"><a href="index.html">Accueil</a> / Programme</p>
+      <div class="tete-page__ligne">
+        <h1 class="t-affiche t-xxl">Saison 26–27</h1>
+        <p class="t-lead" style="max-width:36ch">35 spectacles de septembre à mai, au théâtre, au Temple, à l’Aula Magna et à La Marive.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="outils bande">
+    <div class="cadre">
+      <div class="outils__ligne">
+        <div class="filtres" id="filtres-genre" role="group" aria-label="Filtrer par genre"></div>
+        <div class="vue" role="group" aria-label="Affichage">
+          <button type="button" data-vue="liste" aria-pressed="true">Liste</button>
+          <button type="button" data-vue="affiches" aria-pressed="false">Affiches</button>
+        </div>
+      </div>
+      <div class="outils__ligne">
+        <div class="mois-nav" id="filtres-mois" role="group" aria-label="Filtrer par mois"></div>
+        <label class="recherche" for="recherche">
+          <span class="visuellement-cache">Chercher un spectacle ou une compagnie</span>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l5 5" stroke="currentColor" stroke-width="2"/></svg>
+          <input id="recherche" type="search" placeholder="Spectacle, compagnie, artiste" autocomplete="off">
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <section class="bande" aria-label="Spectacles">
+    <div class="cadre" style="padding-bottom:var(--section)">
+      <p class="resultats" id="resultats" aria-live="polite" style="padding-top:24px">35 spectacles</p>
+      <div id="programme"></div>
+    </div>
+  </section>
+</main>
+<footer class="facade">
+  <svg class="facade__arches" viewBox="0 0 1300 276" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false"><path d="M0 276A215 215 0 0 1 410.01 185.47A248 248 0 0 1 889.99 185.47A215 215 0 0 1 1300 276Z"/></svg>
+  <div class="facade__corps bande">
+    <div class="cadre">
+      <div class="facade__grille">
+        <div class="facade__adresse">
+          <p class="t-affiche">Rue du Casino 9</p>
+          <p class="facade__ville">1400 Yverdon-les-Bains</p>
+          <p>À 3 minutes à pied de la gare CFF.<br>Bus 604 et 605, arrêt Théâtre Benno Besson.</p>
+          <p><strong>Billetterie</strong> 024 423 65 84<br><strong>Administration</strong> 024 423 65 80<br>tbb@yverdon-les-bains.ch</p>
+        </div>
+        <div>
+          <h2>Programme 26–27</h2>
+          <ul>
+            <li><a href="programme.html">Spectacles à venir</a></li>
+            <li><a href="programme.html#jeune-public">Jeune public</a></li>
+            <li><a href="programme.html#midi-theatre">Midi théâtre</a></li>
+            <li><a href="programme.html">Programme en PDF</a></li>
+            <li><a href="programme.html">Archives</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Billetterie</h2>
+          <ul>
+            <li><a href="infos.html#billetterie">Horaires et réservations</a></li>
+            <li><a href="infos.html#tarifs">Tarifs</a></li>
+            <li><a href="infos.html#cadeau">Bon cadeau</a></li>
+            <li><a href="infos.html#echange">Échange de billets</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Le théâtre</h2>
+          <ul>
+            <li><a href="theatre.html">Histoire</a></li>
+            <li><a href="theatre.html#salle">La salle</a></li>
+            <li><a href="theatre.html#equipe">Équipe et contacts</a></li>
+            <li><a href="infos.html#venir">Plan et accès</a></li>
+            <li><a href="theatre.html#equipe">Technique</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Vous</h2>
+          <ul>
+            <li><a href="theatre.html#amis">Ami·es du TBB</a></li>
+            <li><a href="infos.html#accessibilite">Accessibilité</a></li>
+            <li><a href="programme.html#jeune-public">Écoles et médiation</a></li>
+            <li><a href="theatre.html#equipe">Presse</a></li>
+            <li><a href="theatre.html#equipe">Professionnel·les</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="facade__bas">
+        <div class="facade__soutiens"><span>Ville d’Yverdon-les-Bains</span><span>Canton de Vaud</span><span>Banque Cantonale Vaudoise</span><span>Loterie Romande</span></div>
+        <div><a href="https://www.instagram.com/tbb_yverdon/">Instagram</a> · <a href="https://www.facebook.com/tbbyverdon/">Facebook</a> · <a href="https://www.linkedin.com/company/th%C3%A9%C3%A2tre-benno-besson/">LinkedIn</a></div>
+        <div>© Théâtre Benno Besson 2026 · <a href="concept.html">Maquette de refonte, octobre 2026</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

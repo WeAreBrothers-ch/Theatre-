@@ -1,0 +1,86 @@
+<!--
+titre: Choices · Théâtre Benno Besson
+page: spectacle
+description: Fiche spectacle du Théâtre Benno Besson : dates, billets, distribution et photos.
+corps: page-spectacle
+-->
+<!doctype html>
+<html lang="fr-CH">
+<head>
+{{tete}}
+</head>
+<body class="{{corps}}">
+{{entete}}
+<main id="contenu">
+  <article id="fiche">
+    <!-- L'affiche du spectacle, imprimée dans son encre -->
+    <header class="fiche-tete bande">
+      <div class="cadre">
+        <p class="fil-ariane" id="fiche-ariane"><a href="index.html">Accueil</a> / <a href="programme.html">Programme 26–27</a></p>
+        <div class="fiche-tete__titre" id="fiche-titre"><h1 class="t-affiche">Choices</h1></div>
+        <div class="fiche-tete__visuel" id="fiche-visuel"></div>
+        <div class="fiche-tete__infos" id="fiche-infos"></div>
+      </div>
+    </header>
+
+    <nav class="sous-nav bande" aria-label="Dans cette page">
+      <div class="cadre">
+        <ul>
+          <li><a href="#a-propos">Le spectacle</a></li>
+          <li><a href="#dates">Dates et billets</a></li>
+          <li><a href="#galerie" data-si-fiche="galerie">Photos</a></li>
+          <li><a href="#distribution" data-si-fiche="distribution">Distribution</a></li>
+        </ul>
+        <a class="lien-fleche" href="programme.html">Tout le programme <span class="fleche" aria-hidden="true">→</span></a>
+      </div>
+    </nav>
+
+    <section class="section bande" id="a-propos" aria-label="Le spectacle">
+      <div class="cadre fiche-corps">
+        <div class="fiche-corps__texte" id="fiche-texte"></div>
+        <aside class="fiche-corps__aside" id="fiche-aside" aria-label="Bon à savoir"></aside>
+      </div>
+    </section>
+
+    <section class="section--serre section bande" id="dates" style="padding-top:0" aria-labelledby="titre-dates">
+      <div class="cadre">
+        <div class="rubrique">
+          <h2 class="t-affiche t-l" id="titre-dates">Dates et billets</h2>
+          <p style="max-width:44ch">Plein tarif 40.–, tarif réduit 35.–, moins de 26 ans 25.–, moins de 16 ans 15.–. Billetterie : 024 423 65 84.</p>
+        </div>
+        <div class="representations" id="fiche-dates"></div>
+      </div>
+    </section>
+
+    <section class="section bande" id="galerie" aria-labelledby="titre-galerie" hidden>
+      <div class="cadre">
+        <div class="rubrique"><h2 class="t-affiche t-l" id="titre-galerie">Photos</h2></div>
+        <div class="galerie"></div>
+      </div>
+    </section>
+
+    <section class="section bande" id="distribution" style="padding-top:0" aria-labelledby="titre-distribution" hidden>
+      <div class="cadre">
+        <div class="rubrique"><h2 class="t-affiche t-l" id="titre-distribution">Distribution</h2></div>
+        <div class="distribution"></div>
+      </div>
+    </section>
+  </article>
+
+  <section class="section bande" style="background:var(--gris)" aria-labelledby="titre-proches">
+    <div class="cadre">
+      <div class="rubrique">
+        <div class="rubrique__titre">
+          <p class="t-label">Dans la même veine</p>
+          <h2 class="t-affiche t-l" id="titre-proches">À voir aussi</h2>
+        </div>
+        <a class="lien-fleche" href="programme.html">Toute la saison <span class="fleche" aria-hidden="true">→</span></a>
+      </div>
+      <div class="mur" id="proches"></div>
+    </div>
+  </section>
+</main>
+<div class="barre-reserver" id="barre-reserver"></div>
+{{pied}}
+</body>
+</html>

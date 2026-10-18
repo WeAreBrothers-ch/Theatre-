@@ -1,0 +1,199 @@
+<!--
+titre: Théâtre Benno Besson
+page: accueil
+description: Le Théâtre Benno Besson à Yverdon-les-Bains : la saison 26–27, la billetterie et les infos pratiques.
+corps: page-accueil
+-->
+<!doctype html>
+<html lang="fr-CH">
+<head>
+{{tete}}
+</head>
+<body class="{{corps}}">
+<div class="jour bande" role="note">
+  <div class="cadre">
+    <p id="jour-texte">Aujourd’hui, relâche. Prochain lever de rideau : <a href="spectacle.html#choices">Choices, jeudi 29 octobre à 20h</a></p>
+    <p>Billetterie <strong>024 423 65 84</strong></p>
+  </div>
+</div>
+{{entete}}
+<main id="contenu">
+  <h1 class="visuellement-cache">Théâtre Benno Besson, Yverdon-les-Bains, saison 26–27</h1>
+
+  <!-- À l'affiche : le prochain spectacle en grand format, dans son encre -->
+  <section class="une bande" id="une" aria-labelledby="une-label">
+    <div class="cadre">
+      <div class="une__barre">
+        <p class="t-label" id="une-label">À l’affiche</p>
+        <div class="une__pagination">
+          <button type="button" data-une="prec" aria-label="Spectacle précédent">←</button>
+          <span class="une__compteur t-label chiffres" aria-live="polite">1 / 3</span>
+          <button type="button" data-une="suiv" aria-label="Spectacle suivant">→</button>
+        </div>
+      </div>
+      <div class="une__grille">
+        <div class="une__visuel"></div>
+        <div class="une__contenu">
+          <div><h2 class="une__titre t-affiche"><a href="spectacle.html#choices" style="text-decoration:none">Choices</a></h2></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prochainement : le tableau à filets -->
+  <section class="section bande" aria-labelledby="titre-prochainement">
+    <div class="cadre">
+      <div class="rubrique">
+        <div class="rubrique__titre">
+          <p class="t-label">Les prochaines dates</p>
+          <h2 class="t-affiche t-xl" id="titre-prochainement">Prochainement</h2>
+        </div>
+        <a class="lien-fleche" href="programme.html">Toute la saison, 35 spectacles <span class="fleche" aria-hidden="true">→</span></a>
+      </div>
+      <div class="agenda" id="agenda-accueil"></div>
+    </div>
+  </section>
+
+  <!-- Le mur d'affiches -->
+  <section class="section bande" style="padding-top:0" aria-labelledby="titre-mur">
+    <div class="cadre">
+      <div class="rubrique">
+        <div class="rubrique__titre">
+          <p class="t-label">Théâtre, danse, humour, musique, jeune public</p>
+          <h2 class="t-affiche t-xl" id="titre-mur">La saison en affiches</h2>
+        </div>
+        <div class="filtres" id="filtres-accueil" aria-label="Filtrer par genre"></div>
+      </div>
+      <div class="mur" id="mur-accueil"></div>
+    </div>
+  </section>
+
+  <!-- Tarifs : la porte ouverte -->
+  <section class="tarifs section bande" aria-labelledby="titre-tarifs">
+    <div class="cadre">
+      <div class="rubrique">
+        <div class="rubrique__titre">
+          <p class="t-label">Une place au TBB, Grande Salle</p>
+          <h2 class="t-affiche t-xl" id="titre-tarifs">Pour toutes et tous</h2>
+        </div>
+        <a class="lien-fleche" href="infos.html#tarifs">Tous les tarifs <span class="fleche" aria-hidden="true">→</span></a>
+      </div>
+      <div class="tarifs__grille">
+        <div class="tarif"><p class="tarif__prix">15<small>.–</small></p><p class="tarif__nom">Moins de 16 ans</p></div>
+        <div class="tarif"><p class="tarif__prix">25<small>.–</small></p><p class="tarif__nom">Moins de 26 ans</p></div>
+        <div class="tarif"><p class="tarif__prix">35<small>.–</small></p><p class="tarif__nom">Tarif réduit</p></div>
+        <div class="tarif"><p class="tarif__prix">40<small>.–</small></p><p class="tarif__nom">Plein tarif</p></div>
+      </div>
+      <div class="tarifs__pied">
+        <div>
+          <h3 class="t-affiche">Midi théâtre</h3>
+          <p>Six spectacles courts pendant la pause de midi, en Salle 1 au premier étage. On y vient du bureau, on repart à l’heure.</p>
+          <p style="margin-top:12px"><a class="lien-fleche" href="programme.html#midi-theatre">Les 6 rendez-vous <span class="fleche" aria-hidden="true">→</span></a></p>
+        </div>
+        <div>
+          <h3 class="t-affiche">Afterwork 18h</h3>
+          <p>Swiss Maker et Lionel Frésard rencontre Royale Cattin se jouent aussi à 18h, en sortant du travail.</p>
+        </div>
+        <div>
+          <h3 class="t-affiche">Accompagnant·e offert</h3>
+          <p>Le billet de la personne qui accompagne un·e spectateur·ice en fauteuil roulant est offert. Places à réserver au 024 423 65 84.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Jeune public -->
+  <section class="section bande" aria-labelledby="titre-jeune">
+    <div class="cadre">
+      <div class="rubrique">
+        <div class="rubrique__titre">
+          <p class="t-label">Avec le Théâtre de L’Echandole</p>
+          <h2 class="t-affiche t-xl" id="titre-jeune">Jeune public</h2>
+        </div>
+        <p class="t-lead" style="max-width:34ch">2 théâtres, 11 spectacles, 1 billetterie. Dès 4 ans, en famille ou avec l’école.</p>
+      </div>
+      <div class="mur mur--5" id="mur-jeune"></div>
+    </div>
+  </section>
+
+  <!-- Le théâtre : Benno Besson -->
+  <section class="section bande" style="background:var(--gris)" aria-labelledby="titre-theatre">
+    <div class="cadre">
+      <div class="citation">
+        <figure class="citation__portrait">
+          <img src="assets/img/theatre/benno-besson.jpg" alt="Portrait de Benno Besson, cigarette à la main" loading="lazy" width="1600" height="1126">
+          <figcaption>Benno Besson (1922–2006), né à Yverdon-les-Bains.</figcaption>
+        </figure>
+        <div class="citation__texte">
+          <p class="t-label" id="titre-theatre">Le théâtre</p>
+          <blockquote>
+            <p>« Le théâtre n’a pas de sens si ce n’est un plaisir, un plaisir à la vie. »</p>
+          </blockquote>
+          <p><cite>Benno Besson.</cite> Il découvre Brecht au Schauspielhaus de Zurich, le suit au Berliner Ensemble, puis dirige la Comédie de Genève. Le théâtre de sa ville porte son nom depuis 1998.</p>
+          <div class="reperes">
+            <div class="repere"><p class="repere__chiffre">1898</p><p>Le Casino d’Yverdon ouvre ses portes : bals, soirées et sociétés locales.</p></div>
+            <div class="repere"><p class="repere__chiffre">460</p><p>places dans une salle à l’italienne, derrière les trois arches de la façade.</p></div>
+            <div class="repere"><p class="repere__chiffre">150 m</p><p>de la gare CFF, sur la place piétonne, avec terrasse au rez-de-chaussée.</p></div>
+          </div>
+          <p><a class="lien-fleche" href="theatre.html">L’histoire du théâtre <span class="fleche" aria-hidden="true">→</span></a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Venir au TBB -->
+  <section class="section bande" aria-labelledby="titre-venir">
+    <div class="cadre">
+      <div class="rubrique">
+        <div class="rubrique__titre">
+          <p class="t-label">Infos pratiques</p>
+          <h2 class="t-affiche t-xl" id="titre-venir">Venir au TBB</h2>
+        </div>
+        <a class="lien-fleche" href="infos.html">Billetterie et accès <span class="fleche" aria-hidden="true">→</span></a>
+      </div>
+      <div class="pratique">
+        <div class="pratique__bloc">
+          <h3 class="t-affiche">Billetterie</h3>
+          <p>024 423 65 84<br>billetterie@yverdon-les-bains.ch</p>
+          <p>Mardi à vendredi 14h–18h, samedi 10h–12h, et une heure avant chaque représentation.</p>
+          <p class="a-confirmer">Horaires à confirmer par le TBB.</p>
+        </div>
+        <div class="pratique__bloc">
+          <h3 class="t-affiche">En train, en bus</h3>
+          <p>Gare CFF d’Yverdon-les-Bains à 3 minutes à pied. Bus 604 et 605, arrêt Théâtre Benno Besson.</p>
+        </div>
+        <div class="pratique__bloc">
+          <h3 class="t-affiche">En voiture</h3>
+          <p>Parking de l’Ancien-Stand, juste en face du théâtre. Places pour personnes à mobilité réduite.</p>
+        </div>
+        <div class="pratique__bloc">
+          <h3 class="t-affiche">Avant, après</h3>
+          <p>Pizzeria La Grange da Antonio dans le même bâtiment. Le bøtanik, en face, pour une carte locale et de saison.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lettre d'information -->
+  <section class="lettre section--serre section bande" aria-labelledby="titre-lettre">
+    <div class="cadre">
+      <div class="lettre__texte">
+        <h2 class="t-affiche t-l" id="titre-lettre">La lettre du TBB</h2>
+        <p>Une fois par mois : les spectacles à venir, les dernières places et les bords de scène.</p>
+      </div>
+      <form data-lettre novalidate>
+        <div class="champ">
+          <label for="lettre-email">Votre adresse e-mail</label>
+          <div class="champ--ligne">
+            <input id="lettre-email" type="email" name="email" autocomplete="email" placeholder="prenom@exemple.ch" required>
+            <button class="btn btn--plein" type="submit">S’inscrire</button>
+          </div>
+        </div>
+        <p class="message-ok" role="status" hidden></p>
+      </form>
+    </div>
+  </section>
+</main>
+{{pied}}
+</body>
+</html>
