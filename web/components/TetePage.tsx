@@ -4,6 +4,7 @@ import {stegaClean} from 'next-sanity'
 import {sourceImage} from '@/lib/image'
 import {typo} from '@/lib/typo'
 import type {Img} from '@/sanity/types'
+import {Mots} from './Mots'
 import {ImageImprimee} from './Visuels'
 
 /** En-tête des pages intérieures : fil d'Ariane, très grand titre, introduction, image facultative. */
@@ -21,7 +22,9 @@ export function TetePage({titre, surtitre, intro, image, enPlus}: {titre: string
             <li aria-current="page">{surtitre || titre}</li>
           </ol>
         </nav>
-        <h1 className="t-affiche t-xxl">{typo(titre)}</h1>
+        <h1 className="t-affiche t-xxl mots-entree">
+          <Mots texte={typo(titre)} />
+        </h1>
         {(intro || enPlus) && (
           <div className="tete-page__intro">
             {intro && <p>{typo(intro)}</p>}

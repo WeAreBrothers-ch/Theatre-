@@ -26,7 +26,7 @@ export function SectionAgenda({section, id, titreId, contexte}: ProprietesSectio
     <section className="section bande" id={id} aria-labelledby={titreId}>
       <div className="cadre">
         <Rubrique surtitre={section.surtitre} titre={section.titre || 'Prochainement'} id={titreId} action={lien} />
-        <div className="agenda rangee">
+        <div className="agenda agenda--court">
           {liste.map((s) => (
             <Ligne key={s.id} carte={versCarte(s)} />
           ))}
@@ -67,7 +67,7 @@ export function SectionAffiches({section, id, titreId, contexte}: ProprietesSect
       <section className="section bande" id={id} aria-labelledby={titreId}>
         <div className="cadre">
           <Rubrique surtitre={section.surtitre} titre={section.titre} texte={section.texte} id={titreId} action={lien} />
-          <div className={`mur rangee${liste.length === 5 ? ' mur--5' : ''}`}>
+          <div className={`mur mur--court${liste.length === 5 ? ' mur--5' : ''}`}>
             {liste.map((s) => (
               <Affiche key={s.id} carte={versCarte(s)} />
             ))}
@@ -92,7 +92,7 @@ export function SectionAffiches({section, id, titreId, contexte}: ProprietesSect
     <section className="section bande" id={id} aria-labelledby={titreId}>
       <div className="cadre">
         <Rubrique surtitre={section.surtitre} titre={section.titre} texte={section.texte} id={titreId} action={lien} />
-        <FiltreMur filtres={boutons} classeMur="mur rangee">
+        <FiltreMur filtres={boutons} classeMur="mur mur--court">
           {visibles.map((s) => (
             <div key={s.id} data-dans={dans.get(s.slug)!.join(' ')}>
               <Affiche carte={versCarte(s)} />

@@ -1,5 +1,6 @@
 import type {ReactNode} from 'react'
 import {typo} from '@/lib/typo'
+import {Mots} from './Mots'
 
 /** En-tête de section : surtitre, grand titre d'affiche, texte et lien facultatifs. */
 export function Rubrique({
@@ -29,7 +30,7 @@ export function Rubrique({
         {surtitre && <p className="t-label">{typo(surtitre)}</p>}
         {titre && (
           <Titre className={`t-affiche t-${taille}`} id={id}>
-            {typo(titre)}
+            <Mots texte={typo(titre)} />
           </Titre>
         )}
       </div>

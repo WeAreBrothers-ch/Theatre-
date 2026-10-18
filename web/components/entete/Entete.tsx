@@ -4,6 +4,7 @@ import Link from 'next/link'
 import {usePathname} from 'next/navigation'
 import {useCallback, useEffect, useRef, useState, type CSSProperties, type MouseEvent} from 'react'
 import {avecBase} from '@/lib/chemin'
+import {Defilant} from '../Defilant'
 import {Billet} from '../Icones'
 
 export type LienMenu = {titre: string; href: string}
@@ -14,6 +15,27 @@ type Props = {
   tel?: string | null
   lienTel?: string | null
   reseaux: LienMenu[]
+  /** Titres des prochains spectacles, pour le bandeau qui défile dans le menu. */
+  affiche?: string[]
+}
+
+/**
+ * Le mot qui bascule au survol, lettre par lettre (d'après « Flip Links », 21st.dev) :
+ * chaque lettre porte son double en ombre portée, juste en dessous, et remonte d'un cran.
+ */
+function Bascule({texte}: {texte: string}) {
+  return (
+    <>
+      <span className="visuellement-cache">{texte}</span>
+      <span className="bascule" aria-hidden="true">
+        {[...texte].map((c, i) => (
+          <span key={i} style={{'--l': i} as CSSProperties}>
+            {c === ' ' ? '\u00a0' : c}
+          </span>
+        ))}
+      </span>
+    </>
+  )
 }
 
 /** Lien de menu actif : la page elle-même, ou une page de sa rubrique. */
@@ -37,7 +59,7 @@ function etatLien(pathname: string, href: string): 'page' | 'true' | undefined {
  * - En descendant, l'en-tête s'efface pour laisser la place au contenu ; il revient
  *   au moindre mouvement vers le haut. Seul un attribut change, sans recalcul de mise en page.
  */
-export function Entete({liens, bouton, tel, lienTel, reseaux}: Props) {
+export function Entete({liens, bouton, tel, lienTel, reseaux, affiche = []}: Props) {
   const pathname = usePathname()
   const menu = useRef<HTMLDialogElement>(null)
   const fermerBouton = useRef<HTMLButtonElement>(null)
@@ -113,7 +135,7 @@ export function Entete({liens, bouton, tel, lienTel, reseaux}: Props) {
 
   return (
     <>
-      <header className="entete bande">
+      <header className="entete bande" style={{viewTransitionName: 'entete'}}>
         <div className="cadre entete__barre">
           <Link className="entete__logo" href="/" aria-label="Théâtre Benno Besson, Yverdon-les-Bains : accueil">
             <img src={avecBase('/logo-tbb.png')} alt="" width={300} height={259} />
@@ -123,7 +145,7 @@ export function Entete({liens, bouton, tel, lienTel, reseaux}: Props) {
               {liens.map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} aria-current={etatLien(pathname, l.href)}>
-                    {l.titre}
+                    <Bascule texte={l.titre} />
                   </Link>
                 </li>
               ))}
@@ -134,14 +156,7 @@ export function Entete({liens, bouton, tel, lienTel, reseaux}: Props) {
               <Billet />
               {bouton.titre}
             </Link>
-            <button
-              type="button"
-              className="btn btn--trait btn--petit entete__menu"
-              aria-haspopup="dialog"
-              aria-expanded={ouvert}
-              aria-controls="menu"
-              onClick={ouvrir}
-            >
+            <button type="button" className="btn btn--trait btn--petit entete__menu" aria-haspopup="dialog" aria-expanded={ouvert} aria-controls="menu" onClick={ouvrir}>
               <span className="burger" aria-hidden="true" />
               Menu
             </button>
@@ -150,13 +165,13 @@ export function Entete({liens, bouton, tel, lienTel, reseaux}: Props) {
       </header>
 
       <dialog ref={menu} id="menu" className="menu" aria-label="Menu" onClose={() => setOuvert(false)} onClick={surClicMenu}>
-        <div className="bande">
+        <div className="bande menu__haut">
           <div className="cadre entete__barre">
             <Link className="entete__logo" href="/" aria-label="Accueil">
               <img src={avecBase('/logo-tbb.png')} alt="" width={300} height={259} />
             </Link>
             <div className="entete__actions">
-              <Link className="btn btn--plein btn--petit" href={bouton.href}>
+              <Link className="btn btn--vert btn--petit" href={bouton.href}>
                 <Billet />
                 {bouton.titre}
               </Link>
@@ -168,33 +183,51 @@ export function Entete({liens, bouton, tel, lienTel, reseaux}: Props) {
           </div>
         </div>
         <div className="menu__corps bande">
-          <div className="cadre" style={{display: 'flex', flexDirection: 'column', flex: 1}}>
+          <div className="cadre">
             <nav aria-label="Menu principal">
-              <ul className="menu__liens">
+              <ol className="menu__liens">
                 {liens.map((l, i) => (
                   <li key={l.href} style={{'--i': i} as CSSProperties}>
                     <Link href={l.href} aria-current={etatLien(pathname, l.href)}>
-                      {l.titre}
+                      <span className="menu__num chiffres" aria-hidden="true">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <span className="menu__mot">{l.titre}</span>
                     </Link>
                   </li>
                 ))}
-              </ul>
+              </ol>
             </nav>
-            <div className="menu__bas">
-              {tel && lienTel && (
-                <a className="menu__tel chiffres" href={lienTel}>
-                  Billetterie {tel}
-                </a>
-              )}
-              {reseaux.length > 0 && (
-                <span className="menu__reseaux">
-                  {reseaux.map((r) => (
-                    <a key={r.href} href={r.href} target="_blank" rel="noopener noreferrer">
-                      {r.titre}
-                    </a>
-                  ))}
-                </span>
-              )}
+          </div>
+        </div>
+        {affiche.length > 0 && (
+          <Link className="menu__affiche" href="/programme" aria-label="À l’affiche : voir tout le programme">
+            <Defilant mots={affiche} />
+          </Link>
+        )}
+        <div className="menu__facade">
+          <div>
+            <svg className="menu__arches" viewBox="0 0 1300 276" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">
+              <path d="M0 276A215 215 0 0 1 410.01 185.47A248 248 0 0 1 889.99 185.47A215 215 0 0 1 1300 276Z" />
+            </svg>
+            <div className="menu__bas bande">
+              <div className="cadre">
+                {tel && lienTel && (
+                  <a className="menu__tel" href={lienTel}>
+                    <span className="t-label">Billetterie</span>
+                    <span className="chiffres">{tel}</span>
+                  </a>
+                )}
+                {reseaux.length > 0 && (
+                  <span className="menu__reseaux">
+                    {reseaux.map((r) => (
+                      <a key={r.href} href={r.href} target="_blank" rel="noopener noreferrer">
+                        {r.titre}
+                      </a>
+                    ))}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>

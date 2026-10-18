@@ -4,9 +4,11 @@ import {lienTel, typo} from '@/lib/typo'
 import type {Reglages} from '@/sanity/types'
 import {Bus, Couverts, Enveloppe, Fleche, Horloge, Parking, Repere, Telephone, Train} from '../Icones'
 import {LienSite} from '../LienSite'
+import {Mots} from '../Mots'
 import {Rubrique} from '../Rubrique'
 import {FormulaireContact} from '../formulaires/FormulaireContact'
 import {FormulaireLettre} from '../formulaires/FormulaireLettre'
+import {OngletsAcces, type MoyenAcces} from './OngletsAcces'
 import type {ProprietesSection, SectionContact as TContact, SectionLettre as TLettre, SectionTarifs as TTarifs} from './types'
 
 export function SectionTarifs({section, id, titreId}: ProprietesSection<TTarifs>) {
@@ -32,7 +34,7 @@ export function SectionTarifs({section, id, titreId}: ProprietesSection<TTarifs>
         )}
         {section.grille?.note && <p className="tarifs__note">{typo(section.grille.note)}</p>}
         {notes.length > 0 && (
-          <div className="tarifs__pied rangee rangee--cartes">
+          <div className="tarifs__pied">
             {notes.map((n) => {
               const href = hrefLien(n.lien)
               return (
@@ -112,12 +114,14 @@ function PlanAcces() {
 
 export function SectionAcces({section, id, titreId, contexte}: ProprietesSection) {
   const r: Reglages = contexte.site.reglages ?? {}
-  const lignes = [
-    {titre: 'En train', texte: r.accesTrain, icone: <Train />},
-    {titre: 'En bus', texte: r.accesBus, icone: <Bus />},
-    {titre: 'En voiture', texte: r.accesVoiture, icone: <Parking />},
-    {titre: 'Se restaurer', texte: r.accesRestaurer, icone: <Couverts />},
-  ].filter((l) => l.texte)
+  const lignes: MoyenAcces[] = [
+    {titre: 'En train', court: 'Train', texte: r.accesTrain, icone: <Train />},
+    {titre: 'En bus', court: 'Bus', texte: r.accesBus, icone: <Bus />},
+    {titre: 'En voiture', court: 'Voiture', texte: r.accesVoiture, icone: <Parking />},
+    {titre: 'Se restaurer', court: 'Manger', texte: r.accesRestaurer, icone: <Couverts />},
+  ]
+    .filter((l) => l.texte)
+    .map((l) => ({...l, texte: typo(l.texte as string)}))
   const plan = hrefPropre(r.lienPlan)
   return (
     <section className="section bande fond-gris" id={id} aria-labelledby={titreId} style={{'--plan-fond': '#fff'} as React.CSSProperties}>
@@ -126,19 +130,7 @@ export function SectionAcces({section, id, titreId, contexte}: ProprietesSection
         <div className="acces">
           <PlanAcces />
           <div className="acces__infos">
-            <ul className="liste-acces rangee rangee--cartes">
-              {lignes.map((l) => (
-                <li key={l.titre}>
-                  <span className="pictogramme" aria-hidden="true">
-                    {l.icone}
-                  </span>
-                  <div>
-                    <strong>{l.titre}</strong>
-                    <p>{typo(l.texte)}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <OngletsAcces moyens={lignes} />
             <div className="acces__actions">
               {plan && (
                 <a className="btn btn--plein" href={plan} target="_blank" rel="noopener noreferrer">
@@ -225,7 +217,7 @@ export function SectionContact({section, id, titreId, contexte}: ProprietesSecti
         <section className="section bande" id={id} aria-labelledby={titreId}>
           <div className="cadre">
             <Rubrique surtitre={section.surtitre} titre={section.titre || 'Qui contacter'} id={titreId} />
-            <ul className="annuaire rangee rangee--cartes">
+            <ul className="annuaire">
               {annuaire.map((c) => (
                 <li key={c._key}>
                   <div>
@@ -235,12 +227,12 @@ export function SectionContact({section, id, titreId, contexte}: ProprietesSecti
                   <div className="annuaire__actions">
                     {c.email && (
                       <a className="pastille" href={`mailto:${stegaClean(c.email)}`}>
-                        <Enveloppe /> {c.email}
+                        <Enveloppe /> <span className="pastille__texte">{c.email}</span>
                       </a>
                     )}
                     {c.telephone && (
                       <a className="pastille chiffres" href={lienTel(stegaClean(c.telephone))}>
-                        <Telephone /> {c.telephone}
+                        <Telephone /> <span className="pastille__texte">{c.telephone}</span>
                       </a>
                     )}
                   </div>
@@ -256,7 +248,7 @@ export function SectionContact({section, id, titreId, contexte}: ProprietesSecti
           <div className="cadre ecrire">
             <div className="ecrire__intro">
               <h2 className="t-affiche t-xl" id="ecrire-titre">
-                Écrire au TBB
+                <Mots texte="Écrire au TBB" />
               </h2>
               <p>{typo('Une question, une proposition, une demande pour une classe ? Le bon service vous répond.')}</p>
               <ul className="ecrire__promesse">
@@ -290,7 +282,7 @@ export function SectionLettre({section, id, titreId, contexte}: ProprietesSectio
       <div className="cadre">
         <div className="lettre__texte">
           <h2 className="t-affiche t-xl" id={titreId}>
-            {typo(section.titre || 'La lettre du TBB')}
+            <Mots texte={typo(section.titre || 'La lettre du TBB')} />
           </h2>
           {section.texte && <p className="t-lead">{typo(section.texte)}</p>}
         </div>

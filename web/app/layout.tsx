@@ -4,7 +4,8 @@ import {stegaClean} from 'next-sanity'
 import {Entete, type LienMenu} from '@/components/entete/Entete'
 import {PiedDePage} from '@/components/PiedDePage'
 import {URL_SITE} from '@/lib/constantes'
-import {chargerSite} from '@/lib/donnees'
+import {chargerSite, chargerSpectacles} from '@/lib/donnees'
+import {estAVenir} from '@/lib/spectacles'
 import {sourceImage} from '@/lib/image'
 import {hrefLien, hrefPropre} from '@/lib/liens'
 import {lienTel, typo} from '@/lib/typo'
@@ -45,8 +46,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function MiseEnPage({children}: {children: React.ReactNode}) {
   // Les images viennent du CDN de Sanity : la connexion s'ouvre dès le début du chargement.
   preconnect('https://cdn.sanity.io')
-  const site = await chargerSite()
+  const [site, spectacles] = await Promise.all([chargerSite(), chargerSpectacles()])
   const r = site.reglages ?? {}
+  const affiche = spectacles.filter(estAVenir).slice(0, 8).map((s) => stegaClean(s.titre))
 
   const liens: LienMenu[] = (r.menu ?? [])
     .map((l) => ({titre: l.titre ?? '', href: hrefLien(l) ?? ''}))
@@ -90,6 +92,7 @@ export default async function MiseEnPage({children}: {children: React.ReactNode}
           tel={r.telBilletterie}
           lienTel={tel ? lienTel(tel) : null}
           reseaux={reseaux}
+          affiche={affiche}
         />
         <main id="contenu" tabIndex={-1}>
           {children}

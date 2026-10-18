@@ -4,6 +4,7 @@ import {styleEncre} from '@/lib/encre'
 import {type Spectacle, versCarte} from '@/lib/spectacles'
 import {longueur, typo} from '@/lib/typo'
 import {Fleche} from '../Icones'
+import {Mots} from '../Mots'
 import {Bandeau, ImageImprimee} from '../Visuels'
 import {Carrousel} from './Carrousel'
 
@@ -42,7 +43,9 @@ export function Une({spectacles}: {spectacles: Spectacle[]}) {
                 <div className="une__contenu">
                   <div>
                     <h2 className="une__titre t-affiche" data-longueur={longueur(c.titre)}>
-                      <Link href={href}>{c.titre}</Link>
+                      <Link href={href}>
+                        <Mots texte={c.titre} />
+                      </Link>
                     </h2>
                     {(c.sousTitre || c.compagnie) && <p className="une__sous-titre">{c.sousTitre || c.compagnie}</p>}
                   </div>

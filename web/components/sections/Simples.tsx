@@ -1,9 +1,12 @@
+import type {CSSProperties} from 'react'
 import {stegaClean} from 'next-sanity'
 import {hrefLien, hrefPropre} from '@/lib/liens'
 import {sourceImage} from '@/lib/image'
 import {lienTel, typo} from '@/lib/typo'
-import {Fleche} from '../Icones'
+import {Depliant} from '../Depliant'
+import {Enveloppe, Fleche, Telephone} from '../Icones'
 import {LienSite} from '../LienSite'
+import {Mots} from '../Mots'
 import {Rubrique} from '../Rubrique'
 import {TexteRiche} from '../TexteRiche'
 import {Photo} from '../Visuels'
@@ -49,7 +52,7 @@ export function SectionInfos({section, id, titreId}: ProprietesSection<TInfos>) 
     <section className="section bande" id={id} aria-labelledby={section.titre ? titreId : undefined}>
       <div className="cadre">
         <Rubrique surtitre={section.surtitre} titre={section.titre} id={titreId} taille="l" />
-        <div className="blocs rangee rangee--cartes" data-nombre={blocs.length}>
+        <div className="blocs" data-nombre={blocs.length}>
           {blocs.map((b) => {
             const href = hrefLien(b.lien)
             return (
@@ -89,7 +92,7 @@ export function SectionCitation({section, id, titreId}: ProprietesSection<TCitat
           {section.surtitre && <p className="t-label">{typo(section.surtitre)}</p>}
           <figure>
             <blockquote id={titreId}>
-              <p>« {typo(section.citation)} »</p>
+              <p>{affiche ? <Mots texte={`«\u00a0${typo(section.citation)}\u00a0»`} /> : `« ${typo(section.citation)} »`}</p>
             </blockquote>
             {section.auteur && (
               <figcaption className="citation__auteur" style={{marginTop: 18}}>
@@ -99,7 +102,7 @@ export function SectionCitation({section, id, titreId}: ProprietesSection<TCitat
           </figure>
           {section.texte && <p className="t-lead" style={{maxWidth: '52ch'}}>{typo(section.texte)}</p>}
           {reperes.length > 0 && (
-            <div className="reperes rangee rangee--cartes">
+            <div className="reperes">
               {reperes.map((r) => (
                 <div className="repere" key={r._key}>
                   <span className="repere__chiffre">{r.chiffre}</span>
@@ -119,22 +122,31 @@ export function SectionCitation({section, id, titreId}: ProprietesSection<TCitat
   )
 }
 
+/**
+ * La frise : chaque date est une carte qui monte et se pose sur la précédente
+ * (d'après « Stacking Cards », 21st.dev), en CSS seul : position collante et animation
+ * liée au défilement. On lit l'histoire en descendant, sans glisser sur le côté.
+ */
 export function SectionFrise({section, id, titreId}: ProprietesSection<TFrise>) {
+  const etapes = section.etapes ?? []
   return (
     <section className="section bande" id={id} aria-labelledby={section.titre ? titreId : undefined}>
       <div className="cadre">
         <Rubrique surtitre={section.surtitre} titre={section.titre} id={titreId} />
-        <ol className="frise rangee rangee--cartes">
-          {(section.etapes ?? []).map((e) => {
+        <ol className="frise" style={{'--n': etapes.length} as CSSProperties}>
+          {etapes.map((e, i) => {
             const image = sourceImage(e.image, {ratio: 3 / 2, max: 1080})
             return (
-              <li className="etape" key={e._key}>
-                <p className="etape__annee">{e.annee}</p>
-                <div>
+              <li className="etape" key={e._key} style={{'--i': i} as CSSProperties}>
+                <p className="etape__annee chiffres">{e.annee}</p>
+                <div className="etape__texte">
                   {e.titre && <h3 className="t-affiche">{typo(e.titre)}</h3>}
                   {e.texte && <p>{typo(e.texte)}</p>}
                 </div>
-                {image ? <Photo source={image} sizes="(min-width: 1024px) 30vw, 60vw" alt={stegaClean(e.image?.alt) || ''} /> : <span aria-hidden="true" />}
+                {image && <Photo source={image} sizes="(min-width: 1024px) 30vw, 88vw" alt={stegaClean(e.image?.alt) || ''} />}
+                <span className="etape__rang chiffres" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')} / {String(etapes.length).padStart(2, '0')}
+                </span>
               </li>
             )
           })}
@@ -150,7 +162,7 @@ export function SectionGalerie({section, id, titreId}: ProprietesSection<TGaleri
     <section className="section bande" id={id} aria-labelledby={section.titre ? titreId : undefined}>
       <div className="cadre">
         <Rubrique surtitre={section.surtitre} titre={section.titre} id={titreId} />
-        <div className="galerie rangee">
+        <div className="galerie">
           {images.map((img, i) => {
             const source = sourceImage(img, {max: 1920})
             return (
@@ -176,20 +188,28 @@ export function SectionEquipe({section, id, titreId}: ProprietesSection<TEquipe>
     <section className="section bande" id={id} aria-labelledby={section.titre ? titreId : undefined}>
       <div className="cadre">
         <Rubrique surtitre={section.surtitre} titre={section.titre} texte={section.texte} id={titreId} />
-        <ul className="equipe rangee rangee--cartes">
+        <Depliant className="equipe" balise="ul" visibles={6} libelle="Toute l’équipe">
           {(section.personnes ?? []).map((p) => (
             <li key={p._id}>
               {p.fonction && <span className="equipe__fonction">{p.fonction}</span>}
               <span className="equipe__nom">{p.nom}</span>
-              {p.email && <a href={`mailto:${stegaClean(p.email)}`}>{p.email}</a>}
-              {p.telephone && (
-                <a className="chiffres" href={lienTel(stegaClean(p.telephone))}>
-                  {p.telephone}
-                </a>
+              {(p.email || p.telephone) && (
+                <span className="equipe__liens">
+                  {p.email && (
+                    <a href={`mailto:${stegaClean(p.email)}`}>
+                      <Enveloppe /> <span className="equipe__texte">{p.email}</span>
+                    </a>
+                  )}
+                  {p.telephone && (
+                    <a className="chiffres" href={lienTel(stegaClean(p.telephone))}>
+                      <Telephone /> <span className="equipe__texte">{p.telephone}</span>
+                    </a>
+                  )}
+                </span>
               )}
             </li>
           ))}
-        </ul>
+        </Depliant>
       </div>
     </section>
   )
@@ -201,7 +221,7 @@ export function SectionFormules({section, id, titreId}: ProprietesSection<TFormu
     <section className="section bande" id={id} aria-labelledby={section.titre ? titreId : undefined}>
       <div className="cadre">
         <Rubrique surtitre={section.surtitre} titre={section.titre} texte={section.texte} id={titreId} />
-        <div className="formules rangee rangee--cartes">
+        <div className="formules">
           {(section.formules ?? []).map((f) => {
             const prix = stegaClean(f.prix) ?? ''
             const nombre = /^\d+$/.test(prix)
@@ -240,7 +260,7 @@ export function SectionAppel({section, id, titreId}: ProprietesSection<TAppel>) 
       <div className="cadre">
         {section.titre && (
           <h2 className="t-affiche" id={titreId}>
-            {typo(section.titre)}
+            <Mots texte={typo(section.titre)} />
           </h2>
         )}
         <div className="appel__texte">

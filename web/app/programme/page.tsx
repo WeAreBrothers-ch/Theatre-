@@ -1,6 +1,7 @@
 import type {Metadata} from 'next'
 import {stegaClean} from 'next-sanity'
 import {Programme} from '@/components/programme/Programme'
+import {Scene} from '@/components/Scene'
 import {TetePage} from '@/components/TetePage'
 import {GENRES} from '@/lib/constantes'
 import {chargerSite, chargerSpectacles} from '@/lib/donnees'
@@ -18,7 +19,7 @@ export default async function PageProgramme() {
   const saison = stegaClean(site.saison?.titre)
   const pdf = stegaClean(site.saison?.programmePdf)
   return (
-    <>
+    <Scene>
       <TetePage
         titre="Programme"
         surtitre={saison || 'Programme'}
@@ -34,6 +35,6 @@ export default async function PageProgramme() {
         }
       />
       <Programme cartes={spectacles.map(versCarte)} genres={GENRES.map((g) => ({valeur: g.value, titre: g.title}))} />
-    </>
+    </Scene>
   )
 }

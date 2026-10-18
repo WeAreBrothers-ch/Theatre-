@@ -1,6 +1,7 @@
 import type {Metadata} from 'next'
 import {notFound} from 'next/navigation'
 import {stegaClean} from 'next-sanity'
+import {Scene} from '@/components/Scene'
 import {Sections} from '@/components/sections/Sections'
 import {TetePage} from '@/components/TetePage'
 import {chargerSite, chargerSpectacles} from '@/lib/donnees'
@@ -37,9 +38,9 @@ export default async function PageLibre({params}: Props) {
   const [page, site, spectacles] = await Promise.all([chargerPage(slug), chargerSite(), chargerSpectacles()])
   if (!page) notFound()
   return (
-    <>
+    <Scene>
       <TetePage titre={page.titre} intro={page.intro} image={page.image} />
       <Sections sections={page.sections} contexte={{site, spectacles, instant: maintenant()}} />
-    </>
+    </Scene>
   )
 }

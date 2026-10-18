@@ -259,7 +259,14 @@ export const sectionAffiches = defineType({
     defineField({name: 'genre', title: 'Seulement ce genre', type: 'string', options: {list: GENRES}}),
     defineField({name: 'etiquette', title: 'Seulement cette étiquette', type: 'string', options: {list: ETIQUETTES}}),
     defineField({name: 'filtres', title: 'Afficher les boutons de filtre par genre', type: 'boolean', initialValue: false}),
-    defineField({name: 'nombre', title: 'Nombre d’affiches', type: 'number', initialValue: 8, validation: (r) => r.min(2).max(40)}),
+    defineField({
+      name: 'nombre',
+      title: 'Nombre d’affiches',
+      description: 'Sur ordinateur. Sur téléphone, le site en montre quatre, puis un lien vers tout le programme.',
+      type: 'number',
+      initialValue: 8,
+      validation: (r) => r.min(2).max(40),
+    }),
     defineField({name: 'inclurePasses', title: 'Inclure les spectacles passés', type: 'boolean', initialValue: false}),
   ],
   preview: {
@@ -276,7 +283,18 @@ export const sectionAgenda = defineType({
   title: 'Agenda des prochaines dates',
   type: 'object',
   icon: CalendarIcon,
-  fields: [surtitre, titre, defineField({name: 'nombre', title: 'Nombre de lignes', type: 'number', initialValue: 6, validation: (r) => r.min(2).max(20)})],
+  fields: [
+    surtitre,
+    titre,
+    defineField({
+      name: 'nombre',
+      title: 'Nombre de lignes',
+      description: 'Sur ordinateur. Sur téléphone, le site en montre quatre, puis un lien vers toute la saison.',
+      type: 'number',
+      initialValue: 6,
+      validation: (r) => r.min(2).max(20),
+    }),
+  ],
   preview: {select: {title: 'titre', nombre: 'nombre'}, prepare: ({title, nombre}) => ({title: title || 'Agenda', subtitle: `${nombre ?? 6} prochains spectacles`})},
 })
 

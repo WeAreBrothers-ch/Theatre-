@@ -1,6 +1,9 @@
 import type {Metadata} from 'next'
+import Link from 'next/link'
 import {stegaClean} from 'next-sanity'
 import {Une} from '@/components/accueil/Une'
+import {Defilant} from '@/components/Defilant'
+import {Scene} from '@/components/Scene'
 import {Sections} from '@/components/sections/Sections'
 import {chargerSite, chargerSpectacles} from '@/lib/donnees'
 import {estAVenir} from '@/lib/spectacles'
@@ -29,12 +32,17 @@ export default async function Accueil() {
   const une = choisis.length ? choisis : (enVente.length >= 3 ? enVente : aVenir).slice(0, 3)
 
   return (
-    <>
+    <Scene>
       <h1 className="visuellement-cache">
         {stegaClean(site.reglages?.nom) || 'Théâtre Benno Besson'}, Yverdon-les-Bains{site.saison?.titre ? `, ${stegaClean(site.saison.titre)}` : ''}
       </h1>
       <Une spectacles={une} />
+      {aVenir.length > 0 && (
+        <Link className="bandeau-affiche" href="/programme" aria-label={`Toute la saison : ${aVenir.length} spectacles à venir`}>
+          <Defilant mots={aVenir.slice(0, 10).map((s) => stegaClean(s.titre))} vitesse={4} />
+        </Link>
+      )}
       <Sections sections={accueil?.sections} contexte={{site, spectacles, instant}} />
-    </>
+    </Scene>
   )
 }

@@ -6,6 +6,7 @@ import {moisCourt, nomMois} from '@/lib/dates'
 import {Affiche} from '../Affiche'
 import {Croix, Loupe, VueAffiches, VueListe} from '../Icones'
 import {Ligne} from '../Ligne'
+import {Mots} from '../Mots'
 
 type Genre = {valeur: string; titre: string}
 type Vue = 'liste' | 'affiches' | 'auto'
@@ -32,9 +33,8 @@ export function Programme({cartes, genres}: {cartes: Carte[]; genres: Genre[]}) 
   const [dispo, setDispo] = useState(false)
   const [mois, setMois] = useState('tous')
   const [q, setQ] = useState('')
-  // « auto » : affiches sur téléphone, liste sur ordinateur, sans attendre le script.
+  // « auto » : la liste (avec vignettes sur téléphone), tant qu'on n'a pas choisi les affiches.
   const [vue, setVue] = useState<Vue>('auto')
-  const [telephone, setTelephone] = useState(false)
   const [passes, setPasses] = useState(false)
 
   /** Applique le filtre d'une ancre (#danse, #midi-theatre…). Renvoie vrai si elle en était un. */
@@ -63,13 +63,8 @@ export function Programme({cartes, genres}: {cartes: Carte[]; genres: Genre[]}) 
     lireAdresse()
     const v = lireVue()
     if (v) setVue(v)
-    const mq = window.matchMedia('(max-width: 1023px)')
-    setTelephone(mq.matches)
-    const surChangement = (e: MediaQueryListEvent) => setTelephone(e.matches)
-    mq.addEventListener('change', surChangement)
-    return () => mq.removeEventListener('change', surChangement)
   }, [lireAdresse])
-  const vueVisible: Exclude<Vue, 'auto'> = vue === 'auto' ? (telephone ? 'affiches' : 'liste') : vue
+  const vueVisible: Exclude<Vue, 'auto'> = vue === 'auto' ? 'liste' : vue
 
   // Liens vers le programme depuis le programme (menu, pied de page) et boutons précédent/suivant.
   useEffect(() => {
@@ -240,7 +235,7 @@ export function Programme({cartes, genres}: {cartes: Carte[]; genres: Genre[]}) 
               <section key={cle} aria-labelledby={`mois-${cle}`}>
                 <div className="mois">
                   <h2 className="t-affiche" id={`mois-${cle}`}>
-                    {nomMois(cle)}
+                    <Mots texte={nomMois(cle)} />
                     <span className="mois__annee">{cle.slice(0, 4)}</span>
                   </h2>
                   <span className="mois__nombre">{pluriel(cartesDuMois.length)}</span>
@@ -250,7 +245,7 @@ export function Programme({cartes, genres}: {cartes: Carte[]; genres: Genre[]}) 
                     <Ligne key={c.slug} carte={c} />
                   ))}
                 </div>
-                <div className="mur rangee vue-affiches">
+                <div className="mur vue-affiches">
                   {cartesDuMois.map((c) => (
                     <Affiche key={c.slug} carte={c} />
                   ))}
