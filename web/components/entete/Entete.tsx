@@ -54,32 +54,43 @@ function etatLien(pathname: string, href: string): 'page' | 'true' | undefined {
  *
  * - Le menu de téléphone est un <dialog> natif : le focus y reste, Échap le ferme,
  *   le reste de la page est inerte, sans code de piège à focus fragile.
- * - Il se ferme au clic sur n'importe quel lien (même vers une ancre de la page
- *   en cours), au changement de page et quand l'écran passe en format ordinateur.
- * - En descendant, l'en-tête s'efface pour laisser la place au contenu ; il revient
- *   au moindre mouvement vers le haut. Seul un attribut change, sans recalcul de mise en page.
+ * - Vers une autre page, il reste ouvert le temps que la page arrive dessous, puis se lève
+ *   d'un bloc et la découvre : pas de page qui saute pendant que le menu se ferme.
+ *   Les autres liens (téléphone, réseaux, page en cours) le ferment tout de suite, comme
+ *   le passage en format ordinateur.
+ * - Sur ordinateur, en descendant, l'en-tête s'efface pour laisser la place au contenu ; il
+ *   revient au moindre mouvement vers le haut. Sur téléphone, il reste toujours visible.
  */
 export function Entete({liens, bouton, tel, lienTel, reseaux, affiche = []}: Props) {
   const pathname = usePathname()
   const menu = useRef<HTMLDialogElement>(null)
-  const fermerBouton = useRef<HTMLButtonElement>(null)
   const [ouvert, setOuvert] = useState(false)
+  // Lien du menu choisi : la page change sous le menu, qui se lève ensuite dessus.
+  const [choisi, setChoisi] = useState<string | null>(null)
+  const filet = useRef(0)
 
+  // Le choix reste marqué pendant que le menu se lève ; il est oublié à la prochaine ouverture.
   const fermer = useCallback(() => {
+    window.clearTimeout(filet.current)
     if (menu.current?.open) menu.current.close()
   }, [])
 
   const ouvrir = () => {
     const d = menu.current
     if (!d || d.open) return
+    setChoisi(null)
     d.showModal()
     setOuvert(true)
-    fermerBouton.current?.focus({preventScroll: true})
+    // Le focus va au menu lui-même : aucun bouton n'apparaît encadré à l'ouverture.
+    d.focus({preventScroll: true})
   }
 
-  // Changement de page : le menu se ferme.
+  // Changement de page : la nouvelle page est déjà là, sous le menu ; il se lève et la découvre.
+  // Le focus passe au contenu, pas au bouton « Menu ».
   useEffect(() => {
+    if (!menu.current?.open) return
     fermer()
+    document.getElementById('contenu')?.focus({preventScroll: true})
   }, [pathname, fermer])
 
   // Passage en format ordinateur : le menu de téléphone n'a plus lieu d'être.
@@ -90,7 +101,8 @@ export function Entete({liens, bouton, tel, lienTel, reseaux, affiche = []}: Pro
     return () => mq.removeEventListener('change', surChangement)
   }, [fermer])
 
-  // En-tête qui s'efface en descendant et revient en remontant.
+  // Sur ordinateur, l'en-tête s'efface en descendant et revient en remontant (globals.css) ;
+  // sur téléphone, il reste toujours visible.
   useEffect(() => {
     const racine = document.documentElement
     let precedent = window.scrollY
@@ -130,7 +142,20 @@ export function Entete({liens, bouton, tel, lienTel, reseaux, affiche = []}: Pro
   }, [])
 
   const surClicMenu = (e: MouseEvent<HTMLDialogElement>) => {
-    if ((e.target as Element).closest('a')) fermer()
+    const a = (e.target as Element).closest('a')
+    if (!a) return
+    const url = new URL(a.href, window.location.href)
+    const sansBarre = (c: string) => c.replace(/\/+$/, '')
+    const autrePage = url.origin === window.location.origin && sansBarre(url.pathname) !== sansBarre(window.location.pathname)
+    // Téléphone, réseaux, ancre de la page en cours : le menu se ferme tout de suite.
+    if (!autrePage || a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
+      fermer()
+      return
+    }
+    // Autre page : le menu reste le temps qu'elle arrive (filet de sécurité si elle tarde).
+    setChoisi(a.dataset.lien ?? url.pathname)
+    window.clearTimeout(filet.current)
+    filet.current = window.setTimeout(fermer, 4000)
   }
 
   return (
@@ -164,18 +189,27 @@ export function Entete({liens, bouton, tel, lienTel, reseaux, affiche = []}: Pro
         </div>
       </header>
 
-      <dialog ref={menu} id="menu" className="menu" aria-label="Menu" onClose={() => setOuvert(false)} onClick={surClicMenu}>
+      <dialog
+        ref={menu}
+        id="menu"
+        className="menu"
+        aria-label="Menu"
+        tabIndex={-1}
+        data-choix={choisi ? '' : undefined}
+        onClose={() => setOuvert(false)}
+        onClick={surClicMenu}
+      >
         <div className="bande menu__haut">
           <div className="cadre entete__barre">
-            <Link className="entete__logo" href="/" aria-label="Accueil">
+            <Link className="entete__logo" href="/" aria-label="Accueil" transitionTypes={['menu']}>
               <img src={avecBase('/logo-tbb.png')} alt="" width={300} height={259} />
             </Link>
             <div className="entete__actions">
-              <Link className="btn btn--vert btn--petit" href={bouton.href}>
+              <Link className="btn btn--vert btn--petit" href={bouton.href} transitionTypes={['menu']}>
                 <Billet />
                 {bouton.titre}
               </Link>
-              <button ref={fermerBouton} type="button" className="btn btn--trait btn--petit entete__menu" onClick={fermer}>
+              <button type="button" className="btn btn--trait btn--petit entete__menu" onClick={fermer}>
                 <span className="burger burger--croix" aria-hidden="true" />
                 Fermer
               </button>
@@ -188,7 +222,7 @@ export function Entete({liens, bouton, tel, lienTel, reseaux, affiche = []}: Pro
               <ol className="menu__liens">
                 {liens.map((l, i) => (
                   <li key={l.href} style={{'--i': i} as CSSProperties}>
-                    <Link href={l.href} aria-current={etatLien(pathname, l.href)}>
+                    <Link href={l.href} aria-current={etatLien(pathname, l.href)} transitionTypes={['menu']} data-lien={l.href} data-choisi={choisi === l.href ? '' : undefined}>
                       <span className="menu__num chiffres" aria-hidden="true">
                         {String(i + 1).padStart(2, '0')}
                       </span>

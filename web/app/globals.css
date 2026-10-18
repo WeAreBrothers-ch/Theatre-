@@ -85,6 +85,7 @@ h1, h2, h3, h4, p, ul, ol, dl, dd, figure, blockquote { margin: 0; }
 ul, ol { padding: 0; list-style: none; }
 [hidden] { display: none !important; }
 :focus-visible { outline: 3px solid var(--vert); outline-offset: 3px; }
+#contenu:focus, .menu:focus { outline: none; }
 ::selection { background: var(--vert); color: var(--encre); }
 [id] { scroll-margin-top: calc(var(--entete-h) + 24px); }
 
@@ -224,7 +225,10 @@ ul, ol { padding: 0; list-style: none; }
   transition: transform .4s var(--doux);
   will-change: transform;
 }
-html[data-defile="bas"] .entete:not(:focus-within) { transform: translateY(-100%); }
+/* Sur ordinateur seulement, l'en-tête s'efface en descendant ; sur téléphone, il reste. */
+@media (min-width: 1024px) {
+  html[data-defile="bas"] .entete:not(:focus-within) { transform: translateY(-100%); }
+}
 .entete__barre { display: flex; align-items: center; gap: 12px; height: var(--entete-h); }
 .entete__logo { display: block; flex: none; width: 50px; }
 .entete__logo img { width: 100%; height: auto; }
@@ -274,12 +278,15 @@ html[data-defile="bas"] .entete:not(:focus-within) { transform: translateY(-100%
   margin: 0; padding: 0; border: 0;
   background: var(--encre); color: var(--papier);
   overflow-y: auto; overscroll-behavior: contain;
+  /* La colonne est réglée hors de [open] : pendant que le menu se lève, rien ne se réarrange. */
+  flex-direction: column;
 }
-.menu[open] { display: flex; flex-direction: column; }
+.menu[open] { display: flex; }
 .menu::backdrop { background: transparent; }
 .menu .entete__barre { padding-top: env(safe-area-inset-top, 0px); height: calc(var(--entete-h) + env(safe-area-inset-top, 0px)); flex: none; }
 .menu__haut { border-bottom: 1px solid rgba(255, 255, 255, .18); }
 .menu .btn--trait { color: var(--papier); }
+.menu :focus-visible { outline-color: var(--papier); }
 .menu__corps { flex: 1 0 auto; display: flex; align-items: center; }
 .menu__corps .cadre { padding-block: clamp(18px, 5vh, 48px); }
 .menu__liens { display: grid; gap: 0; counter-reset: lien; }
@@ -293,7 +300,8 @@ html[data-defile="bas"] .entete:not(:focus-within) { transform: translateY(-100%
 .menu__num { font-family: var(--f-texte); font-stretch: 100%; font-size: .8125rem; font-weight: 650; letter-spacing: .06em; color: rgba(255, 255, 255, .45); min-width: 1.6em; transform: translateY(-1.5em); }
 .menu__liens a[aria-current] { color: var(--vert); }
 .menu__liens a[aria-current] .menu__num { color: var(--vert); }
-.menu__liens a:active { color: var(--vert); }
+.menu__liens a:active, .menu__liens a[data-choisi] { color: var(--vert); }
+.menu[data-choix] .menu__liens a:not([data-choisi]) { opacity: .25; }
 
 /* Ce qui se joue : un bandeau qui défile sans fin */
 .menu__affiche { display: block; flex: none; border-block: 1px solid rgba(255, 255, 255, .18); padding-block: 12px; text-decoration: none; overflow: hidden; }
@@ -325,13 +333,14 @@ html[data-defile="bas"] .entete:not(:focus-within) { transform: translateY(-100%
   .menu { transition: clip-path .7s var(--rideau), overlay .7s allow-discrete, display .7s allow-discrete; clip-path: inset(0 0 100% 0); }
   .menu[open] { clip-path: inset(0 0 0 0); }
   @starting-style { .menu[open] { clip-path: inset(100% 0 0 0); } }
-  .menu__liens a { transform: translateY(110%) rotate(5deg); transform-origin: left bottom; transition: transform .3s ease, color .2s ease; }
-  .menu[open] .menu__liens a { transform: none; transition: transform .9s cubic-bezier(.19, 1, .22, 1), color .2s ease; transition-delay: calc(.28s + var(--i, 0) * .06s), 0s; }
+  /* À la fermeture, tout le menu se lève d'un bloc : rien ne bouge dedans pendant qu'il monte. */
+  .menu__liens a { transform: translateY(110%) rotate(5deg); transform-origin: left bottom; transition: transform 0s .7s, color .2s ease, opacity .25s ease; }
+  .menu[open] .menu__liens a { transform: none; transition: transform .9s cubic-bezier(.19, 1, .22, 1), color .2s ease, opacity .25s ease; transition-delay: calc(.28s + var(--i, 0) * .06s), 0s, 0s; }
   @starting-style { .menu[open] .menu__liens a { transform: translateY(110%) rotate(5deg); } }
-  .menu__affiche, .menu__haut .entete__actions { opacity: 0; transition: opacity .2s ease; }
+  .menu__affiche, .menu__haut .entete__actions { opacity: 0; transition: opacity 0s .7s; }
   .menu[open] .menu__affiche, .menu[open] .menu__haut .entete__actions { opacity: 1; transition: opacity .6s ease .55s; }
   @starting-style { .menu[open] .menu__affiche, .menu[open] .menu__haut .entete__actions { opacity: 0; } }
-  .menu__facade > div { transform: translateY(100%); transition: transform .35s ease; }
+  .menu__facade > div { transform: translateY(100%); transition: transform 0s .7s; }
   .menu[open] .menu__facade > div { transform: none; transition: transform 1s cubic-bezier(.19, 1, .22, 1) .38s; }
   @starting-style { .menu[open] .menu__facade > div { transform: translateY(100%); } }
 }
@@ -702,7 +711,7 @@ html[data-defile="bas"] .entete:not(:focus-within) { transform: translateY(-100%
    recouvertes. Sans cette animation, la pile reste, simplement sans recul. */
 .frise { position: relative; display: grid; gap: clamp(14px, 3vw, 28px); overflow-x: clip; overflow-clip-margin: var(--gouttiere); }
 .etape {
-  --haut: calc(var(--entete-h) + 12px);
+  --haut: calc(var(--entete-h) + env(safe-area-inset-top, 0px) + 12px);
   position: sticky; top: calc(var(--haut) + var(--i, 0) * 10px);
   display: flex; flex-direction: column; gap: 12px;
   min-height: min(60svh, 520px);
@@ -711,7 +720,7 @@ html[data-defile="bas"] .entete:not(:focus-within) { transform: translateY(-100%
   transform-origin: 50% 0;
   transition: top .4s var(--doux);
 }
-html[data-defile="bas"] .etape { --haut: 12px; }
+@media (min-width: 1024px) { html[data-defile="bas"] .etape { --haut: 12px; } }
 .etape:nth-child(3n + 2) { background: var(--vert); }
 .etape:nth-child(3n + 3) { background: var(--encre); color: var(--papier); }
 .etape__annee { font-family: var(--f-affiche); font-stretch: 62%; font-weight: 800; font-size: clamp(4.5rem, 24vw, 10rem); line-height: .8; letter-spacing: -.01em; }
@@ -868,11 +877,13 @@ html[data-defile="bas"] .etape { --haut: 12px; }
    Programme
    -------------------------------------------------------------------------- */
 .outils {
-  position: sticky; top: var(--entete-h); z-index: 30;
+  position: sticky; top: calc(var(--entete-h) + env(safe-area-inset-top, 0px)); z-index: 30;
   background: var(--papier); border-bottom: var(--filet) solid var(--encre);
   transition: transform .4s var(--doux);
 }
-html[data-defile="bas"] .outils { transform: translateY(calc(var(--entete-h) * -1 - env(safe-area-inset-top, 0px))); }
+@media (min-width: 1024px) {
+  html[data-defile="bas"] .outils { transform: translateY(calc(var(--entete-h) * -1 - env(safe-area-inset-top, 0px))); }
+}
 .outils .cadre { display: grid; gap: 10px; padding-block: 12px; }
 .outils__ligne { display: flex; gap: 10px; align-items: center; min-width: 0; }
 .recherche { position: relative; flex: 1 1 0; min-width: 0; }
@@ -1366,6 +1377,7 @@ body:has(.barre-reserver) .facade__corps { padding-bottom: calc(max(28px, env(sa
 
 /* Changement de page : la nouvelle scène monte, l'ancienne recule ; l'en-tête reste. */
 ::view-transition { pointer-events: none; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 ::view-transition-group(entete) { animation: none; z-index: 100; }
 ::view-transition-old(entete) { display: none; }
 ::view-transition-new(entete) { animation: none; }
