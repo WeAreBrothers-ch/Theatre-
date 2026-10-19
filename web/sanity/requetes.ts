@@ -34,6 +34,7 @@ const CARTE = /* groq */ `
   "representations": representations[defined(dateHeure)]{_key, dateHeure, statut, mention, lien, "lieu": lieu->nom} | order(dateHeure asc)
 `
 
+// Section Équipe : les équipes cochées dans le Studio ; sans choix, toute l'équipe sauf le comité des Ami·es.
 const SECTIONS = /* groq */ `
   sections[]{
     ...,
@@ -43,7 +44,10 @@ const SECTIONS = /* groq */ `
     _type == "sectionCitation" => {"portrait": portrait{${IMAGE}}, "lien": lien{${LIEN}}},
     _type == "sectionFrise" => {"etapes": etapes[]{..., "image": image{${IMAGE}}}},
     _type == "sectionGalerie" => {"images": images[]{_key, ${IMAGE}}},
-    _type == "sectionEquipe" => {"personnes": *[_type == "personne"] | order(ordre asc, nom asc){_id, nom, fonction, email, telephone, "photo": photo{${IMAGE}}}}
+    _type == "sectionEquipe" => {"personnes": *[_type == "personne" && select(
+      count(coalesce(^.groupes, [])) > 0 => groupe in ^.groupes,
+      groupe != "comite-amis"
+    )] | order(ordre asc, nom asc){_id, nom, fonction, email, telephone, "photo": photo{${IMAGE}}}}
   }
 `
 

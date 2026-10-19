@@ -204,16 +204,7 @@ export function Entete({liens, bouton, tel, lienTel, reseaux, affiche = []}: Pro
         </div>
       </header>
 
-      <dialog
-        ref={menu}
-        id="menu"
-        className="menu"
-        aria-label="Menu"
-        tabIndex={-1}
-        data-choix={choisi ? '' : undefined}
-        onClose={() => setOuvert(false)}
-        onClick={surClicMenu}
-      >
+      <dialog ref={menu} id="menu" className="menu" aria-label="Menu" tabIndex={-1} data-choix={choisi ? '' : undefined} onClose={() => setOuvert(false)} onClick={surClicMenu}>
         <div className="bande menu__haut">
           <div className="cadre entete__barre">
             <Link className="entete__logo" href="/" aria-label="Accueil" transitionTypes={['menu']}>
@@ -235,10 +226,7 @@ export function Entete({liens, bouton, tel, lienTel, reseaux, affiche = []}: Pro
                 {liens.map((l, i) => (
                   <li key={l.href} style={{'--i': i} as CSSProperties}>
                     <Link href={l.href} aria-current={etatLien(pathname, l.href)} transitionTypes={['menu']} data-lien={l.href} data-choisi={choisi === l.href ? '' : undefined}>
-                      <span className="menu__num chiffres" aria-hidden="true">
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
-                      <span className="menu__mot">{l.titre}</span>
+                      {l.titre}
                     </Link>
                   </li>
                 ))}

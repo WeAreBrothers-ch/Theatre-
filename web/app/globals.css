@@ -21,7 +21,7 @@
   --gris-texte: #4e554f;
 
   --f-texte: var(--police-archivo), "Helvetica Neue", Arial, sans-serif;
-  --f-affiche: var(--police-archivo), "Arial Narrow", Arial, sans-serif;
+  --f-affiche: var(--police-tanker), var(--police-archivo), "Arial Narrow", Arial, sans-serif;
   --f-voix: var(--police-newsreader), "Iowan Old Style", Georgia, serif;
 
   --t-xxl: clamp(3.75rem, 15vw, 13.5rem);
@@ -289,7 +289,7 @@ ul, ol { padding: 0; list-style: none; }
 .menu :focus-visible { outline-color: var(--papier); }
 .menu__corps { flex: 1 0 auto; display: flex; align-items: center; }
 .menu__corps .cadre { padding-block: clamp(18px, 5vh, 48px); }
-.menu__liens { display: grid; gap: 0; counter-reset: lien; }
+.menu__liens { display: grid; gap: 0; }
 .menu__liens li { overflow: hidden; }
 .menu__liens a {
   display: flex; align-items: baseline; gap: 12px; padding: 3px 0;
@@ -297,9 +297,7 @@ ul, ol { padding: 0; list-style: none; }
   font-size: clamp(3rem, 15vw, 5.5rem); line-height: .92; text-decoration: none;
   transition: color .2s ease;
 }
-.menu__num { font-family: var(--f-texte); font-stretch: 100%; font-size: .8125rem; font-weight: 650; letter-spacing: .06em; color: rgba(255, 255, 255, .45); min-width: 1.6em; transform: translateY(-1.5em); }
 .menu__liens a[aria-current] { color: var(--vert); }
-.menu__liens a[aria-current] .menu__num { color: var(--vert); }
 .menu__liens a:active, .menu__liens a[data-choisi] { color: var(--vert); }
 .menu[data-choix] .menu__liens a:not([data-choisi]) { opacity: .25; }
 
@@ -724,7 +722,6 @@ ul, ol { padding: 0; list-style: none; }
 .etape:nth-child(3n + 2) { background: var(--vert); }
 .etape:nth-child(3n + 3) { background: var(--encre); color: var(--papier); }
 .etape__annee { font-family: var(--f-affiche); font-stretch: 62%; font-weight: 800; font-size: clamp(4.5rem, 24vw, 10rem); line-height: .8; letter-spacing: -.01em; }
-.etape__rang { position: absolute; top: 18px; right: 18px; font-size: var(--t-label); font-weight: 650; letter-spacing: .07em; opacity: .7; }
 .etape h3 { font-size: var(--t-m); margin-bottom: 8px; }
 .etape p { max-width: 58ch; }
 .etape .photo { margin-top: auto; aspect-ratio: 16 / 9; background: transparent; }
@@ -742,7 +739,6 @@ ul, ol { padding: 0; list-style: none; }
   .etape__annee, .etape:not(:has(.photo)) .etape__annee { order: 0; margin: 0; font-size: clamp(5rem, 9vw, 9.5rem); line-height: .8; }
   .etape__texte { padding-top: 10px; }
   .etape .photo { margin-top: 0; aspect-ratio: 4 / 3; }
-  .etape__rang { top: auto; bottom: 26px; left: 34px; right: auto; }
 }
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {

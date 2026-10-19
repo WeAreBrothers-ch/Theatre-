@@ -144,9 +144,6 @@ export function SectionFrise({section, id, titreId}: ProprietesSection<TFrise>) 
                   {e.texte && <p>{typo(e.texte)}</p>}
                 </div>
                 {image && <Photo source={image} sizes="(min-width: 1024px) 30vw, 88vw" alt={stegaClean(e.image?.alt) || ''} />}
-                <span className="etape__rang chiffres" aria-hidden="true">
-                  {String(i + 1).padStart(2, '0')} / {String(etapes.length).padStart(2, '0')}
-                </span>
               </li>
             )
           })}

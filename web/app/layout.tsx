@@ -1,5 +1,6 @@
 import type {Metadata, Viewport} from 'next'
 import {Archivo, Newsreader} from 'next/font/google'
+import localFont from 'next/font/local'
 import {stegaClean} from 'next-sanity'
 import {Entete, type LienMenu} from '@/components/entete/Entete'
 import {PiedDePage} from '@/components/PiedDePage'
@@ -16,6 +17,9 @@ import {Apercu} from '@/sanity/apercu'
 import {avecBase} from '@/lib/chemin'
 import './globals.css'
 
+// Les titres d'affiche : Tanker (Indian Type Foundry, Fontshare), hébergée avec le site.
+// Une seule graisse, déclarée pour toutes : le navigateur ne fabrique jamais de faux gras.
+const tanker = localFont({src: './polices/Tanker-Regular.woff2', weight: '100 900', variable: '--police-tanker', display: 'swap'})
 const archivo = Archivo({subsets: ['latin'], axes: ['wdth'], variable: '--police-archivo', display: 'swap'})
 // La voix (accroches, citations, textes des spectacles) : une seule graisse, romain et italique, pour rester léger.
 const newsreader = Newsreader({subsets: ['latin'], weight: '400', style: ['normal', 'italic'], variable: '--police-newsreader', display: 'swap'})
@@ -67,7 +71,7 @@ export default async function MiseEnPage({children}: {children: React.ReactNode}
   const lienAnnonce = hrefPropre(annonce?.lien)
 
   return (
-    <html lang="fr-CH" className={`${archivo.variable} ${newsreader.variable}`} data-scroll-behavior="smooth">
+    <html lang="fr-CH" className={`${tanker.variable} ${archivo.variable} ${newsreader.variable}`} data-scroll-behavior="smooth">
       <body>
         <a className="lien-evitement" href="#contenu">
           Aller au contenu
