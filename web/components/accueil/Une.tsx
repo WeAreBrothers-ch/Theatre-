@@ -1,15 +1,17 @@
 import Link from 'next/link'
+import {lienListeAttente, lienReservation, NOUVEL_ONGLET} from '@/lib/billetterie'
 import {sourceImage} from '@/lib/image'
 import {styleEncre} from '@/lib/encre'
 import {type Spectacle, versCarte} from '@/lib/spectacles'
 import {longueur, typo} from '@/lib/typo'
-import {Fleche} from '../Icones'
+import type {Site} from '@/sanity/types'
+import {Externe, Fleche} from '../Icones'
 import {Mots} from '../Mots'
 import {Bandeau, ImageImprimee} from '../Visuels'
 import {Carrousel} from './Carrousel'
 
 /** Le grand format de l'accueil : un spectacle par diapositive, dans son encre. */
-export function Une({spectacles}: {spectacles: Spectacle[]}) {
+export function Une({spectacles, site}: {spectacles: Spectacle[]; site: Site}) {
   if (!spectacles.length) return null
   return (
     <Carrousel encres={spectacles.map((s) => s.encre)} libelle="À l’affiche">
@@ -17,6 +19,8 @@ export function Une({spectacles}: {spectacles: Spectacle[]}) {
         const c = versCarte(s)
         const href = `/spectacles/${s.slug}`
         const meta = [s.lieu, s.midi ? 'Midi théâtre' : s.precision || s.genreLibelle, s.age].filter(Boolean).join(' · ')
+        // Réserver mène droit à la billetterie Infomaniak du spectacle ; liste d'attente : son formulaire.
+        const billet = s.etat === 'en-vente' ? lienReservation(s, site) : s.etat === 'liste-attente' ? lienListeAttente(s, site) : null
         return (
           <article
             key={s.id}
@@ -60,9 +64,14 @@ export function Une({spectacles}: {spectacles: Spectacle[]}) {
                     </div>
                     {s.accroche && <p className="une__accroche">{typo(s.accroche)}</p>}
                     <div className="une__actions">
-                      {s.etat === 'en-vente' || s.etat === 'liste-attente' ? (
+                      {billet ? (
+                        <a className="btn btn--plein" href={billet} {...NOUVEL_ONGLET}>
+                          {s.etat === 'liste-attente' ? 'Liste d’attente' : s.libelleBillet} <Externe />
+                          <span className="visuellement-cache"> (billetterie en ligne, nouvel onglet)</span>
+                        </a>
+                      ) : s.etat === 'en-vente' || s.etat === 'liste-attente' ? (
                         <Link className="btn btn--plein" href={`${href}#reserver`}>
-                          {s.etat === 'liste-attente' ? 'Liste d’attente' : 'Réserver'} <Fleche />
+                          {s.etat === 'liste-attente' ? 'Liste d’attente' : s.libelleBillet} <Fleche />
                         </Link>
                       ) : null}
                       <Link className="btn btn--trait" href={href}>

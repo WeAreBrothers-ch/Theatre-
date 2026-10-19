@@ -159,7 +159,7 @@ export const reglages = defineType({
       validation: (r) => r.max(7).warning('Au-delà de 6 entrées, le menu devient difficile à lire.'),
       description: 'Les entrées du menu, dans l’ordre. 6 au plus. Une entrée peut avoir des sous-rubriques (Le théâtre → Histoire, Équipe, Technique…).',
     }),
-    defineField({name: 'boutonMenu', title: 'Bouton du menu', type: 'bouton', group: 'navigation', description: 'Le bouton noir en haut à droite. Exemple : Réserver → /programme'}),
+    defineField({name: 'boutonMenu', title: 'Bouton du menu', type: 'bouton', group: 'navigation', description: 'Le bouton noir en haut à droite. Exemple : Réserver → la boutique Infomaniak de la saison (elle s’ouvre dans un nouvel onglet). Sans adresse : la boutique de la saison en cours.'}),
 
     defineField({
       name: 'colonnesPied',

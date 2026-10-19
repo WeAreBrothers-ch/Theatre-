@@ -65,6 +65,8 @@ export type CarteBrute = {
   lieu?: {nom?: string | null; nomComplet?: string | null; adresse?: string | null; accessibilite?: string | null} | null
   representations?: RepresentationBrute[] | null
   lienBilletterie?: string | null
+  libelleBillet?: string | null
+  lienListeAttente?: string | null
 }
 
 export type SpectacleBrut = CarteBrute & {
@@ -92,6 +94,7 @@ export type Reglages = {
   telAdmin?: string | null
   emailGeneral?: string | null
   lienBilletterie?: string | null
+  lienListeAttente?: string | null
   horaires?: {_key: string; jours?: string | null; heures?: string | null}[] | null
   noteHoraires?: string | null
   accesTrain?: string | null
@@ -116,7 +119,7 @@ export type Personne = {_id: string; nom: string; fonction?: string | null; emai
 export type Site = {
   reglages: Reglages | null
   partenaires: Partenaire[]
-  saison: {titre?: string | null; programmePdf?: string | null} | null
+  saison: {titre?: string | null; boutique?: string | null; programmePdf?: string | null} | null
 }
 
 /** Une section de page : le champ `_type` dit laquelle. */

@@ -1,6 +1,6 @@
 /*
- * Réglages du site : coordonnées, horaires de la billetterie, menu à deux niveaux
- * (celui du site actuel), pied de page, réseaux et avis datés.
+ * Réglages du site : coordonnées, horaires de la billetterie, menu (cinq entrées et leurs
+ * sous-rubriques), pied de page, réseaux et avis datés.
  */
 import {cle} from './outils.mjs'
 import {lien} from './pages.mjs'
@@ -33,8 +33,10 @@ export function ajouterReglages({ajouter}) {
     accesVoiture: 'Parking de l’Ancien-Stand, juste en face du théâtre, avec des places pour les véhicules de personnes à mobilité réduite.',
     accesRestaurer: 'Restaurant-pizzeria La Grange da Antonio, dans le même bâtiment. En face, le bøtanik propose une petite carte de produits frais, locaux et de saison.',
     lienPlan: 'https://www.google.com/maps/place/Benno+Besson/@46.779834,6.642209,15z/data=!4m5!3m4!1s0x0:0x2bee5710721f8915!8m2!3d46.779834!4d6.642209',
+    // Les cinq entrées du site (Programme, Billetterie, Jeune public, Le théâtre, Contact),
+    // avec les rubriques de l'ancien site rangées dessous.
     menu: [
-      entree('Saison 26–27', '/programme', [
+      entree('Programme', '/programme', [
         ['Spectacles à venir', '/programme'],
         ['Spectacles passés', 'page-spectacles-passes'],
         ['Les grands rendez-vous', 'page-rendez-vous'],
@@ -46,6 +48,11 @@ export function ajouterReglages({ajouter}) {
         ['Tarifs et pass', '/billetterie#tarifs'],
         ['Bon cadeau', '/billetterie#bon-cadeau'],
         ['Échange de billets', '/billetterie#echange'],
+        ['Infos pratiques', 'page-infos-pratiques'],
+      ]),
+      entree('Jeune public', 'page-jeune-public', [
+        ['Jeune public', 'page-jeune-public'],
+        ['Médiation', 'page-mediation'],
       ]),
       entree('Le théâtre', 'page-le-theatre', [
         ['Histoire', 'page-le-theatre'],
@@ -53,18 +60,14 @@ export function ajouterReglages({ajouter}) {
         ['Technique', 'page-technique'],
         ['Partenaires', 'page-partenaires'],
         ['La presse en parle', 'page-presse'],
-      ]),
-      entree('Vous', 'page-jeune-public', [
-        ['Jeune public', 'page-jeune-public'],
-        ['Médiation', 'page-mediation'],
         ['Ami·es du TBB', 'page-amis'],
         ['Journalistes', 'page-journalistes'],
         ['Professionnel·les', 'page-pro'],
       ]),
-      entree('Infos pratiques', 'page-infos-pratiques'),
       entree('Contact', 'page-contact'),
     ],
-    boutonMenu: {_type: 'bouton', titre: 'Billetterie', url: BOUTIQUE},
+    // « Réserver » ouvre la boutique Infomaniak de la saison, comme sur le site actuel.
+    boutonMenu: {_type: 'bouton', titre: 'Réserver', url: BOUTIQUE},
     colonnesPied: [
       {_type: 'colonne', _key: cle('p1'), titre: 'Le programme 26–27', liens: [lien('Spectacles à venir', '/programme', 'p1'), lien('Spectacles passés', 'page-spectacles-passes', 'p1'), lien('PDF du programme', 'https://www.theatrebennobesson.ch/_files/ugd/bd258f_b412fe0145d442e5bd9420b210d88263.pdf', 'p1'), lien('Archives', 'page-archives', 'p1'), lien('Les grands rendez-vous', 'page-rendez-vous', 'p1')]},
       {_type: 'colonne', _key: cle('p2'), titre: 'La billetterie', liens: [lien('Réservations et horaires', '/billetterie#reservations', 'p2'), lien('Tarifs', '/billetterie#tarifs', 'p2'), lien('Bon cadeau', '/billetterie#bon-cadeau', 'p2'), lien('Échange de billets', '/billetterie#echange', 'p2')]},

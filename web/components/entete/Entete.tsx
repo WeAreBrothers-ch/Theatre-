@@ -38,6 +38,24 @@ function Bascule({texte}: {texte: string}) {
   )
 }
 
+/** « Réserver » : la boutique Infomaniak s'ouvre dans un nouvel onglet, une page du site sur place. */
+function BoutonReserver({lien, className, depuisMenu}: {lien: LienMenu; className: string; depuisMenu?: boolean}) {
+  if (/^(https?:)?\/\//.test(lien.href))
+    return (
+      <a className={className} href={lien.href} target="_blank" rel="noopener noreferrer">
+        <Billet />
+        {lien.titre}
+        <span className="visuellement-cache"> (billetterie en ligne, nouvel onglet)</span>
+      </a>
+    )
+  return (
+    <Link className={className} href={lien.href} transitionTypes={depuisMenu ? ['menu'] : undefined}>
+      <Billet />
+      {lien.titre}
+    </Link>
+  )
+}
+
 /** Lien de menu actif : la page elle-même, ou une page de sa rubrique. */
 function etatLien(pathname: string, href: string): 'page' | 'true' | undefined {
   const chemin = href.split('#')[0].split('?')[0]
@@ -177,10 +195,7 @@ export function Entete({liens, bouton, tel, lienTel, reseaux, affiche = []}: Pro
             </ul>
           </nav>
           <div className="entete__actions">
-            <Link className="btn btn--plein btn--petit entete__billets" href={bouton.href}>
-              <Billet />
-              {bouton.titre}
-            </Link>
+            <BoutonReserver lien={bouton} className="btn btn--plein btn--petit entete__billets" />
             <button type="button" className="btn btn--trait btn--petit entete__menu" aria-haspopup="dialog" aria-expanded={ouvert} aria-controls="menu" onClick={ouvrir}>
               <span className="burger" aria-hidden="true" />
               Menu
@@ -205,10 +220,7 @@ export function Entete({liens, bouton, tel, lienTel, reseaux, affiche = []}: Pro
               <img src={avecBase('/logo-tbb.png')} alt="" width={300} height={259} />
             </Link>
             <div className="entete__actions">
-              <Link className="btn btn--vert btn--petit" href={bouton.href} transitionTypes={['menu']}>
-                <Billet />
-                {bouton.titre}
-              </Link>
+              <BoutonReserver lien={bouton} className="btn btn--vert btn--petit" depuisMenu />
               <button type="button" className="btn btn--trait btn--petit entete__menu" onClick={fermer}>
                 <span className="burger burger--croix" aria-hidden="true" />
                 Fermer

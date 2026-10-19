@@ -52,6 +52,9 @@ export type Spectacle = {
   etat: Etat
   bandeau: {texte: string; ton: Ton} | null
   lienBilletterie?: string | null
+  /** Texte du bouton de réservation (« Réserver » par défaut). */
+  libelleBillet: string
+  lienListeAttente?: string | null
 }
 
 const STATUTS_CONNUS: Statut[] = ['en-vente', 'complet', 'liste-attente', 'annule']
@@ -117,6 +120,8 @@ export function versSpectacle(c: CarteBrute, instant: Date): Spectacle {
     etat,
     bandeau,
     lienBilletterie: stegaClean(c.lienBilletterie) || null,
+    libelleBillet: stegaClean(c.libelleBillet)?.trim() || 'Réserver',
+    lienListeAttente: stegaClean(c.lienListeAttente) || null,
   }
 }
 

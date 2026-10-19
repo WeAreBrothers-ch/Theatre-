@@ -6,6 +6,7 @@ import {PiedDePage} from '@/components/PiedDePage'
 import {URL_SITE} from '@/lib/constantes'
 import {chargerSite, chargerSpectacles} from '@/lib/donnees'
 import {estAVenir} from '@/lib/spectacles'
+import {boutique} from '@/lib/billetterie'
 import {sourceImage} from '@/lib/image'
 import {hrefLien, hrefPropre} from '@/lib/liens'
 import {lienTel, typo} from '@/lib/typo'
@@ -53,7 +54,8 @@ export default async function MiseEnPage({children}: {children: React.ReactNode}
   const liens: LienMenu[] = (r.menu ?? [])
     .map((l) => ({titre: l.titre ?? '', href: hrefLien(l) ?? ''}))
     .filter((l) => l.titre && l.href)
-  const bouton: LienMenu = {titre: r.boutonMenu?.titre || 'Réserver', href: hrefPropre(r.boutonMenu?.url) || '/programme'}
+  // « Réserver » : la boutique Infomaniak (Réglages, sinon la saison en cours).
+  const bouton: LienMenu = {titre: r.boutonMenu?.titre || 'Réserver', href: hrefPropre(r.boutonMenu?.url) || boutique(site) || '/programme'}
 
   const tel = stegaClean(r.telBilletterie)
   const reseaux: LienMenu[] = [

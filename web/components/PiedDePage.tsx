@@ -13,10 +13,11 @@ export function PiedDePage({site}: {site: Site}) {
     {titre: 'LinkedIn', href: stegaClean(r.linkedin)},
   ].filter((x): x is {titre: string; href: string} => !!x.href)
 
-  // Sur téléphone, les colonnes deviennent une seule ligne de liens, sans doublon.
+  // Sur téléphone, les colonnes deviennent une seule ligne de liens, sans doublon :
+  // les deux premiers de chaque colonne, pour que le pied de page reste court.
   const liensMobiles: {titre: string; href: string}[] = []
   for (const col of r.colonnesPied ?? []) {
-    for (const l of col.liens ?? []) {
+    for (const l of (col.liens ?? []).slice(0, 2)) {
       const href = hrefLien(l)
       if (href && l.titre && !liensMobiles.some((x) => x.href === href)) liensMobiles.push({titre: l.titre, href})
     }

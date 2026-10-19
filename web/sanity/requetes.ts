@@ -26,7 +26,7 @@ const LIEN = /* groq */ `
 `
 
 const CARTE = /* groq */ `
-  _id, titre, sousTitre, compagnie, genre, precision, etiquettes, impression, accroche, age, duree, lienBilletterie,
+  _id, titre, sousTitre, compagnie, genre, precision, etiquettes, impression, accroche, age, duree, lienBilletterie, libelleBillet, lienListeAttente,
   "slug": slug.current,
   "encre": encre.hex,
   "visuel": visuel{${IMAGE}},
@@ -60,7 +60,7 @@ export const REQ_SITE = defineQuery(`{
     "seo": seo{titre, description, "image": image{${IMAGE}}}
   },
   "partenaires": *[_type == "partenaire" && piedDePage == true] | order(ordre asc){_id, nom, url, type},
-  "saison": *[_type == "saison" && courante == true][0]{titre, "programmePdf": programmePdf.asset->url}
+  "saison": *[_type == "saison" && courante == true][0]{titre, boutique, "programmePdf": programmePdf.asset->url}
 }`)
 
 export const REQ_ACCUEIL = defineQuery(`

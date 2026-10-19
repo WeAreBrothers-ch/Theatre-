@@ -11,6 +11,9 @@ import {ImageImprimee} from './Visuels'
 export function TetePage({titre, surtitre, intro, image, enPlus}: {titre: string; surtitre?: string | null; intro?: string | null; image?: Img | null; enPlus?: ReactNode}) {
   const mobile = sourceImage(image, {ratio: 16 / 10, gris: true, max: 1440})
   const large = sourceImage(image, {ratio: 21 / 8, gris: true, max: 1920})
+  // Un mot très long (Professionnel·les) prend une taille plus petite, pour tenir dans l'écran.
+  const motLePlusLong = Math.max(...titre.split(/\s+/).map((m) => m.length))
+  const taille = motLePlusLong > 15 ? 't-l' : motLePlusLong > 11 ? 't-xl' : 't-xxl'
   return (
     <header className="tete-page bande">
       <div className="cadre">
@@ -22,7 +25,7 @@ export function TetePage({titre, surtitre, intro, image, enPlus}: {titre: string
             <li aria-current="page">{surtitre || titre}</li>
           </ol>
         </nav>
-        <h1 className="t-affiche t-xxl mots-entree">
+        <h1 className={`t-affiche ${taille} mots-entree`}>
           <Mots texte={typo(titre)} />
         </h1>
         {(intro || enPlus) && (

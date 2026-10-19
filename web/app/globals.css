@@ -913,6 +913,8 @@ ul, ol { padding: 0; list-style: none; }
 .mois__nombre { color: var(--gris-texte); font-weight: 600; font-size: var(--t-petit); }
 .vide { padding: 56px 0; display: grid; gap: 16px; justify-items: start; border-top: var(--filet) solid var(--encre); margin-top: 32px; }
 .programme__passes { padding-top: 40px; }
+/* Le libellé compte les spectacles passés : il passe à la ligne plutôt que de déborder. */
+.programme__passes .btn { white-space: normal; text-align: left; line-height: 1.25; padding-block: 12px; }
 /* Les deux vues sont dans la page ; « auto » montre la liste, qui a des vignettes sur téléphone. */
 .programme[data-vue="liste"] .vue-affiches, .programme[data-vue="auto"] .vue-affiches, .programme[data-vue="affiches"] .vue-liste { display: none; }
 
@@ -1326,7 +1328,8 @@ body:has(.barre-reserver) .facade__corps { padding-bottom: calc(max(28px, env(sa
    « Number Ticker », « Flip Links »), réécrit en CSS et quelques lignes de script.
    Sans script ou avec « réduire les animations », tout est simplement visible.
    -------------------------------------------------------------------------- */
-.mot { display: inline-block; overflow: hidden; vertical-align: top; padding: .2em .04em .08em; margin: -.2em -.04em -.08em; }
+.mot { display: inline-block; max-width: 100%; overflow: hidden; vertical-align: top; padding: .2em .04em .08em; margin: -.2em -.04em -.08em; }
+.mot > span { overflow-wrap: anywhere; }
 .mot > span { display: inline-block; }
 
 @media (prefers-reduced-motion: no-preference) {

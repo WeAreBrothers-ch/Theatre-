@@ -3,7 +3,7 @@ import Link from 'next/link'
 import {notFound} from 'next/navigation'
 import {stegaClean} from 'next-sanity'
 import {Affiche} from '@/components/Affiche'
-import {Alerte, Fleche} from '@/components/Icones'
+import {Alerte, Externe, Fleche} from '@/components/Icones'
 import {Mots} from '@/components/Mots'
 import {Rubrique} from '@/components/Rubrique'
 import {Scene} from '@/components/Scene'
@@ -15,6 +15,7 @@ import {dateComplete, dateCourte, heure, heuresResume, jourCourt, majuscule, res
 import {chargerSite, chargerSpectacles} from '@/lib/donnees'
 import {styleEncre} from '@/lib/encre'
 import {sourceImage} from '@/lib/image'
+import {lienListeAttente, lienReservation, NOUVEL_ONGLET} from '@/lib/billetterie'
 import {hrefPropre} from '@/lib/liens'
 import {estAVenir, versCarte, versSpectacle} from '@/lib/spectacles'
 import {maintenant} from '@/lib/temps'
@@ -45,6 +46,16 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
   }
 }
 
+/** Lien vers la billetterie : Infomaniak dans un nouvel onglet, ou un numéro à appeler. */
+function LienBillet({href, externe, className, children}: {href: string; externe: boolean; className: string; children: React.ReactNode}) {
+  return (
+    <a className={className} href={href} {...(externe ? NOUVEL_ONGLET : {})}>
+      {children} {externe ? <Externe /> : <Fleche />}
+      {externe && <span className="visuellement-cache"> (billetterie en ligne, nouvel onglet)</span>}
+    </a>
+  )
+}
+
 /** Lien YouTube ou Vimeo vers son adresse d'intégration. */
 function integration(url?: string | null): string | null {
   const u = stegaClean(url)
@@ -66,7 +77,9 @@ export default async function PageSpectacle({params}: Props) {
   const r = site.reglages ?? {}
   const tel = stegaClean(r.telBilletterie)
   const isos = (s.aVenir.length ? s.aVenir : s.representations).map((x) => x.iso)
-  const lienGeneral = s.lienBilletterie || hrefPropre(r.lienBilletterie)
+  // Billetterie Infomaniak : le lien du spectacle, sinon la boutique de la saison.
+  const lienEnLigne = lienReservation(s, site)
+  const lienAttente = lienListeAttente(s, site)
   const prix = (brut.tarifs?.tarifs ?? []).map((t) => ({cle: t._key, categorie: t.categorie, prix: t.prix, precision: t.precision}))
   const texteTarifs = s.etat === 'complet' ? 'Complet' : stegaClean(brut.noteTarifs) || (prix.length ? prix.map((p) => `${p.prix}.–`).join(' / ') : null)
   const accessibilite = brut.accessibilite || brut.lieu?.accessibilite
@@ -150,7 +163,18 @@ export default async function PageSpectacle({params}: Props) {
     })
 
   const reservable = s.etat === 'en-vente' || s.etat === 'liste-attente'
-  const actionLibelle = s.etat === 'liste-attente' ? 'Liste d’attente' : 'Réserver'
+  const actionLibelle = s.etat === 'liste-attente' ? 'Liste d’attente' : s.libelleBillet
+  // Le bouton principal : la billetterie en ligne (nouvel onglet) ; pour la liste d'attente,
+  // son formulaire, sinon le téléphone. Sans aucun lien, le tiroir propose téléphone et e-mail.
+  const action: {href: string; externe: boolean} | null =
+    s.etat === 'en-vente' && lienEnLigne
+      ? {href: lienEnLigne, externe: true}
+      : s.etat === 'liste-attente' && lienAttente
+        ? {href: lienAttente, externe: true}
+        : s.etat === 'liste-attente' && tel
+          ? {href: lienTel(tel), externe: false}
+          : null
+  const tiroir = reservable && !action
 
   return (
     // L'ancre « reserver » (lien « Réserver » de l'accueil) garde la page en haut ; le tiroir s'ouvre par-dessus.
@@ -215,10 +239,16 @@ export default async function PageSpectacle({params}: Props) {
               {s.etat === 'annule' && <p className="alerte">Ce spectacle est annulé. Les billets sont remboursés à la billetterie.</p>}
               {s.etat === 'passe' && <p className="alerte">Ce spectacle a eu lieu. Retrouvez les prochains rendez-vous dans le programme.</p>}
               <div className="fiche-tete__actions" id="action-reserver">
-                {reservable && (
-                  <a className="btn btn--plein" href="#dates" data-reserver="">
-                    {actionLibelle} <Fleche />
-                  </a>
+                {action ? (
+                  <LienBillet className="btn btn--plein" href={action.href} externe={action.externe}>
+                    {actionLibelle}
+                  </LienBillet>
+                ) : (
+                  tiroir && (
+                    <a className="btn btn--plein" href="#dates" data-reserver="">
+                      {actionLibelle} <Fleche />
+                    </a>
+                  )
                 )}
                 {s.etat === 'passe' ? (
                   <Link className="btn btn--trait" href="/programme">
@@ -302,9 +332,21 @@ export default async function PageSpectacle({params}: Props) {
                       <span className="statut">Complet</span>
                     ) : rep.statut === 'annule' ? (
                       <span className="statut statut--annule">Annulé</span>
+                    ) : rep.statut === 'liste-attente' ? (
+                      lienAttente || tel ? (
+                        <LienBillet className="btn btn--trait btn--petit" href={lienAttente || lienTel(tel!)} externe={!!lienAttente}>
+                          Liste d’attente
+                        </LienBillet>
+                      ) : (
+                        <span className="statut statut--attente">Liste d’attente</span>
+                      )
+                    ) : rep.lien || lienEnLigne ? (
+                      <LienBillet className="btn btn--trait btn--petit" href={(rep.lien || lienEnLigne)!} externe>
+                        {s.libelleBillet}
+                      </LienBillet>
                     ) : (
-                      <a className="btn btn--trait btn--petit" href={rep.lien || lienGeneral || '#dates'} data-reserver="" data-date={rep.cle}>
-                        {rep.statut === 'liste-attente' ? 'Liste d’attente' : 'Réserver'} <Fleche />
+                      <a className="btn btn--trait btn--petit" href="#dates" data-reserver="" data-date={rep.cle}>
+                        {s.libelleBillet} <Fleche />
                       </a>
                     )}
                   </span>
@@ -363,33 +405,35 @@ export default async function PageSpectacle({params}: Props) {
           </section>
         )}
 
+        {tiroir && (
+          <Reservation
+            titre={typo(stegaClean(s.titre))}
+            lieu={s.lieuComplet}
+            encre={s.encre}
+            dates={s.aVenir.map((rep) => ({
+              cle: rep.cle,
+              libelle: `${dateComplete(rep.iso)} · ${heure(rep.iso)}`,
+              statut: rep.statut,
+              mention: rep.mention,
+              lien: rep.lien,
+              lieu: rep.lieu && rep.lieu !== s.lieu ? rep.lieu : null,
+            }))}
+            prix={prix}
+            notePrix={stegaClean(brut.noteTarifs) || stegaClean(brut.tarifs?.note)}
+            lien={lienEnLigne}
+            tel={r.telBilletterie}
+            lienTel={tel ? lienTel(tel) : null}
+            email={stegaClean(r.emailBilletterie)}
+          />
+        )}
         {reservable && (
-          <>
-            <Reservation
-              titre={typo(stegaClean(s.titre))}
-              lieu={s.lieuComplet}
-              encre={s.encre}
-              dates={s.aVenir.map((rep) => ({
-                cle: rep.cle,
-                libelle: `${dateComplete(rep.iso)} · ${heure(rep.iso)}`,
-                statut: rep.statut,
-                mention: rep.mention,
-                lien: rep.lien,
-                lieu: rep.lieu && rep.lieu !== s.lieu ? rep.lieu : null,
-              }))}
-              prix={prix}
-              notePrix={stegaClean(brut.noteTarifs) || stegaClean(brut.tarifs?.note)}
-              lien={lienGeneral}
-              tel={r.telBilletterie}
-              lienTel={tel ? lienTel(tel) : null}
-              email={stegaClean(r.emailBilletterie)}
-            />
-            <BarreReserver
-              titre={typo(stegaClean(s.titre))}
-              quand={s.reference ? `${jourCourt(s.reference.iso)} ${dateCourte(s.reference.iso)} · ${heure(s.reference.iso)}` : null}
-              action={actionLibelle}
-            />
-          </>
+          <BarreReserver
+            titre={typo(stegaClean(s.titre))}
+            quand={s.reference ? `${jourCourt(s.reference.iso)} ${dateCourte(s.reference.iso)} · ${heure(s.reference.iso)}` : null}
+            action={actionLibelle}
+            href={action?.href}
+            externe={action?.externe}
+          />
         )}
       </article>
     </Scene>

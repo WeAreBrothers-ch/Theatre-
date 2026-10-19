@@ -36,7 +36,7 @@ export default async function Accueil() {
       <h1 className="visuellement-cache">
         {stegaClean(site.reglages?.nom) || 'Théâtre Benno Besson'}, Yverdon-les-Bains{site.saison?.titre ? `, ${stegaClean(site.saison.titre)}` : ''}
       </h1>
-      <Une spectacles={une} />
+      <Une spectacles={une} site={site} />
       {aVenir.length > 0 && (
         <Link className="bandeau-affiche" href="/programme" aria-label={`Toute la saison : ${aVenir.length} spectacles à venir`}>
           <Defilant mots={aVenir.slice(0, 10).map((s) => stegaClean(s.titre))} vitesse={4} />
