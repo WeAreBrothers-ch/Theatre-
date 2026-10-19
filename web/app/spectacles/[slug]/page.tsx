@@ -9,6 +9,7 @@ import {Rubrique} from '@/components/Rubrique'
 import {Scene} from '@/components/Scene'
 import {BarreReserver} from '@/components/spectacle/BarreReserver'
 import {Reservation} from '@/components/spectacle/Reservation'
+import {Video} from '@/components/spectacle/Video'
 import {TexteRiche} from '@/components/TexteRiche'
 import {Bandeau, ImageImprimee, Photo} from '@/components/Visuels'
 import {dateComplete, dateCourte, heure, heuresResume, jourCourt, majuscule, resumeDates} from '@/lib/dates'
@@ -269,9 +270,9 @@ export default async function PageSpectacle({params}: Props) {
             <div className="fiche-corps__texte">
               {brut.texte?.length ? <TexteRiche valeur={brut.texte} /> : <p>{typo(s.accroche)}</p>}
               {video && (
-                <div className="video">
-                  <iframe src={video} title={`Bande-annonce de ${stegaClean(s.titre)}`} loading="lazy" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" />
-                </div>
+                <Video src={video} titre={`Bande-annonce de ${stegaClean(s.titre)}`}>
+                  <ImageImprimee source={sourceImage(photos[0] ?? brut.visuel, {ratio: 16 / 9, gris: true, max: 1200})} sizes="(min-width: 1024px) 60vw, 100vw" alt="" encre={s.encre} impression={s.impression} />
+                </Video>
               )}
             </div>
             <aside className="fiche-corps__aside" id="infos" aria-labelledby="titre-infos">

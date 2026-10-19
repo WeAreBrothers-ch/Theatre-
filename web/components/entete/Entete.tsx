@@ -181,7 +181,7 @@ export function Entete({liens, bouton, reseaux, adresse = {}, affiche = []}: Pro
       <header className="entete bande">
         <div className="cadre entete__barre">
           <Link className="entete__logo" href="/" aria-label="Théâtre Benno Besson, Yverdon-les-Bains : accueil">
-            <img src={avecBase('/logo-tbb.png')} alt="" width={300} height={259} />
+            <img src={avecBase('/logo-tbb.png')} alt="" width={192} height={166} />
           </Link>
           <nav className="entete__nav" aria-label="Navigation principale">
             <ul>
@@ -205,67 +205,69 @@ export function Entete({liens, bouton, reseaux, adresse = {}, affiche = []}: Pro
       </header>
 
       <dialog ref={menu} id="menu" className="menu" aria-label="Menu" tabIndex={-1} data-choix={choisi ? '' : undefined} onClose={() => setOuvert(false)} onClick={surClicMenu}>
-        <div className="bande menu__haut">
-          <div className="cadre entete__barre">
-            <Link className="entete__logo" href="/" aria-label="Accueil">
-              <img src={avecBase('/logo-tbb.png')} alt="" width={300} height={259} />
-            </Link>
-            <div className="entete__actions">
-              <BoutonReserver lien={bouton} className="btn btn--vert btn--petit" />
-              <button type="button" className="btn btn--trait btn--petit entete__menu" onClick={fermer}>
-                <span className="burger burger--croix" aria-hidden="true" />
-                Fermer
-              </button>
+        <div className="menu__scene">
+          <div className="bande menu__haut">
+            <div className="cadre entete__barre">
+              <Link className="entete__logo" href="/" aria-label="Accueil">
+                <img src={avecBase('/logo-tbb.png')} alt="" width={192} height={166} />
+              </Link>
+              <div className="entete__actions">
+                <BoutonReserver lien={bouton} className="btn btn--vert btn--petit" />
+                <button type="button" className="btn btn--trait btn--petit entete__menu" onClick={fermer}>
+                  <span className="burger burger--croix" aria-hidden="true" />
+                  Fermer
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="menu__corps bande">
-          <div className="cadre">
-            <nav aria-label="Menu principal">
-              <ol className="menu__liens">
-                {liens.map((l, i) => (
-                  <li key={l.href} style={{'--i': i} as CSSProperties}>
-                    <Link href={l.href} aria-current={etatLien(pathname, l.href)} data-lien={l.href} data-choisi={choisi === l.href ? '' : undefined}>
-                      {l.titre}
-                    </Link>
-                  </li>
-                ))}
-              </ol>
-            </nav>
+          <div className="menu__corps bande">
+            <div className="cadre">
+              <nav aria-label="Menu principal">
+                <ol className="menu__liens">
+                  {liens.map((l, i) => (
+                    <li key={l.href} style={{'--i': i} as CSSProperties}>
+                      <Link href={l.href} aria-current={etatLien(pathname, l.href)} data-lien={l.href} data-choisi={choisi === l.href ? '' : undefined}>
+                        {l.titre}
+                      </Link>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            </div>
           </div>
-        </div>
-        {affiche.length > 0 && (
-          <Link className="menu__affiche" href="/programme" aria-label="À l’affiche : voir tout le programme">
-            <Defilant mots={affiche} />
-          </Link>
-        )}
-        <div className="menu__facade">
-          <div>
-            <svg className="menu__arches" viewBox="0 0 1300 276" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">
-              <path d="M0 276A215 215 0 0 1 410.01 185.47A248 248 0 0 1 889.99 185.47A215 215 0 0 1 1300 276Z" />
-            </svg>
-            <div className="menu__bas bande">
-              <div className="cadre">
-                {adresse.rue && (
-                  <a className="menu__adresse" href={adresse.plan ?? undefined} {...(adresse.plan ? {target: '_blank', rel: 'noopener noreferrer'} : {})}>
-                    <span className="menu__rue">{adresse.rue}</span>
-                    {adresse.localite && <span>{adresse.localite}</span>}
-                  </a>
-                )}
-                {adresse.email && (
-                  <a className="menu__mail" href={`mailto:${adresse.email}`}>
-                    {adresse.email}
-                  </a>
-                )}
-                {reseaux.length > 0 && (
-                  <span className="menu__reseaux">
-                    {reseaux.map((r) => (
-                      <a key={r.href} href={r.href} target="_blank" rel="noopener noreferrer">
-                        {r.titre}
-                      </a>
-                    ))}
-                  </span>
-                )}
+          {affiche.length > 0 && (
+            <Link className="menu__affiche" href="/programme" aria-label="À l’affiche : voir tout le programme">
+              <Defilant mots={affiche} />
+            </Link>
+          )}
+          <div className="menu__facade">
+            <div>
+              <svg className="menu__arches" viewBox="0 0 1300 276" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">
+                <path d="M0 276A215 215 0 0 1 410.01 185.47A248 248 0 0 1 889.99 185.47A215 215 0 0 1 1300 276Z" />
+              </svg>
+              <div className="menu__bas bande">
+                <div className="cadre">
+                  {adresse.rue && (
+                    <a className="menu__adresse" href={adresse.plan ?? undefined} {...(adresse.plan ? {target: '_blank', rel: 'noopener noreferrer'} : {})}>
+                      <span className="menu__rue">{adresse.rue}</span>
+                      {adresse.localite && <span>{adresse.localite}</span>}
+                    </a>
+                  )}
+                  {adresse.email && (
+                    <a className="menu__mail" href={`mailto:${adresse.email}`}>
+                      {adresse.email}
+                    </a>
+                  )}
+                  {reseaux.length > 0 && (
+                    <span className="menu__reseaux">
+                      {reseaux.map((r) => (
+                        <a key={r.href} href={r.href} target="_blank" rel="noopener noreferrer">
+                          {r.titre}
+                        </a>
+                      ))}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </div>

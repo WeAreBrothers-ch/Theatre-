@@ -1,5 +1,4 @@
 import type {Metadata, Viewport} from 'next'
-import {Archivo, Newsreader} from 'next/font/google'
 import localFont from 'next/font/local'
 import {stegaClean} from 'next-sanity'
 import {Entete, type LienMenu} from '@/components/entete/Entete'
@@ -20,9 +19,20 @@ import './globals.css'
 // Les titres d'affiche : Tanker (Indian Type Foundry, Fontshare), hébergée avec le site.
 // Une seule graisse, déclarée pour toutes : le navigateur ne fabrique jamais de faux gras.
 const tanker = localFont({src: './polices/Tanker-Regular.woff2', weight: '100 900', variable: '--police-tanker', display: 'swap'})
-const archivo = Archivo({subsets: ['latin'], axes: ['wdth'], variable: '--police-archivo', display: 'swap'})
-// La voix (accroches, citations, textes des spectacles) : une seule graisse, romain et italique, pour rester léger.
-const newsreader = Newsreader({subsets: ['latin'], weight: '400', style: ['normal', 'italic'], variable: '--police-newsreader', display: 'swap'})
+// Archivo et Newsreader réduites aux caractères du français et des noms d'artistes (scripts/polices.py) :
+// 88 Ko en tout au lieu de 240. Seules les deux polices des premiers écrans sont préchargées.
+const archivo = localFont({src: './polices/Archivo.woff2', weight: '400 700', variable: '--police-archivo', display: 'swap'})
+// La voix (accroches, citations, textes des spectacles) : une seule graisse, romain et italique.
+const newsreader = localFont({
+  src: [
+    {path: './polices/Newsreader.woff2', weight: '400', style: 'normal'},
+    {path: './polices/Newsreader-Italic.woff2', weight: '400', style: 'italic'},
+  ],
+  variable: '--police-newsreader',
+  display: 'swap',
+  preload: false,
+  adjustFontFallback: 'Times New Roman',
+})
 
 // Les contenus se mettent à jour en direct ; ce délai sert à faire avancer l'agenda avec les jours.
 export const revalidate = 3600

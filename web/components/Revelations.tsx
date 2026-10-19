@@ -64,27 +64,30 @@ export function Revelations() {
       {rootMargin: '0px 0px -12% 0px'},
     )
 
-    const preparer = (el: Element, classe: string, rang = 0) => {
-      if (el.hasAttribute('data-vu')) return
-      if (!el.classList.contains(classe)) {
+    // Toutes les positions sont lues d'abord, puis les classes posées : une seule mise en page.
+    const elements: [Element, string, number][] = []
+    document.querySelectorAll(TITRES).forEach((el) => elements.push([el, 'revele-titre', 0]))
+    document.querySelectorAll(IMAGES).forEach((el) => elements.push([el, 'revele-image', 0]))
+    document.querySelectorAll(NOMBRES).forEach((el) => elements.push([el, 'compte', 0]))
+    document.querySelectorAll(ELEMENTS).forEach((el) => {
+      const freres = el.parentElement ? Array.from(el.parentElement.children).indexOf(el) : 0
+      elements.push([el, 'revele', freres % 4])
+    })
+    const aPreparer = elements
+      .filter(([el]) => !el.hasAttribute('data-vu'))
+      .map(([el, classe, rang]) => ({el, classe, rang, deja: el.classList.contains(classe), haut: el.getBoundingClientRect().top}))
+    for (const {el, classe, rang, deja, haut} of aPreparer) {
+      if (!deja) {
         // Déjà visible au chargement : rien ne bouge.
-        if (el.getBoundingClientRect().top < hauteur * 0.92) {
+        if (haut < hauteur * 0.92) {
           el.setAttribute('data-vu', '')
-          return
+          continue
         }
         el.classList.add(classe)
         if (rang) (el as HTMLElement).style.setProperty('--rang', String(rang))
       }
       observateur.observe(el)
     }
-
-    document.querySelectorAll(TITRES).forEach((el) => preparer(el, 'revele-titre'))
-    document.querySelectorAll(IMAGES).forEach((el) => preparer(el, 'revele-image'))
-    document.querySelectorAll(NOMBRES).forEach((el) => preparer(el, 'compte'))
-    document.querySelectorAll(ELEMENTS).forEach((el) => {
-      const freres = el.parentElement ? Array.from(el.parentElement.children).indexOf(el) : 0
-      preparer(el, 'revele', freres % 4)
-    })
     racine.classList.add('anim')
 
     return () => {

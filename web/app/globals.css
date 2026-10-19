@@ -277,11 +277,10 @@ ul, ol { padding: 0; list-style: none; }
   width: 100%; max-width: none; height: 100%; max-height: none;
   margin: 0; padding: 0; border: 0;
   background: var(--encre); color: var(--papier);
-  overflow-y: auto; overscroll-behavior: contain;
-  /* La colonne est réglée hors de [open] : pendant que le menu se lève, rien ne se réarrange. */
-  flex-direction: column;
+  overflow: hidden;
 }
-.menu[open] { display: flex; }
+/* La scène défile à l'intérieur ; sa colonne ne dépend pas de [open] : pendant que le menu se lève, rien ne se réarrange. */
+.menu__scene { display: flex; flex-direction: column; height: 100%; overflow-y: auto; overscroll-behavior: contain; }
 .menu::backdrop { background: transparent; }
 .menu .entete__barre { padding-top: env(safe-area-inset-top, 0px); height: calc(var(--entete-h) + env(safe-area-inset-top, 0px)); flex: none; }
 .menu__haut { border-bottom: 1px solid rgba(255, 255, 255, .18); }
@@ -329,10 +328,16 @@ ul, ol { padding: 0; list-style: none; }
 .menu__reseaux a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--t-label); font-weight: 650; text-transform: uppercase; letter-spacing: .07em; text-decoration: none; }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* La scène se dévoile par le bas, comme un rideau qui se lève, et repart par le haut. */
-  .menu { transition: clip-path .7s var(--rideau), overlay .7s allow-discrete, display .7s allow-discrete; clip-path: inset(0 0 100% 0); }
-  .menu[open] { clip-path: inset(0 0 0 0); }
-  @starting-style { .menu[open] { clip-path: inset(100% 0 0 0); } }
+  /* La scène se dévoile par le bas, comme un rideau qui se lève, et repart par le haut.
+     Le cadre noir monte pendant que la scène descend d'autant : le contenu reste immobile et seul
+     le bord se déplace. Deux transformations, calculées par la carte graphique : le rideau reste
+     fluide même quand la page travaille (ouverture du menu, arrivée de la nouvelle page). */
+  .menu { transition: transform .7s var(--rideau), overlay .7s allow-discrete, display .7s allow-discrete; transform: translateY(-100%); }
+  .menu[open] { transform: none; }
+  @starting-style { .menu[open] { transform: translateY(100%); } }
+  .menu__scene { transition: transform .7s var(--rideau); transform: translateY(100%); }
+  .menu[open] .menu__scene { transform: none; }
+  @starting-style { .menu[open] .menu__scene { transform: translateY(-100%); } }
   /* À la fermeture, tout le menu se lève d'un bloc : rien ne bouge dedans pendant qu'il monte. */
   .menu__liens a { transform: translateY(110%) rotate(5deg); transform-origin: left bottom; transition: transform 0s .7s, color .2s ease, opacity .25s ease; }
   .menu[open] .menu__liens a { transform: none; transition: transform .9s cubic-bezier(.19, 1, .22, 1), color .2s ease, opacity .25s ease; transition-delay: calc(.28s + var(--i, 0) * .06s), 0s, 0s; }
@@ -1005,6 +1010,16 @@ body:has(main :is(.scene, .scene > article) > section:last-of-type.fond-vert) .f
 }
 .video { position: relative; aspect-ratio: 16 / 9; background: var(--encre); }
 .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video__vignette { position: absolute; inset: 0; display: block; width: 100%; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; }
+.video__vignette .imprime { position: absolute; inset: 0; }
+.video__lancer {
+  position: absolute; left: 0; bottom: 0; z-index: 5; display: inline-flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 20px 0 16px;
+  background: var(--encre); color: var(--papier); font-size: var(--t-petit); font-weight: 650; text-transform: uppercase; letter-spacing: .06em;
+  transition: background-color .18s ease, color .18s ease;
+}
+.video__lancer .icone { width: 22px; height: 22px; }
+.video__vignette:focus-visible { outline: 3px solid var(--vert); outline-offset: 3px; }
+@media (hover: hover) { .video__vignette:hover .video__lancer { background: var(--vert); color: var(--encre); } }
 
 .representations { border-bottom: var(--filet) solid var(--encre); }
 .representation { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; align-items: center; padding: 16px 0; border-top: var(--filet) solid var(--encre); }

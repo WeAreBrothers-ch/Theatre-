@@ -1,4 +1,5 @@
 import type {CSSProperties} from 'react'
+import {preload} from 'react-dom'
 import type {SourceImage} from '@/lib/image'
 import type {Encre} from '@/lib/encre'
 import {styleEncre} from '@/lib/encre'
@@ -21,6 +22,13 @@ type ImageProps = {
 
 function Img({source, sizes, priorite, alt, gris, variante}: ImageProps & {gris?: boolean}) {
   if (!source) return null
+  if (priorite) {
+    // L'image principale est annoncée dans l'en-tête de la page, avant d'être lue dans le corps
+    // (React ne le fait pas pour les images de <picture>) : un cadrage par taille d'écran.
+    const autre = variante?.source
+    preload(source.src, {as: 'image', imageSrcSet: source.srcSet, imageSizes: sizes, fetchPriority: 'high', media: autre ? `not all and ${variante.media}` : undefined})
+    if (autre) preload(autre.src, {as: 'image', imageSrcSet: autre.srcSet, imageSizes: variante.sizes, fetchPriority: 'high', media: variante.media})
+  }
   const style: CSSProperties = {}
   if (source.position) style.objectPosition = source.position
   if (source.lqip) style.backgroundImage = `url(${source.lqip})`
