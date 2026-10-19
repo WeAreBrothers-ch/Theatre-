@@ -144,7 +144,8 @@ jobs:
           sort -u images.txt -o images.txt
           echo "$(wc -l < images.txt) images"
           for format in "image/avif,image/webp,*/*" "image/webp,*/*"; do
-            xargs -P 16 -I{} curl -s -o /dev/null -H "Accept: $format" "{}" < images.txt
+            # Une image qui ne répond pas ne doit pas faire échouer la publication.
+            xargs -P 16 -I{} curl -s --max-time 30 -o /dev/null -H "Accept: $format" "{}" < images.txt || true
           done
           echo "Images prêtes."
 
