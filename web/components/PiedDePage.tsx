@@ -27,6 +27,8 @@ export function PiedDePage({site}: {site: Site}) {
     <footer className="facade" id="pied-de-page">
       <svg className="facade__arches" viewBox="0 0 1300 276" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">
         <path d="M0 276A215 215 0 0 1 410.01 185.47A248 248 0 0 1 889.99 185.47A215 215 0 0 1 1300 276Z" />
+        {/* Le contour des arches, tracé seulement quand la page finit déjà en vert (globals.css). */}
+        <path className="facade__contour" d="M0 276A215 215 0 0 1 410.01 185.47A248 248 0 0 1 889.99 185.47A215 215 0 0 1 1300 276" />
       </svg>
       <div className="facade__corps bande">
         <div className="cadre">

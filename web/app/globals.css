@@ -836,8 +836,16 @@ ul, ol { padding: 0; list-style: none; }
 /* --------------------------------------------------------------------------
    Pied de page : la façade aux trois arches. Court sur téléphone.
    -------------------------------------------------------------------------- */
-.facade { color: var(--encre); margin-top: clamp(32px, 8vw, 96px); }
-.facade__arches { width: 100%; height: auto; fill: var(--vert); margin-bottom: -1px; }
+/* Les arches se lèvent directement sur le fond de la dernière section : pas de bande blanche
+   entre une section verte, grise ou noire et le pied de page. */
+.facade { color: var(--encre); background: var(--fond-final, var(--papier)); }
+body:has(main :is(.scene, .scene > article) > section:last-of-type.fond-gris) { --fond-final: var(--gris); }
+body:has(main :is(.scene, .scene > article) > section:last-of-type.fond-noir) { --fond-final: var(--encre); }
+body:has(main :is(.scene, .scene > article) > section:last-of-type.fond-vert) { --fond-final: var(--vert); }
+.facade__arches { width: 100%; height: auto; fill: var(--vert); margin-bottom: -1px; overflow: visible; }
+.facade__contour { fill: none; stroke: none; }
+/* Section verte juste avant : les arches se confondraient avec elle, un filet noir les dessine. */
+body:has(main :is(.scene, .scene > article) > section:last-of-type.fond-vert) .facade__contour { stroke: var(--encre); stroke-width: 2px; vector-effect: non-scaling-stroke; }
 .facade__corps { background: var(--vert); padding-bottom: max(22px, env(safe-area-inset-bottom, 0px)); }
 .facade__grille { display: grid; gap: 18px; }
 .facade__adresse { display: grid; gap: 6px; align-content: start; }
