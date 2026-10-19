@@ -24,7 +24,8 @@ import type {
 } from './types'
 
 export function SectionTexte({section, id, titreId}: ProprietesSection<TTexte>) {
-  const image = sourceImage(section.image, {ratio: 4 / 5, max: 1080})
+  // L'image garde ses proportions : un bon cadeau, un plan ou une affiche ne sont jamais recadrés.
+  const image = sourceImage(section.image, {max: 1080})
   return (
     <section className="section bande" id={id} aria-labelledby={section.titre ? titreId : undefined}>
       <div className="cadre">

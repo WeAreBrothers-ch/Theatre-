@@ -95,6 +95,7 @@ export default async function MiseEnPage({children}: {children: React.ReactNode}
           liens={liens}
           bouton={bouton}
           reseaux={reseaux}
+          adresse={{rue: r.rue, localite: r.localite, plan: hrefPropre(r.lienPlan), email: stegaClean(r.emailGeneral)}}
           affiche={affiche}
         />
         <main id="contenu" tabIndex={-1}>

@@ -13,6 +13,8 @@ type Props = {
   liens: LienMenu[]
   bouton: LienMenu
   reseaux: LienMenu[]
+  /** Bas du menu : l'adresse (vers l'itinéraire) et l'e-mail du théâtre. */
+  adresse?: {rue?: string | null; localite?: string | null; plan?: string | null; email?: string | null}
   /** Titres des prochains spectacles, pour le bandeau qui défile dans le menu. */
   affiche?: string[]
 }
@@ -37,7 +39,7 @@ function Bascule({texte}: {texte: string}) {
 }
 
 /** « Réserver » : la boutique Infomaniak s'ouvre dans un nouvel onglet, une page du site sur place. */
-function BoutonReserver({lien, className, depuisMenu}: {lien: LienMenu; className: string; depuisMenu?: boolean}) {
+function BoutonReserver({lien, className}: {lien: LienMenu; className: string}) {
   if (/^(https?:)?\/\//.test(lien.href))
     return (
       <a className={className} href={lien.href} target="_blank" rel="noopener noreferrer">
@@ -47,7 +49,7 @@ function BoutonReserver({lien, className, depuisMenu}: {lien: LienMenu; classNam
       </a>
     )
   return (
-    <Link className={className} href={lien.href} transitionTypes={depuisMenu ? ['menu'] : undefined}>
+    <Link className={className} href={lien.href}>
       <Billet />
       {lien.titre}
     </Link>
@@ -72,12 +74,12 @@ function etatLien(pathname: string, href: string): 'page' | 'true' | undefined {
  *   le reste de la page est inerte, sans code de piège à focus fragile.
  * - Vers une autre page, il reste ouvert le temps que la page arrive dessous, puis se lève
  *   d'un bloc et la découvre : pas de page qui saute pendant que le menu se ferme.
- *   Les autres liens (téléphone, réseaux, page en cours) le ferment tout de suite, comme
- *   le passage en format ordinateur.
+ *   Les autres liens (réseaux, page en cours) le ferment tout de suite, comme le passage
+ *   en format ordinateur.
  * - Sur ordinateur, en descendant, l'en-tête s'efface pour laisser la place au contenu ; il
  *   revient au moindre mouvement vers le haut. Sur téléphone, il reste toujours visible.
  */
-export function Entete({liens, bouton, reseaux, affiche = []}: Props) {
+export function Entete({liens, bouton, reseaux, adresse = {}, affiche = []}: Props) {
   const pathname = usePathname()
   const menu = useRef<HTMLDialogElement>(null)
   const [ouvert, setOuvert] = useState(false)
@@ -176,7 +178,7 @@ export function Entete({liens, bouton, reseaux, affiche = []}: Props) {
 
   return (
     <>
-      <header className="entete bande" style={{viewTransitionName: 'entete'}}>
+      <header className="entete bande">
         <div className="cadre entete__barre">
           <Link className="entete__logo" href="/" aria-label="Théâtre Benno Besson, Yverdon-les-Bains : accueil">
             <img src={avecBase('/logo-tbb.png')} alt="" width={300} height={259} />
@@ -205,11 +207,11 @@ export function Entete({liens, bouton, reseaux, affiche = []}: Props) {
       <dialog ref={menu} id="menu" className="menu" aria-label="Menu" tabIndex={-1} data-choix={choisi ? '' : undefined} onClose={() => setOuvert(false)} onClick={surClicMenu}>
         <div className="bande menu__haut">
           <div className="cadre entete__barre">
-            <Link className="entete__logo" href="/" aria-label="Accueil" transitionTypes={['menu']}>
+            <Link className="entete__logo" href="/" aria-label="Accueil">
               <img src={avecBase('/logo-tbb.png')} alt="" width={300} height={259} />
             </Link>
             <div className="entete__actions">
-              <BoutonReserver lien={bouton} className="btn btn--vert btn--petit" depuisMenu />
+              <BoutonReserver lien={bouton} className="btn btn--vert btn--petit" />
               <button type="button" className="btn btn--trait btn--petit entete__menu" onClick={fermer}>
                 <span className="burger burger--croix" aria-hidden="true" />
                 Fermer
@@ -223,7 +225,7 @@ export function Entete({liens, bouton, reseaux, affiche = []}: Props) {
               <ol className="menu__liens">
                 {liens.map((l, i) => (
                   <li key={l.href} style={{'--i': i} as CSSProperties}>
-                    <Link href={l.href} aria-current={etatLien(pathname, l.href)} transitionTypes={['menu']} data-lien={l.href} data-choisi={choisi === l.href ? '' : undefined}>
+                    <Link href={l.href} aria-current={etatLien(pathname, l.href)} data-lien={l.href} data-choisi={choisi === l.href ? '' : undefined}>
                       {l.titre}
                     </Link>
                   </li>
@@ -244,6 +246,17 @@ export function Entete({liens, bouton, reseaux, affiche = []}: Props) {
             </svg>
             <div className="menu__bas bande">
               <div className="cadre">
+                {adresse.rue && (
+                  <a className="menu__adresse" href={adresse.plan ?? undefined} {...(adresse.plan ? {target: '_blank', rel: 'noopener noreferrer'} : {})}>
+                    <span className="menu__rue">{adresse.rue}</span>
+                    {adresse.localite && <span>{adresse.localite}</span>}
+                  </a>
+                )}
+                {adresse.email && (
+                  <a className="menu__mail" href={`mailto:${adresse.email}`}>
+                    {adresse.email}
+                  </a>
+                )}
                 {reseaux.length > 0 && (
                   <span className="menu__reseaux">
                     {reseaux.map((r) => (

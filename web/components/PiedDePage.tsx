@@ -1,5 +1,5 @@
 import {stegaClean} from 'next-sanity'
-import type {Site} from '@/sanity/types'
+import type {Lien, Site} from '@/sanity/types'
 import {hrefLien} from '@/lib/liens'
 import {lienTel, typo} from '@/lib/typo'
 import {LienSite} from './LienSite'
@@ -13,12 +13,20 @@ export function PiedDePage({site}: {site: Site}) {
     {titre: 'LinkedIn', href: stegaClean(r.linkedin)},
   ].filter((x): x is {titre: string; href: string} => !!x.href)
 
+  // « PDF du programme » : le fichier de la saison rangé dans Sanity, pas l'ancienne adresse Wix
+  // (elle disparaîtra avec l'ancien site).
+  const pdfSaison = stegaClean(site.saison?.programmePdf)
+  const adresse = (l: Lien) => {
+    const href = hrefLien(l)
+    return pdfSaison && href && /pdf/i.test(stegaClean(l.titre) ?? '') ? pdfSaison : href
+  }
+
   // Sur téléphone, les colonnes deviennent une seule ligne de liens, sans doublon :
   // les deux premiers de chaque colonne, pour que le pied de page reste court.
   const liensMobiles: {titre: string; href: string}[] = []
   for (const col of r.colonnesPied ?? []) {
     for (const l of (col.liens ?? []).slice(0, 2)) {
-      const href = hrefLien(l)
+      const href = adresse(l)
       if (href && l.titre && !liensMobiles.some((x) => x.href === href)) liensMobiles.push({titre: l.titre, href})
     }
   }
@@ -62,7 +70,7 @@ export function PiedDePage({site}: {site: Site}) {
                 {col.titre && <h2>{col.titre}</h2>}
                 <ul>
                   {(col.liens ?? []).map((l) => {
-                    const href = hrefLien(l)
+                    const href = adresse(l)
                     return href ? (
                       <li key={l._key}>
                         <LienSite href={href}>{l.titre}</LienSite>

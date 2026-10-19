@@ -320,8 +320,12 @@ ul, ol { padding: 0; list-style: none; }
 .menu__facade { flex: none; color: var(--encre); margin-top: 18px; overflow: hidden; }
 .menu__arches { width: 100%; height: auto; fill: var(--vert); margin-bottom: -1px; }
 .menu__bas { background: var(--vert); padding-bottom: max(18px, env(safe-area-inset-bottom, 0px)); }
-.menu__bas .cadre { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; }
-.menu__reseaux { display: flex; gap: 16px; }
+.menu__bas .cadre { display: grid; gap: 12px; }
+.menu__adresse { display: grid; gap: 4px; justify-self: start; font-weight: 650; text-decoration: none; }
+.menu__rue { font-family: var(--f-affiche); font-stretch: 62%; font-weight: 800; text-transform: uppercase; font-size: clamp(2rem, 10vw, 3rem); line-height: .9; }
+.menu__mail { justify-self: start; font-weight: 650; text-decoration: none; overflow-wrap: anywhere; }
+@media (hover: hover) { .menu__adresse:hover .menu__rue, .menu__mail:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; } }
+.menu__reseaux { display: flex; flex-wrap: wrap; gap: 0 18px; margin-top: 4px; padding-top: 6px; border-top: var(--filet) solid var(--encre); }
 .menu__reseaux a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--t-label); font-weight: 650; text-transform: uppercase; letter-spacing: .07em; text-decoration: none; }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -693,7 +697,11 @@ ul, ol { padding: 0; list-style: none; }
 /* Texte avec image */
 .texte-bloc { display: grid; gap: 28px; }
 .texte-bloc__chapo { font-family: var(--f-voix); font-size: clamp(1.4rem, 2.2vw, 2rem); line-height: 1.3; max-width: 36ch; }
-.texte-bloc__image .photo { aspect-ratio: 4 / 5; }
+/* L'image d'un texte (bon cadeau, plan, photo) : entière, posée comme une carte, un filet et une ombre verte. */
+.texte-bloc__image .photo { background: var(--papier); border: var(--filet) solid var(--encre); box-shadow: 10px 10px 0 var(--vert); }
+.fond-vert .texte-bloc__image .photo { box-shadow: 10px 10px 0 var(--encre); }
+.texte-bloc__image { padding-right: 10px; }
+.texte-bloc__image .photo img { height: auto; }
 .texte-bloc__image figcaption { margin-top: 10px; font-size: var(--t-label); color: var(--gris-texte); }
 @media (min-width: 1024px) {
   .texte-bloc { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 32px clamp(16px, 2.4vw, 40px); align-items: start; }
@@ -1354,9 +1362,10 @@ body:has(.barre-reserver) .facade__corps { padding-bottom: calc(max(28px, env(sa
   html.anim .revele[data-vu] { opacity: 1; transform: none; }
   html.anim .mur > .revele { transform: translateY(56px) rotate(-5deg) scale(.9); transform-origin: 15% 100%; }
   html.anim .mur > .revele[data-vu] { transform: none; }
-  html.anim .revele-image { clip-path: inset(100% 0 0 0); transition: clip-path 1.2s var(--rideau); }
+  html.anim .revele-image { clip-path: inset(100% -16px -16px 0); transition: clip-path 1.2s var(--rideau); }
   html.anim .revele-image img { scale: 1.18; transition: scale 1.6s var(--rideau); }
-  html.anim .revele-image[data-vu] { clip-path: inset(0 0 0 0); }
+  /* Une fois dévoilée, la découpe laisse passer l'ombre des images posées en carte. */
+  html.anim .revele-image[data-vu] { clip-path: inset(0 -16px -16px 0); }
   html.anim .revele-image[data-vu] img { scale: 1; }
 
   /* Les arches du pied de page se lèvent quand on y arrive */
@@ -1380,22 +1389,6 @@ body:has(.barre-reserver) .facade__corps { padding-bottom: calc(max(28px, env(sa
   a.affiche:hover::after { opacity: 1; }
 }
 
-/* Changement de page : la nouvelle scène monte, l'ancienne recule ; l'en-tête reste. */
-::view-transition { pointer-events: none; }
-::view-transition-old(root), ::view-transition-new(root) { animation: none; }
-::view-transition-group(entete) { animation: none; z-index: 100; }
-::view-transition-old(entete) { display: none; }
-::view-transition-new(entete) { animation: none; }
-/* La scène a un fond : la nouvelle page couvre l'ancienne à mesure qu'elle monte. */
-.scene { background: var(--papier); }
-::view-transition-old(.scene-sortie) { animation: scene-sortie .35s ease-in both; }
-::view-transition-new(.scene-entree) { animation: scene-entree .9s cubic-bezier(.19, 1, .22, 1) both; }
-@keyframes scene-sortie { to { opacity: 0; transform: translateY(-40px) scale(.97); } }
-/* En hauteur d'écran (vh) : la page peut être bien plus haute que la fenêtre. */
-@keyframes scene-entree { from { clip-path: inset(100vh 0 0 0); transform: translateY(70px); } to { clip-path: inset(0 0 0 0); transform: none; } }
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(*), ::view-transition-new(*), ::view-transition-group(*) { animation-duration: 0s !important; animation-delay: 0s !important; }
-}
 
 /* --------------------------------------------------------------------------
    Page introuvable
