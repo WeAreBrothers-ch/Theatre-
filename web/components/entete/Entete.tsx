@@ -12,8 +12,6 @@ export type LienMenu = {titre: string; href: string}
 type Props = {
   liens: LienMenu[]
   bouton: LienMenu
-  tel?: string | null
-  lienTel?: string | null
   reseaux: LienMenu[]
   /** Titres des prochains spectacles, pour le bandeau qui défile dans le menu. */
   affiche?: string[]
@@ -79,7 +77,7 @@ function etatLien(pathname: string, href: string): 'page' | 'true' | undefined {
  * - Sur ordinateur, en descendant, l'en-tête s'efface pour laisser la place au contenu ; il
  *   revient au moindre mouvement vers le haut. Sur téléphone, il reste toujours visible.
  */
-export function Entete({liens, bouton, tel, lienTel, reseaux, affiche = []}: Props) {
+export function Entete({liens, bouton, reseaux, affiche = []}: Props) {
   const pathname = usePathname()
   const menu = useRef<HTMLDialogElement>(null)
   const [ouvert, setOuvert] = useState(false)
@@ -246,12 +244,6 @@ export function Entete({liens, bouton, tel, lienTel, reseaux, affiche = []}: Pro
             </svg>
             <div className="menu__bas bande">
               <div className="cadre">
-                {tel && lienTel && (
-                  <a className="menu__tel" href={lienTel}>
-                    <span className="t-label">Billetterie</span>
-                    <span className="chiffres">{tel}</span>
-                  </a>
-                )}
                 {reseaux.length > 0 && (
                   <span className="menu__reseaux">
                     {reseaux.map((r) => (

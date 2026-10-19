@@ -320,9 +320,7 @@ ul, ol { padding: 0; list-style: none; }
 .menu__facade { flex: none; color: var(--encre); margin-top: 18px; overflow: hidden; }
 .menu__arches { width: 100%; height: auto; fill: var(--vert); margin-bottom: -1px; }
 .menu__bas { background: var(--vert); padding-bottom: max(18px, env(safe-area-inset-bottom, 0px)); }
-.menu__bas .cadre { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 20px; }
-.menu__tel { display: grid; gap: 2px; text-decoration: none; }
-.menu__tel .chiffres { font-family: var(--f-affiche); font-stretch: 62%; font-weight: 800; font-size: clamp(2rem, 10vw, 3rem); line-height: .9; }
+.menu__bas .cadre { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; }
 .menu__reseaux { display: flex; gap: 16px; }
 .menu__reseaux a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--t-label); font-weight: 650; text-transform: uppercase; letter-spacing: .07em; text-decoration: none; }
 

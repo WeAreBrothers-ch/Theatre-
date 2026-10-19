@@ -10,7 +10,7 @@ import {estAVenir} from '@/lib/spectacles'
 import {boutique} from '@/lib/billetterie'
 import {sourceImage} from '@/lib/image'
 import {hrefLien, hrefPropre} from '@/lib/liens'
-import {lienTel, typo} from '@/lib/typo'
+import {typo} from '@/lib/typo'
 import {preconnect} from 'react-dom'
 import {Revelations} from '@/components/Revelations'
 import {Apercu} from '@/sanity/apercu'
@@ -61,7 +61,6 @@ export default async function MiseEnPage({children}: {children: React.ReactNode}
   // « Réserver » : la boutique Infomaniak (Réglages, sinon la saison en cours).
   const bouton: LienMenu = {titre: r.boutonMenu?.titre || 'Réserver', href: hrefPropre(r.boutonMenu?.url) || boutique(site) || '/programme'}
 
-  const tel = stegaClean(r.telBilletterie)
   const reseaux: LienMenu[] = [
     {titre: 'Instagram', href: stegaClean(r.instagram) ?? ''},
     {titre: 'Facebook', href: stegaClean(r.facebook) ?? ''},
@@ -95,8 +94,6 @@ export default async function MiseEnPage({children}: {children: React.ReactNode}
         <Entete
           liens={liens}
           bouton={bouton}
-          tel={r.telBilletterie}
-          lienTel={tel ? lienTel(tel) : null}
           reseaux={reseaux}
           affiche={affiche}
         />
