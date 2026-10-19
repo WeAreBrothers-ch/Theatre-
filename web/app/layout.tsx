@@ -8,7 +8,7 @@ import {chargerSite, chargerSpectacles} from '@/lib/donnees'
 import {estAVenir} from '@/lib/spectacles'
 import {boutique} from '@/lib/billetterie'
 import {sourceImage} from '@/lib/image'
-import {hrefLien, hrefPropre} from '@/lib/liens'
+import {hrefLien, hrefPropre, NOUVEL_ONGLET, sortDuSite} from '@/lib/liens'
 import {typo} from '@/lib/typo'
 import {preconnect} from 'react-dom'
 import {Revelations} from '@/components/Revelations'
@@ -94,7 +94,9 @@ export default async function MiseEnPage({children}: {children: React.ReactNode}
                 {lienAnnonce && (
                   <>
                     {' '}
-                    <a href={lienAnnonce.startsWith('/') ? avecBase(lienAnnonce) : lienAnnonce}>En savoir plus</a>
+                    <a href={lienAnnonce.startsWith('/') ? avecBase(lienAnnonce) : lienAnnonce} {...(sortDuSite(lienAnnonce) ? NOUVEL_ONGLET : {})}>
+                      En savoir plus
+                    </a>
                   </>
                 )}
               </p>

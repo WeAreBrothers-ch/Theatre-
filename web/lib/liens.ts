@@ -14,6 +14,16 @@ export function estExterne(href: string): boolean {
   return /^(https?:)?\/\//.test(href)
 }
 
+/**
+ * Lien qui sort du site : autre adresse (billetterie Infomaniak, réseaux, plan…) ou fichier
+ * (programme en PDF…). Il s'ouvre dans un nouvel onglet : le site reste ouvert derrière.
+ */
+export function sortDuSite(href: string): boolean {
+  return estExterne(href) || /\.(pdf|docx?|xlsx?|pptx?|zip)([?#]|$)/i.test(href)
+}
+
+export const NOUVEL_ONGLET = {target: '_blank', rel: 'noopener noreferrer'} as const
+
 export function hrefPropre(href?: string | null): string | null {
   const h = stegaClean(href)?.trim()
   return h || null

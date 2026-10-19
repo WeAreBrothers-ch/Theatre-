@@ -4,6 +4,7 @@ import {Programme} from '@/components/programme/Programme'
 import {Scene} from '@/components/Scene'
 import {TetePage} from '@/components/TetePage'
 import {GENRES} from '@/lib/constantes'
+import {NOUVEL_ONGLET} from '@/lib/liens'
 import {chargerSite, chargerSpectacles} from '@/lib/donnees'
 import {estAVenir, versCarte} from '@/lib/spectacles'
 
@@ -27,7 +28,7 @@ export default async function PageProgramme() {
         enPlus={
           pdf ? (
             <p style={{marginTop: 14}}>
-              <a className="lien-fleche" href={pdf}>
+              <a className="lien-fleche" href={pdf} {...NOUVEL_ONGLET}>
                 Le programme en PDF
               </a>
             </p>

@@ -1,5 +1,7 @@
 import type {Site} from '@/sanity/types'
 import {hrefPropre} from './liens'
+
+export {NOUVEL_ONGLET} from './liens'
 import type {Spectacle} from './spectacles'
 
 /*
@@ -15,4 +17,3 @@ export const lienReservation = (s: Spectacle, site: Site): string | null => s.li
 /** Formulaire de liste d'attente (Brevo) du spectacle, sinon celui des Réglages. */
 export const lienListeAttente = (s: Spectacle, site: Site): string | null => s.lienListeAttente || hrefPropre(site.reglages?.lienListeAttente)
 
-export const NOUVEL_ONGLET = {target: '_blank', rel: 'noopener noreferrer'} as const

@@ -4,6 +4,7 @@ import {useCallback, useEffect, useRef, useState, type MouseEvent} from 'react'
 import type {Encre} from '@/lib/encre'
 import type {Statut} from '@/lib/spectacles'
 import {styleEncre} from '@/lib/encre'
+import {NOUVEL_ONGLET, sortDuSite} from '@/lib/liens'
 import {Croix, Externe, Fleche, Telephone} from '../Icones'
 
 export type DateReservation = {cle: string; libelle: string; statut: Statut; mention?: string | null; lien?: string | null; lieu?: string | null}
@@ -136,8 +137,9 @@ export function Reservation({titre, lieu, encre, dates, prix, notePrix, lien, te
       <div className="reservation__pied">
         {date && cible && !attente ? (
           <>
-            <a className="btn btn--plein btn--large" href={cible}>
+            <a className="btn btn--plein btn--large" href={cible} {...(sortDuSite(cible) ? NOUVEL_ONGLET : {})}>
               Continuer sur la billetterie <Externe />
+              <span className="visuellement-cache"> (nouvel onglet)</span>
             </a>
             <p>Vous choisirez vos places et paierez sur la billetterie en ligne du TBB.</p>
           </>

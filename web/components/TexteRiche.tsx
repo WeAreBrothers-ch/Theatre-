@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import {PortableText, stegaClean, type PortableTextComponents} from 'next-sanity'
 import type {Bloc} from '@/sanity/types'
-import {estExterne} from '@/lib/liens'
+import {NOUVEL_ONGLET, sortDuSite} from '@/lib/liens'
 import {typo} from '@/lib/typo'
 
 const composants: PortableTextComponents = {
@@ -18,12 +18,15 @@ const composants: PortableTextComponents = {
     link: ({value, children}) => {
       const href = stegaClean((value as {href?: string} | undefined)?.href) ?? ''
       if (!href) return <>{children}</>
-      if (href.startsWith('/') && !href.startsWith('//')) return <Link href={href}>{children}</Link>
-      return (
-        <a href={href} {...(estExterne(href) ? {target: '_blank', rel: 'noopener noreferrer'} : {})}>
-          {children}
-        </a>
-      )
+      if (sortDuSite(href))
+        return (
+          <a href={href} {...NOUVEL_ONGLET}>
+            {children}
+            <span className="visuellement-cache"> (nouvel onglet)</span>
+          </a>
+        )
+      if (href.startsWith('/')) return <Link href={href}>{children}</Link>
+      return <a href={href}>{children}</a>
     },
   },
 }

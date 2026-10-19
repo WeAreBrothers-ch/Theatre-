@@ -1,13 +1,20 @@
 import Link from 'next/link'
 import type {ReactNode} from 'react'
-import {estExterne} from '@/lib/liens'
+import {NOUVEL_ONGLET, sortDuSite} from '@/lib/liens'
 
-/** Lien interne (navigation instantanée) ou externe, selon l'adresse. */
-export function LienSite({href, children, className, nouvelOnglet}: {href: string; children: ReactNode; className?: string; nouvelOnglet?: boolean}) {
-  if (estExterne(href) || href.startsWith('mailto:') || href.startsWith('tel:')) {
-    const externe = estExterne(href) && nouvelOnglet
+/** Lien interne (navigation instantanée) ; un lien qui sort du site s'ouvre dans un nouvel onglet. */
+export function LienSite({href, children, className}: {href: string; children: ReactNode; className?: string}) {
+  if (sortDuSite(href)) {
     return (
-      <a className={className} href={href} {...(externe ? {target: '_blank', rel: 'noopener noreferrer'} : {})}>
+      <a className={className} href={href} {...NOUVEL_ONGLET}>
+        {children}
+        <span className="visuellement-cache"> (nouvel onglet)</span>
+      </a>
+    )
+  }
+  if (href.startsWith('mailto:') || href.startsWith('tel:')) {
+    return (
+      <a className={className} href={href}>
         {children}
       </a>
     )
