@@ -88,3 +88,15 @@ Le 18 octobre 2026, tout le site Wix a été repris : les 386 spectacles de 2020
 Ces contenus sont mis à jour par le workflow GitHub à chaque envoi de code, **sans jamais écraser votre travail** : un document que vous avez modifié dans le Studio n’est plus touché (seuls des champs encore vides peuvent y être ajoutés).
 
 À vérifier par l’équipe : les heures notées « à confirmer » (quelques festivals passés), le nombre de places de la Grande Salle (460 sur la page Histoire, 450 sur la fiche technique), les catégories du tarif réduit, le montant de la formule « Ami·e pour la vie ».
+
+## 8. Prêt dans le Studio, pas encore affiché par le site
+
+Le Studio et les contenus couvrent tout l’ancien site. Le code du site, lui, n’a pas été modifié : il affiche déjà les spectacles, dates, statuts, prix, liens de réservation Infomaniak, textes, photos, distribution, étiquettes, pages et sections d’origine. Ce qui suit est saisi et rangé dans Sanity, mais n’apparaîtra en ligne qu’une fois le site mis à jour pour le lire :
+
+- **Sections de page** : Documents à télécharger, Liste, Avis datés, Vidéo, Rendez-vous, Archives, Partenaires, Presse, Lieux. Les pages Technique, Partenaires, La presse en parle, Archives et Grands rendez-vous en dépendent presque entièrement.
+- **Menu** : les sous-rubriques (Saison, Billetterie, Le théâtre, Vous). Les entrées principales s’affichent.
+- **Spectacle** : citations de presse, lien de liste d’attente, libellé du bouton, heure à confirmer, séances scolaires, note pour les écoles, documents, dossiers de presse et pédagogique, photos HD, création et crédits photo, articles et rendez-vous liés.
+- **Rendez-vous** : leurs pages individuelles.
+- **Réglages** : avis datés, fin automatique de l’annonce, case postale, liens de la lettre d’information, mention en bas de page ; la boutique de la saison comme lien de réservation par défaut (en attendant, le lien général des Réglages pointe déjà vers la boutique Infomaniak).
+- **Visuels** : les trames d’une seule encre (Cosimo, Déluge…) s’impriment pâles ; le réglage « Impression du visuel » est sur « Automatique », ce qui évite l’image blanche.
+

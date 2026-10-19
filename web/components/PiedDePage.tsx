@@ -33,7 +33,6 @@ export function PiedDePage({site}: {site: Site}) {
             <div className="facade__adresse">
               {r.rue && <p className="t-affiche">{r.rue}</p>}
               {r.localite && <p className="facade__ville">{r.localite}</p>}
-              {r.casePostale && <p className="facade__transports">{typo(r.casePostale)}</p>}
               {(r.accesTrain || r.accesBus) && (
                 <p className="facade__transports">
                   {typo(r.accesTrain)}
@@ -105,7 +104,6 @@ export function PiedDePage({site}: {site: Site}) {
             )}
             <p>
               © {r.nom || 'Théâtre Benno Besson'} {new Date().getFullYear()}
-              {r.credit ? ` · ${r.credit}` : ''}
             </p>
           </div>
         </div>

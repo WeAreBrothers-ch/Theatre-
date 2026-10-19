@@ -20,7 +20,6 @@ const CIBLE = join(WEB, 'public')
 const LARGEURS = [480, 960, 1440]
 
 const amorce = JSON.parse(readFileSync(join(WEB, 'sanity/amorce.json'), 'utf8'))
-// Les images encore chez Wix sont servies par son CDN : rien à préparer pour elles.
 const assets = amorce.filter((d) => d._type === 'sanity.imageAsset')
 
 let sharp
@@ -35,7 +34,7 @@ let ecrites = 0
 for (const asset of assets) {
   const largeur = asset.metadata.dimensions.width
   const tailles = [...LARGEURS.filter((l) => l < largeur), largeur]
-  for (const url of [asset.url, asset.urlGris].filter((u) => u && u.startsWith('/amorce/'))) {
+  for (const url of [asset.url, asset.urlGris].filter(Boolean)) {
     const relatif = url.replace(/^\/amorce\//, '')
     const original = join(SOURCE, relatif)
     if (!existsSync(original)) {

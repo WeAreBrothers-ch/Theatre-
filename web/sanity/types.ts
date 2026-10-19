@@ -28,11 +28,6 @@ export type Lien = {
   page?: {_type: string; slug?: string | null} | null
 }
 
-export type EntreeMenu = Lien & {_key: string; sousLiens?: (Lien & {_key: string})[] | null}
-
-/** Un document à télécharger (fichier téléversé ou adresse). */
-export type Fichier = {_key: string; titre?: string | null; description?: string | null; url?: string | null; taille?: number | null; extension?: string | null}
-
 export type Bouton = {titre?: string | null; url?: string | null}
 
 export type Seo = {titre?: string | null; description?: string | null; image?: Img | null}
@@ -50,8 +45,6 @@ export type RepresentationBrute = {
   mention?: string | null
   lien?: string | null
   lieu?: string | null
-  heureAConfirmer?: boolean | null
-  scolaire?: boolean | null
 }
 
 export type CarteBrute = {
@@ -69,26 +62,9 @@ export type CarteBrute = {
   age?: string | null
   duree?: string | null
   visuel?: Img | null
-  lieu?: {nom?: string | null; nomComplet?: string | null; adresse?: string | null; accessibilite?: string | null; lienPlan?: string | null} | null
-  saison?: {titre?: string | null; courante?: boolean | null; boutique?: string | null} | null
+  lieu?: {nom?: string | null; nomComplet?: string | null; adresse?: string | null; accessibilite?: string | null} | null
   representations?: RepresentationBrute[] | null
   lienBilletterie?: string | null
-  libelleBillet?: string | null
-  lienListeAttente?: string | null
-}
-
-export type Citation = {_key: string; citation?: string | null; auteur?: string | null; media?: string | null}
-
-export type ArticlePresse = {
-  _id: string
-  titre: string
-  media?: string | null
-  auteur?: string | null
-  date?: string | null
-  type?: string | null
-  extrait?: string | null
-  url?: string | null
-  spectacle?: {titre?: string | null; slug?: string | null} | null
 }
 
 export type SpectacleBrut = CarteBrute & {
@@ -102,18 +78,8 @@ export type SpectacleBrut = CarteBrute & {
   accessibilite?: string | null
   distribution?: {_key: string; titre?: string | null; lignes?: {_key: string; role?: string | null; noms?: string | null}[] | null}[] | null
   production?: string | null
-  creation?: string | null
-  creditsPhotos?: string | null
   tarifs?: Grille | null
   noteTarifs?: string | null
-  citations?: Citation[] | null
-  photosHD?: string | null
-  dossierPresse?: string | null
-  dossierPedagogique?: string | null
-  scolaire?: string | null
-  documents?: Fichier[] | null
-  articles?: ArticlePresse[] | null
-  rendezVous?: {_id: string; titre: string; debut?: string | null; fin?: string | null; periode?: string | null; lieu?: string | null; slug?: string | null; aTexte?: boolean | null}[] | null
   seo?: Seo | null
 }
 
@@ -133,73 +99,24 @@ export type Reglages = {
   accesVoiture?: string | null
   accesRestaurer?: string | null
   lienPlan?: string | null
-  menu?: EntreeMenu[] | null
+  menu?: (Lien & {_key: string})[] | null
   boutonMenu?: Bouton | null
   colonnesPied?: {_key: string; titre?: string | null; liens?: (Lien & {_key: string})[] | null}[] | null
   instagram?: string | null
   facebook?: string | null
   linkedin?: string | null
-  annonce?: {active?: boolean | null; texte?: string | null; lien?: string | null; jusquau?: string | null} | null
-  avis?: {_key: string; titre?: string | null; texte?: string | null; du?: string | null; au?: string | null}[] | null
-  lettre?: {lienInscription?: string | null; lienPreferences?: string | null} | null
-  lienListeAttente?: string | null
-  casePostale?: string | null
-  adresseSite?: string | null
-  credit?: string | null
+  annonce?: {active?: boolean | null; texte?: string | null; lien?: string | null} | null
   seo?: Seo | null
 }
 
 export type Partenaire = {_id: string; nom: string; url?: string | null; type?: string | null}
 
-export type Personne = {_id: string; nom: string; fonction?: string | null; groupe?: string | null; email?: string | null; telephone?: string | null; bio?: Bloc[] | null; photo?: Img | null}
-
-export type PartenaireLogo = {_id: string; nom: string; type?: string | null; url?: string | null; logo?: Img | null}
-
-export type RendezVous = {
-  _id: string
-  titre: string
-  categorie?: string | null
-  debut?: string | null
-  fin?: string | null
-  periode?: string | null
-  organisateur?: string | null
-  lieu?: string | null
-  prix?: string | null
-  inscription?: string | null
-  texte?: Bloc[] | null
-  horaires?: {_key: string; dateHeure?: string | null; precision?: string | null}[] | null
-  slug?: string | null
-  image?: Img | null
-  liens?: (Lien & {_key: string})[] | null
-}
-
-export type RendezVousBrut = RendezVous & {spectacles?: CarteBrute[] | null}
-
-export type Lieu = {
-  _id: string
-  nom: string
-  nomComplet?: string | null
-  capacite?: number | null
-  description?: string | null
-  adresse?: string | null
-  visiteVirtuelle?: string | null
-  caracteristiques?: {_key: string; libelle?: string | null; valeur?: string | null}[] | null
-  photos?: (Img & {_key: string})[] | null
-  documents?: Fichier[] | null
-}
-
-export type SaisonArchive = {
-  _id: string
-  titre: string
-  debut?: string | null
-  affiche?: Img | null
-  spectacles?: {_id: string; titre: string; compagnie?: string | null; slug: string; premiere?: string | null}[] | null
-}
+export type Personne = {_id: string; nom: string; fonction?: string | null; email?: string | null; telephone?: string | null; photo?: Img | null}
 
 export type Site = {
   reglages: Reglages | null
   partenaires: Partenaire[]
-  saison: {titre?: string | null; boutique?: string | null; programmePdf?: string | null; afficheHD?: string | null} | null
+  saison: {titre?: string | null; programmePdf?: string | null} | null
 }
 
 /** Une section de page : le champ `_type` dit laquelle. */

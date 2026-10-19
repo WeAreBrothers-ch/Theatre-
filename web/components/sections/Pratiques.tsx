@@ -286,21 +286,7 @@ export function SectionLettre({section, id, titreId, contexte}: ProprietesSectio
           </h2>
           {section.texte && <p className="t-lead">{typo(section.texte)}</p>}
         </div>
-        {hrefPropre(contexte.site.reglages?.lettre?.lienInscription) ? (
-          // L'inscription se fait sur le formulaire de l'outil d'envoi (Brevo…), qui gère le consentement.
-          <div className="lettre__inscription">
-            <a className="btn btn--plein btn--large" href={hrefPropre(contexte.site.reglages?.lettre?.lienInscription)!} target="_blank" rel="noopener noreferrer">
-              S’inscrire à la lettre <Fleche />
-            </a>
-            {hrefPropre(contexte.site.reglages?.lettre?.lienPreferences) && (
-              <a className="lien-fleche" href={hrefPropre(contexte.site.reglages?.lettre?.lienPreferences)!} target="_blank" rel="noopener noreferrer">
-                Gérer mes préférences <Fleche />
-              </a>
-            )}
-          </div>
-        ) : (
-          <FormulaireLettre secours={stegaClean(contexte.site.reglages?.emailGeneral)} />
-        )}
+        <FormulaireLettre secours={stegaClean(contexte.site.reglages?.emailGeneral)} />
       </div>
     </section>
   )

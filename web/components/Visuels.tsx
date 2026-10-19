@@ -37,7 +37,6 @@ function Img({source, sizes, priorite, alt, gris, variante}: ImageProps & {gris?
       decoding={priorite ? 'sync' : 'async'}
       data-gris={gris && !source.grisFait ? 'css' : undefined}
       data-contraste={gris && source.contraste ? '' : undefined}
-      data-canal={gris && source.canal ? source.canal : undefined}
       style={Object.keys(style).length ? style : undefined}
     />
   )

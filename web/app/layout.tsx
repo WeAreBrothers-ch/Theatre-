@@ -13,7 +13,6 @@ import {preconnect} from 'react-dom'
 import {Revelations} from '@/components/Revelations'
 import {Apercu} from '@/sanity/apercu'
 import {avecBase} from '@/lib/chemin'
-import {maintenant} from '@/lib/temps'
 import './globals.css'
 
 const archivo = Archivo({subsets: ['latin'], axes: ['wdth'], variable: '--police-archivo', display: 'swap'})
@@ -52,11 +51,7 @@ export default async function MiseEnPage({children}: {children: React.ReactNode}
   const affiche = spectacles.filter(estAVenir).slice(0, 8).map((s) => stegaClean(s.titre))
 
   const liens: LienMenu[] = (r.menu ?? [])
-    .map((l) => ({
-      titre: l.titre ?? '',
-      href: hrefLien(l) ?? '',
-      sousLiens: (l.sousLiens ?? []).map((x) => ({titre: x.titre ?? '', href: hrefLien(x) ?? ''})).filter((x) => x.titre && x.href),
-    }))
+    .map((l) => ({titre: l.titre ?? '', href: hrefLien(l) ?? ''}))
     .filter((l) => l.titre && l.href)
   const bouton: LienMenu = {titre: r.boutonMenu?.titre || 'Réserver', href: hrefPropre(r.boutonMenu?.url) || '/programme'}
 
@@ -66,28 +61,12 @@ export default async function MiseEnPage({children}: {children: React.ReactNode}
     {titre: 'Facebook', href: stegaClean(r.facebook) ?? ''},
     {titre: 'LinkedIn', href: stegaClean(r.linkedin) ?? ''},
   ].filter((x) => x.href)
-  // Le bandeau se retire seul à sa date de fin (le site est reconstruit au moins une fois par heure).
-  const annonce = r.annonce?.active && r.annonce.texte && (!r.annonce.jusquau || new Date(stegaClean(r.annonce.jusquau)!) > maintenant()) ? r.annonce : null
+  const annonce = r.annonce?.active && r.annonce.texte ? r.annonce : null
   const lienAnnonce = hrefPropre(annonce?.lien)
 
   return (
     <html lang="fr-CH" className={`${archivo.variable} ${newsreader.variable}`} data-scroll-behavior="smooth">
       <body>
-        {/* Filtres d'impression : un canal de couleur recopié en gris, légèrement contrasté. */}
-        <svg className="filtres-impression" width="0" height="0" aria-hidden="true" focusable="false">
-          <defs>
-            {(['r', 'g', 'b'] as const).map((c, i) => (
-              <filter key={c} id={`tbb-canal-${c}`} colorInterpolationFilters="sRGB">
-                <feColorMatrix type="matrix" values={[0, 1, 2].map(() => [0, 1, 2].map((j) => (j === i ? 1 : 0)).join(' ') + ' 0 0').join(' ') + ' 0 0 0 1 0'} />
-                <feComponentTransfer>
-                  <feFuncR type="linear" slope="1.12" intercept="-0.04" />
-                  <feFuncG type="linear" slope="1.12" intercept="-0.04" />
-                  <feFuncB type="linear" slope="1.12" intercept="-0.04" />
-                </feComponentTransfer>
-              </filter>
-            ))}
-          </defs>
-        </svg>
         <a className="lien-evitement" href="#contenu">
           Aller au contenu
         </a>

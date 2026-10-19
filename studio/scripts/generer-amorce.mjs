@@ -3,9 +3,8 @@
  * Contenus d'amorçage du Studio : tout le site actuel du TBB (repris de Wix dans
  * studio/donnees/reprise.json) et la mise en forme de la maquette (maquette/assets/js/data.js).
  *
- * Produit deux fichiers à partir des mêmes documents :
- *   studio/amorce/import.ndjson   → `scripts/migrer.mjs` (ou `sanity dataset import`) ; images et PDF téléversés
- *   web/sanity/amorce.json        → jeu local lu en GROQ par le site tant que Sanity est vide
+ * Produit studio/amorce/import.ndjson, lu par `scripts/migrer.mjs` (images et PDF téléversés).
+ * Ne touche jamais au dossier du site (web/).
  *
  * Usage : node scripts/generer-amorce.mjs
  */
@@ -52,14 +51,11 @@ for (const d of recueil.docsImport) {
   ids.add(d._id)
 }
 
-const {docsImport, docsLocaux, assetsLocaux} = recueil
+const {docsImport, assetsLocaux} = recueil
 mkdirSync(join(ICI, '../amorce'), {recursive: true})
 writeFileSync(join(ICI, '../amorce/import.ndjson'), docsImport.map((d) => JSON.stringify(d)).join('\n') + '\n')
-mkdirSync(join(RACINE, 'web/sanity'), {recursive: true})
-writeFileSync(join(RACINE, 'web/sanity/amorce.json'), JSON.stringify([...docsLocaux, ...assetsLocaux.values()]))
 
 const parType = docsImport.reduce((o, d) => ((o[d._type] = (o[d._type] ?? 0) + 1), o), {})
 console.log(`${docsImport.length} documents, ${assetsLocaux.size} images et fichiers, ${articles} articles de presse`)
 console.log('  ' + Object.entries(parType).map(([t, n]) => `${t} ${n}`).join(' · '))
 console.log('→ studio/amorce/import.ndjson')
-console.log('→ web/sanity/amorce.json')

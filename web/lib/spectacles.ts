@@ -24,10 +24,6 @@ export type Representation = {
   lien?: string | null
   lieu?: string | null
   passee: boolean
-  /** L'heure n'est pas encore fixée : le site écrit « heure à confirmer ». */
-  heureAConfirmer: boolean
-  /** Réservée aux classes : affichée, mais ni réservable ni comptée dans l'état du spectacle. */
-  scolaire: boolean
 }
 
 export type Spectacle = {
@@ -49,18 +45,13 @@ export type Spectacle = {
   duree?: string | null
   lieu?: string | null
   lieuComplet?: string | null
-  /** Toutes les dates, scolaires comprises. */
   representations: Representation[]
-  /** Les dates publiques à venir. */
   aVenir: Representation[]
   /** La prochaine représentation, ou la première si tout est passé. */
   reference: Representation | null
   etat: Etat
   bandeau: {texte: string; ton: Ton} | null
-  /** Le lien du spectacle, sinon la boutique de sa saison si elle est en cours. */
   lienBilletterie?: string | null
-  libelleBillet?: string | null
-  lienListeAttente?: string | null
 }
 
 const STATUTS_CONNUS: Statut[] = ['en-vente', 'complet', 'liste-attente', 'annule']
@@ -79,12 +70,10 @@ export function versSpectacle(c: CarteBrute, instant: Date): Spectacle {
         lien: stegaClean(r.lien) || null,
         lieu: r.lieu,
         passee: new Date(stegaClean(r.dateHeure)).getTime() < t,
-        heureAConfirmer: !!r.heureAConfirmer,
-        scolaire: !!r.scolaire,
       }
     })
     .sort((a, b) => a.iso.localeCompare(b.iso))
-  const aVenir = representations.filter((r) => !r.passee && !r.scolaire)
+  const aVenir = representations.filter((r) => !r.passee)
   const actives = aVenir.filter((r) => r.statut !== 'annule')
 
   let etat: Etat = 'en-vente'
@@ -124,12 +113,10 @@ export function versSpectacle(c: CarteBrute, instant: Date): Spectacle {
     lieuComplet: c.lieu?.nomComplet || c.lieu?.nom,
     representations,
     aVenir,
-    reference: aVenir.find((r) => r.statut !== 'annule') ?? aVenir[0] ?? representations.filter((r) => !r.scolaire)[0] ?? representations[0] ?? null,
+    reference: aVenir.find((r) => r.statut !== 'annule') ?? aVenir[0] ?? representations[0] ?? null,
     etat,
     bandeau,
-    lienBilletterie: stegaClean(c.lienBilletterie) || (c.saison?.courante ? stegaClean(c.saison.boutique) : null) || null,
-    libelleBillet: stegaClean(c.libelleBillet) || null,
-    lienListeAttente: stegaClean(c.lienListeAttente) || null,
+    lienBilletterie: stegaClean(c.lienBilletterie) || null,
   }
 }
 
@@ -174,22 +161,8 @@ export type Carte = {
   recherche: string
 }
 
-/** Les dates affichées sur une carte : à venir, sinon toutes (publiques). */
-function datesCarte(s: Spectacle): Representation[] {
-  const publiques = s.representations.filter((r) => !r.scolaire)
-  return s.aVenir.length ? s.aVenir : publiques.length ? publiques : s.representations
-}
-
-/** « 20h », « 19h / 20h », ou « heure à confirmer ». */
-export function heuresDe(reps: Representation[]): string {
-  const fixees = reps.filter((r) => !r.heureAConfirmer)
-  if (!fixees.length) return reps.length ? 'heure à confirmer' : ''
-  return heuresResume(fixees.map((r) => r.iso))
-}
-
 export function versCarte(s: Spectacle): Carte {
-  const dates = datesCarte(s)
-  const isos = dates.map((r) => r.iso)
+  const isos = (s.aVenir.length ? s.aVenir : s.representations).map((r) => r.iso)
   const ref = s.reference?.iso
   const jours = [...new Set(isos.map((iso) => moment(iso).cleJour))]
   let autres = ''
@@ -218,7 +191,7 @@ export function versCarte(s: Spectacle): Carte {
     image: sourceImage(s.brut.visuel, {ratio: 895 / 1280, gris: true, max: 1080}),
     datesCourtes: resumeDates(isos),
     datesLongues: resumeDates(isos, true),
-    heures: heuresDe(dates),
+    heures: heuresResume(isos),
     jour: ref ? jourCourt(ref) : '',
     numero: ref ? dateCourte(ref) : '',
     autres,

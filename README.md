@@ -25,7 +25,7 @@ npm run dev            # le site sur http://localhost:3000
 npm run dev:studio     # le Studio sur http://localhost:3333
 ```
 
-Tant que Sanity est vide, le site affiche le jeu d’amorçage local (`web/sanity/amorce.json` : tout le site actuel, 386 spectacles de 2020–21 à 2026–27, 17 pages). Il bascule tout seul sur Sanity dès le premier spectacle publié.
+Tant que Sanity est vide, le site affiche le jeu d’amorçage local (`web/sanity/amorce.json` : la saison 26–27 de la maquette, 35 spectacles, 4 pages). Il bascule tout seul sur Sanity dès le premier spectacle publié.
 
 ## Le Studio, pour l’équipe du théâtre
 

@@ -5,9 +5,7 @@ import type {Section} from '@/sanity/types'
 import {SectionAcces, SectionContact, SectionLettre, SectionTarifs} from './Pratiques'
 import {SectionAffiches, SectionAgenda, nombreAgenda} from './Programme'
 import {estAVenir} from '@/lib/spectacles'
-import {SectionAppel, SectionCitation, SectionFaq, SectionFormules, SectionFrise, SectionGalerie, SectionInfos, SectionTexte} from './Simples'
-import {SectionArchives, SectionAvis, SectionEquipe, SectionLieux, SectionListe, SectionPartenaires, SectionPresse, SectionRendezVous, SectionVideo} from './Annexes'
-import {SectionDocuments} from './Documents'
+import {SectionAppel, SectionCitation, SectionEquipe, SectionFaq, SectionFormules, SectionFrise, SectionGalerie, SectionInfos, SectionTexte} from './Simples'
 import type {Contexte, ProprietesSection} from './types'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,15 +25,6 @@ const COMPOSANTS: Record<string, ComponentType<ProprietesSection<any>>> = {
   sectionFaq: SectionFaq,
   sectionContact: SectionContact,
   sectionLettre: SectionLettre,
-  sectionDocuments: SectionDocuments,
-  sectionPartenaires: SectionPartenaires,
-  sectionPresse: SectionPresse,
-  sectionRendezVous: SectionRendezVous,
-  sectionLieux: SectionLieux,
-  sectionArchives: SectionArchives,
-  sectionVideo: SectionVideo,
-  sectionListe: SectionListe,
-  sectionAvis: SectionAvis,
 }
 
 /** Les sections d'une page, dans l'ordre choisi dans le Studio. */

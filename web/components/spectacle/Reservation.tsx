@@ -17,8 +17,6 @@ type Props = {
   prix: Prix[]
   notePrix?: string | null
   lien?: string | null
-  /** Formulaire de liste d'attente (Brevo…), proposé pour les dates en liste d'attente. */
-  listeAttente?: string | null
   tel?: string | null
   lienTel?: string | null
   email?: string | null
@@ -32,7 +30,7 @@ const LIBELLES: Record<Statut, string> = {'en-vente': '', complet: 'Complet', 'l
  * <dialog> natif : focus, Échap et arrière-plan inerte sont gérés par le navigateur.
  * S'ouvre depuis tout lien [data-reserver] de la page, ou à l'arrivée avec #reserver.
  */
-export function Reservation({titre, lieu, encre, dates, prix, notePrix, lien, listeAttente, tel, lienTel, email}: Props) {
+export function Reservation({titre, lieu, encre, dates, prix, notePrix, lien, tel, lienTel, email}: Props) {
   const dialogue = useRef<HTMLDialogElement>(null)
   const titreRef = useRef<HTMLHeadingElement>(null)
   const premiereLibre = dates.find((d) => d.statut === 'en-vente' || d.statut === 'liste-attente')?.cle ?? ''
@@ -136,14 +134,7 @@ export function Reservation({titre, lieu, encre, dates, prix, notePrix, lien, li
       </div>
 
       <div className="reservation__pied">
-        {date && attente && listeAttente ? (
-          <>
-            <a className="btn btn--plein btn--large" href={date.lien || listeAttente} target="_blank" rel="noopener noreferrer">
-              S’inscrire sur la liste d’attente <Externe />
-            </a>
-            <p>Des places se libèrent parfois : vous êtes prévenu·e dès qu’une place est disponible.</p>
-          </>
-        ) : date && cible && !attente ? (
+        {date && cible && !attente ? (
           <>
             <a className="btn btn--plein btn--large" href={cible}>
               Continuer sur la billetterie <Externe />

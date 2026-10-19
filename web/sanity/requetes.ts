@@ -25,22 +25,13 @@ const LIEN = /* groq */ `
   "page": page->{_type, "slug": slug.current}
 `
 
-/** Un document à télécharger : le fichier téléversé, sinon l'adresse saisie. */
-const FICHIER = /* groq */ `
-  _key, titre, description,
-  "url": coalesce(fichier.asset->url, url),
-  "taille": fichier.asset->size,
-  "extension": fichier.asset->extension
-`
-
 const CARTE = /* groq */ `
-  _id, titre, sousTitre, compagnie, genre, precision, etiquettes, impression, accroche, age, duree, lienBilletterie, libelleBillet, lienListeAttente,
+  _id, titre, sousTitre, compagnie, genre, precision, etiquettes, impression, accroche, age, duree, lienBilletterie,
   "slug": slug.current,
   "encre": encre.hex,
   "visuel": visuel{${IMAGE}},
-  "lieu": lieu->{nom, nomComplet, adresse, accessibilite, lienPlan},
-  "saison": saison->{titre, courante, boutique},
-  "representations": representations[defined(dateHeure)]{_key, dateHeure, statut, mention, lien, heureAConfirmer, scolaire, "lieu": lieu->nom} | order(dateHeure asc)
+  "lieu": lieu->{nom, nomComplet, adresse, accessibilite},
+  "representations": representations[defined(dateHeure)]{_key, dateHeure, statut, mention, lien, "lieu": lieu->nom} | order(dateHeure asc)
 `
 
 const SECTIONS = /* groq */ `
@@ -52,51 +43,24 @@ const SECTIONS = /* groq */ `
     _type == "sectionCitation" => {"portrait": portrait{${IMAGE}}, "lien": lien{${LIEN}}},
     _type == "sectionFrise" => {"etapes": etapes[]{..., "image": image{${IMAGE}}}},
     _type == "sectionGalerie" => {"images": images[]{_key, ${IMAGE}}},
-    _type == "sectionEquipe" => {"personnes": *[_type == "personne" && (count(coalesce(^.groupes, [])) == 0 && groupe != "comite-amis" || groupe in ^.groupes)] | order(ordre asc, nom asc){_id, nom, fonction, groupe, email, telephone, bio, "photo": photo{${IMAGE}}}},
-    _type == "sectionDocuments" => {"documents": documents[]{${FICHIER}}},
-    _type == "sectionPartenaires" => {"partenaires": *[_type == "partenaire" && (count(coalesce(^.types, [])) == 0 || type in ^.types)] | order(ordre asc, nom asc){_id, nom, type, url, "logo": logo{${IMAGE}}}},
-    _type == "sectionPresse" => {"articles": *[_type == "articlePresse"] | order(date desc){_id, titre, media, auteur, date, type, extrait, "url": coalesce(lien, fichier.asset->url), "spectacle": spectacle->{titre, "slug": slug.current}}},
-    _type == "sectionRendezVous" => {"rendezVous": *[_type == "rendezVous" && (count(coalesce(^.categories, [])) == 0 || categorie in ^.categories)] | order(debut asc){
-      _id, titre, categorie, debut, fin, periode, organisateur, lieu, prix, inscription, texte, horaires,
-      "slug": slug.current, "image": image{${IMAGE}}, "liens": liens[]{_key, ${LIEN}}
-    }},
-    _type == "sectionLieux" => {"lieux": *[_type == "lieu" && (^.quels == "tous" || coalesce(type, "theatre") == "theatre")] | order(ordre asc){
-      _id, nom, nomComplet, capacite, description, adresse, visiteVirtuelle, caracteristiques,
-      "photos": photos[]{_key, ${IMAGE}}, "documents": documents[]{${FICHIER}}
-    }},
-    _type == "sectionArchives" => {"saisons": *[_type == "saison" && courante != true] | order(debut desc){
-      _id, titre, debut, "affiche": affiche{${IMAGE}},
-      "spectacles": *[_type == "spectacle" && saison._ref == ^._id && masque != true && defined(slug.current)] | order(representations[0].dateHeure asc){
-        _id, titre, compagnie, "slug": slug.current, "premiere": representations[0].dateHeure
-      }
-    }},
-    _type == "sectionListe" => {"elements": elements[]{..., "image": image{${IMAGE}}, "lien": lien{${LIEN}}}},
-    _type == "sectionFormules" => {"formules": formules[]{..., bouton}}
+    _type == "sectionEquipe" => {"personnes": *[_type == "personne"] | order(ordre asc, nom asc){_id, nom, fonction, email, telephone, "photo": photo{${IMAGE}}}}
   }
 `
 
-/**
- * Les spectacles de la saison en cours (toutes les saisons si aucune n'est cochée « en cours »).
- * La saison est cherchée une seule fois, pas pour chaque spectacle : les archives comptent des centaines de fiches.
- */
+/** Les spectacles de la saison en cours (toutes les saisons si aucune n'est cochée « en cours »). */
 export const REQ_SPECTACLES = defineQuery(`
-  {"courantes": *[_type == "saison" && courante == true]._id}{
-    "liste": *[_type == "spectacle" && defined(slug.current) && masque != true && (count(^.courantes) == 0 || saison._ref in ^.courantes)]{${CARTE}}
-  }.liste
+  *[_type == "spectacle" && defined(slug.current) && (saison->courante == true || count(*[_type == "saison" && courante == true]) == 0)]{${CARTE}}
 `)
-
-/** Menu : une entrée et ses sous-rubriques. */
-const MENU = /* groq */ `_key, ${LIEN}, "sousLiens": sousLiens[]{_key, ${LIEN}}`
 
 export const REQ_SITE = defineQuery(`{
   "reglages": *[_id == "reglages"][0]{
     ...,
-    "menu": menu[]{${MENU}},
+    "menu": menu[]{_key, ${LIEN}},
     "colonnesPied": colonnesPied[]{_key, titre, "liens": liens[]{_key, ${LIEN}}},
     "seo": seo{titre, description, "image": image{${IMAGE}}}
   },
   "partenaires": *[_type == "partenaire" && piedDePage == true] | order(ordre asc){_id, nom, url, type},
-  "saison": *[_type == "saison" && courante == true][0]{titre, boutique, "programmePdf": programmePdf.asset->url, "afficheHD": afficheHD.asset->url}
+  "saison": *[_type == "saison" && courante == true][0]{titre, "programmePdf": programmePdf.asset->url}
 }`)
 
 export const REQ_ACCUEIL = defineQuery(`
@@ -120,32 +84,15 @@ export const REQ_PAGE = defineQuery(`
 export const REQ_SPECTACLE = defineQuery(`
   *[_type == "spectacle" && slug.current == $slug][0]{
     ${CARTE},
-    texte, video, deroule, avertissement, autour, distinction, accessibilite, distribution, production, creation, creditsPhotos, noteTarifs,
-    citations, photosHD, scolaire,
-    "dossierPresse": dossierPresse.asset->url,
-    "dossierPedagogique": dossierPedagogique.asset->url,
-    "documents": documents[]{${FICHIER}},
+    texte, video, deroule, avertissement, autour, distinction, accessibilite, distribution, production, noteTarifs,
     "photos": photos[]{_key, ${IMAGE}},
     "tarifs": tarifs->{nom, tarifs, note},
-    "articles": *[_type == "articlePresse" && spectacle._ref == ^._id] | order(date desc){_id, titre, media, auteur, date, extrait, "url": coalesce(lien, fichier.asset->url)},
-    "rendezVous": *[_type == "rendezVous" && ^._id in spectacles[]._ref] | order(debut asc){_id, titre, debut, fin, periode, lieu, "slug": slug.current, "aTexte": count(texte) > 0},
     "seo": seo{titre, description, "image": image{${IMAGE}}}
-  }
-`)
-
-export const REQ_RENDEZ_VOUS = defineQuery(`
-  *[_type == "rendezVous" && slug.current == $slug][0]{
-    _id, titre, categorie, debut, fin, periode, organisateur, lieu, prix, inscription, texte, horaires,
-    "slug": slug.current,
-    "image": image{${IMAGE}},
-    "liens": liens[]{_key, ${LIEN}},
-    "spectacles": spectacles[]->{${CARTE}}
   }
 `)
 
 export const REQ_SLUGS_PAGES = defineQuery(`*[_type == "page" && defined(slug.current)].slug.current`)
 export const REQ_SLUGS_SPECTACLES = defineQuery(`*[_type == "spectacle" && defined(slug.current)].slug.current`)
-export const REQ_SLUGS_RENDEZ_VOUS = defineQuery(`*[_type == "rendezVous" && defined(slug.current) && count(texte) > 0].slug.current`)
 
 /** Le site lit-il Sanity ? Oui dès que le Content Lake contient un spectacle. */
 export const REQ_SANITY_REMPLI = defineQuery(`count(*[_type == "spectacle"][0...1])`)
